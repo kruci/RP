@@ -5,43 +5,47 @@ package light;
  * @author rasto
  */
 public abstract class LightSource {
-    protected double position[] = new double[3];    
-    protected double rotation[] = new double[3];
-    protected double color[] = new double[3];
+    /**centre of Light source*/
+    protected float position[] = new float[3];  
+    /**rotation aorund axis X, Y, Z*/
+    protected float rotation[] = new float[3];
+    /**R G B in percentage*/
+    protected float color[] = new float[3];
     
-    public LightSource(double[] position, double[] rotation, double[] color){
+    public LightSource(float[] position, float[] rotation, float[] color){
         this.position = position.clone();
         this.color = color.clone();
         this.rotation = rotation;
     }
     
     /**X,Y,Z*/
-    public double[] getPosition(){
+    public float[] getPosition(){
         return position;
     } 
     
-    public void setPosition(double[] position){
+    public void setPosition(float[] position){
         this.position = position.clone();
     }
     
     /**percent of R G B*/        
-    public double[] getColor(){
+    public float[] getColor(){
         return color;
     }
     
-    public void setColor(double[] color){
+    public void setColor(float[] color){
         this.color = color.clone();
     }
     
     /**rotX, rotY, rotZ*/
-    public double[] getRotation(){
+    public float[] getRotation(){
         return rotation;
     }
     
-    public void setRotation(double[] rotation){
+    public void setRotation(float[] rotation){
         this.rotation = rotation.clone();
     }
     
     /** return [x,y,z, AngleX,AngleY]*/
-    public abstract double[] getNextBeam();
+    //mayble split to origin() and angles()
+    public abstract float[] getNextBeam();
 }
