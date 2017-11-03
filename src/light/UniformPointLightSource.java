@@ -9,8 +9,8 @@ import java.util.*;
 public class UniformPointLightSource extends LightSource{
     private Random rndr = new Random();
     
-    public UniformPointLightSource(double[] position, double[] color){
-        super(position, color);
+    public UniformPointLightSource(double[] position, double[] rotation,double[] color){
+        super(position, rotation, color);
     }
     
     public double[] getNextBeam(){

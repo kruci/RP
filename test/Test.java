@@ -9,10 +9,10 @@ public class Test {
     public static void main(String [] args){
         
         //UniformPointLightSource
-        double[] poz = {0,0,0,0,0};  
+        double[] poz = {0,0,0};  
         double[] col = {0,0,0};
         int mit = 10000;
-        UniformPointLightSource upls = new UniformPointLightSource( poz, col);
+        UniformPointLightSource upls = new UniformPointLightSource( poz, poz,col);
         
         try{
             FileWriter fw = new FileWriter("uplsAnglesXY.txt");
