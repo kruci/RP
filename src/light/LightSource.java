@@ -4,7 +4,7 @@ package light;
  *
  * @author rasto
  */
-public abstract class LightSource {
+public abstract class LightSource implements java.io.Serializable{
     /**centre of Light source*/
     protected float position[] = new float[3];  
     /**rotation aorund axis X, Y, Z*/
