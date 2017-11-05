@@ -1,6 +1,4 @@
 .dir
-/nbproject/
-build.xml
-/build/
-/dist/
-/test/upls/uplsAnglesXY.txt
+build/
+dist/
+test/upls/uplsAnglesXY.txt
