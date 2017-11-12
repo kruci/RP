@@ -17,7 +17,7 @@ public class Test {
         long occurencesY[] = new long[360 / step];
         
         float[] v3 = {0,0,0};  
-        UniformPointLightSource upls = new UniformPointLightSource( v3, v3,v3);
+        UniformPointLightSource upls = new UniformPointLightSource( v3, v3);
         
         try{
         FileWriter fw = new FileWriter("test/upls/uplsAnglesXY.txt");
