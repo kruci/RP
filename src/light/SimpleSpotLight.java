@@ -6,8 +6,8 @@ import java.util.Random;
  *
  * @author rasto
  */
-public class SimpleSpotLight {
-    private Random rndrAX,rndrAY;
+public class SimpleSpotLight extends LightSource{
+    protected Random rndrAX,rndrAY;
     
     /**centre of Light source*/
     protected float position[] = new float[3];  
@@ -18,6 +18,8 @@ public class SimpleSpotLight {
     /**Angle form direction*/
     protected float angle;
     
+    /**cos(f) = (a*b)/(||a||*||b||)
+       return acos(cos(f)) * (float)(180/Math.PI) -> angle in degrees*/
     public float angleBetvenVectors(float[] a, float[] b){
         float axb[] = new float[3];
         axb[0] = a[0]*b[0];
