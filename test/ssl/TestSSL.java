@@ -1,4 +1,9 @@
-package upls;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ssl;
 
 /**
  *
@@ -8,7 +13,7 @@ import light.*;
 import java.io.*;
 import static java.lang.Math.floor;
 
-public class Test {
+public class TestSSL {
     //UniformPointLightSource
     public static void main(String [] args){
         long numberofbeams = 500000;
@@ -17,13 +22,13 @@ public class Test {
         long occurencesY[] = new long[360 / step];
         
         float[] v3 = {0,0,0};  
-        UniformPointLightSource upls = new UniformPointLightSource( v3);
+        SimpleSpotLight ssl = new SimpleSpotLight( new float[]{0,0,0}, new float[]{1,1,1},10);
         
         try{
-        FileWriter fw = new FileWriter("test/upls/uplsAnglesXY.txt");
+        FileWriter fw = new FileWriter("test/ssl/sslAnglesXY.txt");
         
         for(long a = 0;a < numberofbeams;++a){
-                float[] b = upls.getNextBeam();
+                float[] b = ssl.getNextBeam();
                 //this part is to create histogram
                 occurencesX[(int)floor( b[3]/ step)]++; 
                 occurencesY[(int)floor( b[4]/ step)]++;
@@ -34,8 +39,8 @@ public class Test {
         fw.close();
         }catch (IOException e){}
         
-        printToFile(occurencesX, "test/upls/aX.txt");
-        printToFile(occurencesY, "test/upls/aY.txt");     
+        printToFile(occurencesX, "test/ssl/aX.txt");
+        printToFile(occurencesY, "test/ssl/aY.txt");     
     }
     
     private static void printToFile(long []ar, String filename){
