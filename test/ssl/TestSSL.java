@@ -9,6 +9,8 @@ package ssl;
  *
  * @author rasto
  */
+import color.SPD1;
+import color.SpectralPowerDistribution;
 import light.*;
 import java.io.*;
 import static java.lang.Math.floor;
@@ -17,12 +19,13 @@ public class TestSSL {
     //UniformPointLightSource
     public static void main(String [] args){
         long numberofbeams = 500000;
-        int step = 10;
+        int step = 1;
         long occurencesX[] = new long[360 / step];
         long occurencesY[] = new long[360 / step];
         
         float[] v3 = {0,0,0};  
-        SimpleSpotLight ssl = new SimpleSpotLight( new float[]{0,0,0}, new float[]{1,1,1},10);
+        SpectralPowerDistribution spd = new SPD1();
+        SimpleSpotLight ssl = new SimpleSpotLight(spd, new float[]{0,0,0}, new float[]{1,1,1},10);
         
         try{
         FileWriter fw = new FileWriter("test/ssl/sslAnglesXY.txt");

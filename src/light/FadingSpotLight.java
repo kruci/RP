@@ -1,5 +1,7 @@
 package light;
 
+import color.SpectralPowerDistribution;
+
 /**
  *
  * @author rasto
@@ -8,8 +10,8 @@ public class FadingSpotLight extends SimpleSpotLight{
     /**Fade per angle*/
     float fade;
     
-    public FadingSpotLight(float[] position, float cone_direction[], float cone_angle, float fade_per_angle){
-        super(position, cone_direction, cone_angle);
+    public FadingSpotLight(SpectralPowerDistribution spd, float[] position, float cone_direction[], float cone_angle, float fade_per_angle){
+        super(spd, position, cone_direction, cone_angle);
         fade = fade_per_angle;
     }
     
@@ -28,12 +30,13 @@ public class FadingSpotLight extends SimpleSpotLight{
         r[1] = position[1];
         r[2] = position[2];
         //**Change this part so angles would not be distributed uniformly*/
-            //Idk yet lol
-            /*r[3] = rndrAX.nextFloat() * angle *2;
-            r[4] = rndrAY.nextFloat() * angle *2;*/
+
+            r[3] = rndrAX.nextFloat() * angle *2;
+            r[4] = rndrAY.nextFloat() * angle *2;
         //fix direction
         r[3] += angleBetvenVectors(new float[]{1,0,0}, new float[]{direction[0], direction[1], 0}) - angle;
         r[4] += angleBetvenVectors(new float[]{0,1,0}, new float[]{0, direction[1], direction[2]}) - angle;
+        r[5] = (float)spd.getNextLamnbda();
         //-------------
         return r;
     }

@@ -1,5 +1,6 @@
 package light;
 
+import color.SpectralPowerDistribution;
 import java.util.Random;
 
 /**
@@ -31,7 +32,8 @@ public class SimpleSpotLight extends LightSource{
                 (float)(180/Math.PI);
     }
     
-    public SimpleSpotLight(float[] position, float cone_direction[], float cone_angle){
+    public SimpleSpotLight(SpectralPowerDistribution spd, float[] position, float cone_direction[], float cone_angle){
+        super(spd);
         rndrAX = new Random();
         rndrAY = new Random();
         this.position = position;
@@ -40,7 +42,7 @@ public class SimpleSpotLight extends LightSource{
     }
     
     public float[] getNextBeam(){
-        float[] r = new float[5];
+        float[] r = new float[6];
         r[0] = position[0];
         r[1] = position[1];
         r[2] = position[2];
@@ -49,6 +51,7 @@ public class SimpleSpotLight extends LightSource{
         //fix direction
         r[3] += angleBetvenVectors(new float[]{1,0,0}, new float[]{direction[0], direction[1], 0}) - angle;
         r[4] += angleBetvenVectors(new float[]{0,1,0}, new float[]{0, direction[1], direction[2]}) - angle;
+        r[5] = (float)spd.getNextLamnbda();
         //-------------
         return r;
     }

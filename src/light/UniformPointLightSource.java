@@ -1,5 +1,6 @@
 package light;
 
+import color.SpectralPowerDistribution;
 import java.util.*;
 
 /**
@@ -12,7 +13,8 @@ public class UniformPointLightSource extends LightSource{
     /**centre of Light source*/
     protected float position[] = new float[3];  
     
-    public UniformPointLightSource(float[] position){
+    public UniformPointLightSource(SpectralPowerDistribution spd, float[] position){
+        super(spd);
         rndrAX = new Random();
         rndrAY = new Random();
         this.position = position;
@@ -25,6 +27,7 @@ public class UniformPointLightSource extends LightSource{
         r[2] = position[2];
         r[3] = rndrAX.nextFloat() * 360;
         r[4] = rndrAY.nextFloat() * 360;
+        r[5] = (float)spd.getNextLamnbda();
         return r;
     }
     

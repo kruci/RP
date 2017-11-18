@@ -4,6 +4,8 @@ package upls;
  *
  * @author rasto
  */
+import color.SPD1;
+import color.SpectralPowerDistribution;
 import light.*;
 import java.io.*;
 import static java.lang.Math.floor;
@@ -17,7 +19,8 @@ public class Test {
         long occurencesY[] = new long[360 / step];
         
         float[] v3 = {0,0,0};  
-        UniformPointLightSource upls = new UniformPointLightSource( v3);
+        SpectralPowerDistribution spd = new SPD1();
+        UniformPointLightSource upls = new UniformPointLightSource(spd, v3);
         
         try{
         FileWriter fw = new FileWriter("test/upls/uplsAnglesXY.txt");
