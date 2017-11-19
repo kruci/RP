@@ -12,6 +12,11 @@ package color;
  * concentration, as a function of wavelength
  * 
  * https://en.wikipedia.org/wiki/Spectral_power_distribution
+ * 
+ *  if we imagine this as graph, y would be normalized power (max(y) = 1) and
+ *  x are lambdas
+ *  if we have 2 spikes with y = 1 on graph, that means that they make up equivalent 
+ *  portion of all radiated wavelengths
  * @author rasto
  */
 public interface SpectralPowerDistribution {

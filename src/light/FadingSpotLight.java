@@ -31,6 +31,15 @@ public class FadingSpotLight extends SimpleSpotLight{
         r[2] = position[2];
         //**Change this part so angles would not be distributed uniformly*/
             //still odesnt work...
+            /* todo: (exactli same thing that i did is SPD)
+                    1) describe occurences of angles by function (similiar to SPD1)
+                    2) do Definite Integral of that s&*# = di (from 0 to 360 propably)
+                    3) di *= ranX
+                    4) find n for equation (definite integral of s&*# from 0 to n) = di
+                    5) repalce rndrAX/Y.nextFloat() with theirs n
+                will it be chopped ? 
+                    { 6) smoot it out}
+            */
             r[3] = rndrAX.nextFloat() * angle *2;
             r[4] = rndrAY.nextFloat() * angle *2;
         //fix direction
