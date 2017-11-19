@@ -6,15 +6,16 @@
 package color;
 
 /**
- * Should probably be interface 
+ *
  * @author rasto
  */
 public class Color {
     
     /**
-    *this implemenataiton depends on our perception of lisght
-    *   this one takes lambda l from <400,700> [nm]
+    *will be repalced by https://en.wikipedia.org/wiki/CIE_1931_color_space#Computing_XYZ_From_Spectral_Data
+    *   
     */
+    //this one takes lambda l from <400,700> [nm]
     public double [] lambdaToRGB(double l){
         /**
          * https://stackoverflow.com/questions/3407942/rgb-values-of-visible-spectrum?noredirect=1&lq=1

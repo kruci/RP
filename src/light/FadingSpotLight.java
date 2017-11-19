@@ -30,7 +30,7 @@ public class FadingSpotLight extends SimpleSpotLight{
         r[1] = position[1];
         r[2] = position[2];
         //**Change this part so angles would not be distributed uniformly*/
-
+            //still odesnt work...
             r[3] = rndrAX.nextFloat() * angle *2;
             r[4] = rndrAY.nextFloat() * angle *2;
         //fix direction

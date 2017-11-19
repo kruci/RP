@@ -22,6 +22,7 @@ public class TestSSL {
         int step = 1;
         long occurencesX[] = new long[360 / step];
         long occurencesY[] = new long[360 / step];
+        long occurencesL[] = new long[800 / step];
         
         float[] v3 = {0,0,0};  
         SpectralPowerDistribution spd = new SPD1();
@@ -35,6 +36,7 @@ public class TestSSL {
                 //this part is to create histogram
                 occurencesX[(int)floor( b[3]/ step)]++; 
                 occurencesY[(int)floor( b[4]/ step)]++;
+                occurencesL[(int)b[5]]++;
                 //this part is to save raw data for Statistical test
                 fw.write(Double.toString(b[3]) + "\t" +Double.toString(b[4])+ "\n");
         }
@@ -43,7 +45,8 @@ public class TestSSL {
         }catch (IOException e){}
         
         printToFile(occurencesX, "test/ssl/aX.txt");
-        printToFile(occurencesY, "test/ssl/aY.txt");     
+        printToFile(occurencesY, "test/ssl/aY.txt");   
+        printToFile(occurencesL, "test/ssl/L.txt");
     }
     
     private static void printToFile(long []ar, String filename){
