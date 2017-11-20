@@ -26,7 +26,7 @@ public class TestFSL {
         
         float[] v3 = {0,0,0};  
         SpectralPowerDistribution spd = new SPD1();
-        FadingSpotLight fsl = new FadingSpotLight(spd, new float[]{0,0,0}, new float[]{1,1,1},20.0f, 0.08f);
+        FadingSpotLight fsl = new FadingSpotLight(spd, new float[]{0,0,0}, new float[]{1,1,1},20.0f, (float)1.0f/12.0f);
         
         try{
         FileWriter fw = new FileWriter("test/fsl/fslAnglesXY.txt");

@@ -8,29 +8,23 @@ import color.SpectralPowerDistribution;
  */
 public class FadingSpotLight extends SimpleSpotLight{
     /**Fade per angle, <0,1>*/
-    float fade;
-    float fadeangles;
-    float constf;
-    float integral;
+    double fade;
+    double fadeangles;
+    double constf;
+    double integral;
     
-    public FadingSpotLight(SpectralPowerDistribution spd, float[] position, float cone_direction[], float cone_angle, float fade_per_angle){
+    public FadingSpotLight(SpectralPowerDistribution spd, float[] position, float cone_direction[], float cone_angle, double fade_per_angle){
         super(spd, position, cone_direction, cone_angle);
         fade = fade_per_angle;
-        
-        /*fadeangles = 1/fade;
-        constf = cone_angle*2 - fadeangles*2;
-        for(int a = 0;a <= cone_angle*2;++a){
-            integral += fx(a);
-        } */
         setFade(fade);
     }
     
     /**Fade*/
-    public float getFade(){
+    public double getFade(){
         return fade;
     } 
     
-    public void setFade(float fade){
+    public void setFade(double fade){
         this.fade = fade;
         fadeangles = 1/fade;
         
@@ -40,23 +34,24 @@ public class FadingSpotLight extends SimpleSpotLight{
     }
     
     //occurences function
-    private float fx(float x){
+    private double fx(double x){
         
-        if(x < fadeangles){return 1- Math.abs(x- fadeangles)*fade;}
-        else if(x< angle*2 -fadeangles){return 1;}
-        else{return 1- Math.abs((angle*2-x)- fadeangles)*fade;}
+        if(x < fadeangles){return (double)1.0 - Math.abs(x- fadeangles)*fade;}
+        else if(x<= angle*2.0 -fadeangles){return 1;}
+        else{return (double)1.0- Math.abs((angle*2.0-x)- fadeangles)*fade;}
     }
     
-    private float getSome(float f){
-        f *= integral;
-        float d = 0,a = 0, d0 = 0, d2 = 0;
-        for(;a<angle*2 && d<f;++a){
-            d0 += d;
-            d+= fx(a);
+    private float getSome(float c){
+        double f = (double)c * integral;
+        double a = 0, d1 = 0, d2 = 0;
+        for(;a<=angle*2 && d2<f;++a){
+            d1 = d2;
+            d2+= fx(a);
         }
-        /*d2= d+ fx(a) - d0;
-        d -= d0;*/
-        return ((a-1) % 360);// + (d/d2);
+        //if c ==0 then a-1 = -1 and we dont want to return that
+        if(a <=0.0){a = 1;}
+        //last part (after +) is for smoothing
+        return (float)(((a-1) % 360) + ( (f-d1) / (d2-d1) ));
     }
     
     public float[] getNextBeam(){
