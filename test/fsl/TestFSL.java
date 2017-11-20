@@ -26,7 +26,7 @@ public class TestFSL {
         
         float[] v3 = {0,0,0};  
         SpectralPowerDistribution spd = new SPD1();
-        FadingSpotLight fsl = new FadingSpotLight(spd, new float[]{0,0,0}, new float[]{1,1,1},10.0f, 0.33f);
+        FadingSpotLight fsl = new FadingSpotLight(spd, new float[]{0,0,0}, new float[]{1,1,1},20.0f, 0.08f);
         
         try{
         FileWriter fw = new FileWriter("test/fsl/fslAnglesXY.txt");
@@ -34,6 +34,7 @@ public class TestFSL {
         for(long a = 0;a < numberofbeams;++a){
                 float[] b = fsl.getNextBeam();
                 //this part is to create histogram
+                //System.out.println(Float.toString(b[3]) + " " + Float.toString(b[4]));
                 occurencesX[(int)floor( b[3]/ step)]++; 
                 occurencesY[(int)floor( b[4]/ step)]++;
                 //occurencesL[(int)b[5]]++;

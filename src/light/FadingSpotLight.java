@@ -49,11 +49,14 @@ public class FadingSpotLight extends SimpleSpotLight{
     
     private float getSome(float f){
         f *= integral;
-        float d = 0,a = 0;
-        for(;a<=angle*2 && d<f;++a){
+        float d = 0,a = 0, d0 = 0, d2 = 0;
+        for(;a<angle*2 && d<f;++a){
+            d0 += d;
             d+= fx(a);
         }
-        return a;
+        /*d2= d+ fx(a) - d0;
+        d -= d0;*/
+        return ((a-1) % 360);// + (d/d2);
     }
     
     public float[] getNextBeam(){
@@ -67,6 +70,8 @@ public class FadingSpotLight extends SimpleSpotLight{
         //fix direction
         r[3] += angleBetvenVectors(new float[]{1,0,0}, new float[]{direction[0], direction[1], 0}) - angle;
         r[4] += angleBetvenVectors(new float[]{0,1,0}, new float[]{0, direction[1], direction[2]}) - angle;
+        if(r[3] < 0){r[3] = 360 + r[3];}
+        if(r[4] < 0){r[4] = 360 + r[4];}
         r[5] = (float)spd.getNextLamnbda();
         //-------------
         return r;
