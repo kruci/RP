@@ -9,19 +9,19 @@ package color;
  *
  * @author rasto
  */
-public class Color {
+public interface Color {
     
     /**
     *will be repalced by https://en.wikipedia.org/wiki/CIE_1931_color_space#Computing_XYZ_From_Spectral_Data
     *   
     */
     //this one takes lambda l from <400,700> [nm]
-    public double [] lambdaToRGB(double l){
+    //public double [] lambdaToRGB(double l){
         /**
          * https://stackoverflow.com/questions/3407942/rgb-values-of-visible-spectrum?noredirect=1&lq=1
          * by Spektre
          */
-        double t,  r=0.0, g=0.0, b=0.0;
+        /*double t,  r=0.0, g=0.0, b=0.0;
         if ((l>=400.0)&&(l<410.0)) { t=(l-400.0)/(410.0-400.0); r=    +(0.33*t)-(0.20*t*t); }
         else if ((l>=410.0)&&(l<475.0)) { t=(l-410.0)/(475.0-410.0); r=0.14         -(0.13*t*t); }
         else if ((l>=545.0)&&(l<595.0)) { t=(l-545.0)/(595.0-545.0); r=    +(1.98*t)-(     t*t); }
@@ -34,5 +34,7 @@ public class Color {
         else if ((l>=475.0)&&(l<560.0)) { t=(l-475.0)/(560.0-475.0); b=0.7 -(     t)+(0.30*t*t); }
         
         return new double[]{r,g,b};
-    }
+    }*/
+    
+    public int[] SPDtoRGB(SpectralPowerDistribution spd);
 }
