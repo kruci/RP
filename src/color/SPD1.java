@@ -40,4 +40,12 @@ public class SPD1 implements SpectralPowerDistribution{
     public double getNextLamnbda(){
         return getSome(ran.nextDouble());
     }
+    
+    public double getValue(double lambda){
+        return fx(lambda);
+    }
+    
+    public double[] getFirstLastZero(){
+        return new double[]{455,655};
+    }
 }

@@ -26,4 +26,6 @@ public interface SpectralPowerDistribution {
      * @return return next wavelength
      */
     public double getNextLamnbda();
+    public double getValue(double lambda);
+    public double[] getFirstLastZero();
 }
