@@ -14,7 +14,7 @@ public class CIE1931StandardObserver implements Color{
     private static int firstlambda = 360;
     private static int lastlambda = 830;
     /**
-     * [471][3] step is 1nm 
+     * [470][3] step is 1nm  X Y Z
      * taken from http://jcgt.org/published/0002/02/01/
      */
     private static float[][] vals = {
@@ -501,6 +501,9 @@ public class CIE1931StandardObserver implements Color{
      * https://rip94550.wordpress.com/2009/10/26/color-from-spectrum-to-tristimulus/
      * http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_xyY.html
      * http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+     * http://hyperphysics.phy-astr.gsu.edu/hbase/vision/colper.html#c3
+     * http://www.ryanjuckett.com/programming/rgb-color-space-conversion/
+     * http://www.basseq.com/fun/utils/xyy2rgb.html
      * @param spd
      * @return 
      */
@@ -510,7 +513,7 @@ public class CIE1931StandardObserver implements Color{
         double X = 0,Y = 0,Z = 0;
         
         //http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_xyY.html
-        for(int a = 0;a < interval[1]-interval[0];++a){
+        for(int a = 0;a <= interval[1]-interval[0];++a){
             float[] currentXYZ = getXYZ(a+interval[0]);
             X += (double)currentXYZ[0]*spd.getValue(a+interval[0]);
             Y += (double)currentXYZ[1]*spd.getValue(a+interval[0]);
@@ -519,15 +522,12 @@ public class CIE1931StandardObserver implements Color{
         /*from here to bottom, it will be replaced 
         by http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html*/
         
-        //divide by Y
-        X /= Y;
-        Z /= Z;
-        Y /= Y;
-        //XYZ to xyY
         double sum = X+Y+Z;
         double x= X/sum;
         double y= Y/sum;
-        Y = Y;
-        return new int[]{(int)(255*x),(int)(255*y),(int)(255*Y)};
+        double z= Z/sum;
+        
+        
+        return new int[]{(int)(255*x),(int)(255*y),(int)(255*z)};
     }
 }
