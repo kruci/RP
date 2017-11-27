@@ -38,7 +38,7 @@ public class CircleLight extends LightSource{
         ret[1] += a[1]*distanceformcentre;
         ret[2] += a[2]*distanceformcentre;
         //point is somewhere on circeleat random distance form centre
-        a = Math3dUtil.rotatePointAroundPoint(ssl.getPosition(), new float[]{ret[0], ret[1], ret[2]}, angleincircle);
+        a = Math3dUtil.rotatePointAroundVector(ssl.getDirection(), new float[]{ret[0], ret[1], ret[2]}, radius);
         ret[0] = a[0];
         ret[1] = a[1];
         ret[2] = a[2];
