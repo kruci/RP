@@ -7,7 +7,7 @@ package math3d;
 
 /**
  * TODO:    1) make sure rotation direction is same in every function
- *          2) finish rotatePointAroundVector
+ *          2) test rotatePointAroundVector
  *          3) fix getPerpendicularVector when v[2] == 0
  */
 import static java.lang.Math.sqrt;
@@ -74,13 +74,35 @@ public class Math3dUtil {
     
     //TBD
     //https://www.cprogramming.com/tutorial/3d/rotation.html
-    public static float[] rotatePointAroundVector(float[] v, float[] p, float angle){
-        float [] r = new float[3];
+    /**
+     * https://stackoverflow.com/questions/31225062/rotating-a-vector-by-angle-and-axis-in-java
+     * counter clockwise around unit vector 
+     * @param v
+     * @param p
+     * @param angle
+     * @return 
+     */
+    public static double[] rotatePointAroundVector(float[] vec, float[] p, float theta){
+        double [] r = new double[3];
+        double x = p[0], y = p[1], z = p[2], u = vec[0], v = vec[1], w = vec[2];
+        
+        r[0] = u*(u*x + v*y + w*z)*(1d - Math.cos(theta)) 
+                + x*Math.cos(theta)
+                + (-w*y + v*z)*
+                Math.sin(theta);
+        r[1] = v*(u*x + v*y + w*z)*(1d - Math.cos(theta))
+                + y*Math.cos(theta)
+                + (w*x - u*z)*Math.sin(theta);
+        r[2] = w*(u*x + v*y + w*z)*(1d - Math.cos(theta))
+                + z*Math.cos(theta)
+                + (-v*x + u*y)*Math.sin(theta);
         
         return r;
     }
     
-    
+    public static float getPositiveAngle(float a){
+        return ((360 + a) % 360);
+    }
     
     
     

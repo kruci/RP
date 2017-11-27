@@ -22,6 +22,8 @@ public class CircleLight extends LightSource{
         super(spd);
         ssl = new SimpleSpotLight(spd,position, direction,90);
         this.radius = radius;
+        rndrAC = new Random();
+        rndrCL = new Random();
     }
     
     public float[] getNextBeam(){
@@ -38,10 +40,11 @@ public class CircleLight extends LightSource{
         ret[1] += a[1]*distanceformcentre;
         ret[2] += a[2]*distanceformcentre;
         //point is somewhere on circeleat random distance form centre
-        a = Math3dUtil.rotatePointAroundVector(ssl.getDirection(), new float[]{ret[0], ret[1], ret[2]}, radius);
-        ret[0] = a[0];
-        ret[1] = a[1];
-        ret[2] = a[2];
+        double a2[];
+        a2 = Math3dUtil.rotatePointAroundVector(ssl.getDirection(), new float[]{ret[0], ret[1], ret[2]}, angleincircle);
+        ret[0] = (float)a2[0];
+        ret[1] = (float)a2[1];
+        ret[2] = (float)a2[2];
     
         return ret;
     }

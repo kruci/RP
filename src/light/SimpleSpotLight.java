@@ -2,6 +2,7 @@ package light;
 
 import color.SpectralPowerDistribution;
 import java.util.Random;
+import math3d.Math3dUtil;
 
 /**
  *
@@ -51,6 +52,8 @@ public class SimpleSpotLight extends LightSource{
         //fix direction
         r[3] += angleBetvenVectors(new float[]{1,0,0}, new float[]{direction[0], direction[1], 0}) - angle;
         r[4] += angleBetvenVectors(new float[]{0,1,0}, new float[]{0, direction[1], direction[2]}) - angle;
+        r[3] = Math3dUtil.getPositiveAngle(r[3]);
+        r[4] = Math3dUtil.getPositiveAngle(r[4]);
         r[5] = (float)spd.getNextLamnbda();
         //-------------
         return r;
