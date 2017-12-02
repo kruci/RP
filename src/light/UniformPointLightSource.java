@@ -28,7 +28,12 @@ public class UniformPointLightSource extends LightSource{
         r[3] = rndrAX.nextFloat() * 360;
         r[4] = rndrAY.nextFloat() * 360;
         r[5] = (float)spd.getNextLamnbda();
+        beams++;
         return r;
+    }
+    
+    public Beam getNextBeamC(){
+        return new Beam(getNextBeam(),this);
     }
     
     /**X,Y,Z*/

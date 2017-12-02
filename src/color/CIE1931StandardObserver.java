@@ -5,6 +5,10 @@
  */
 package color;
 
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
+import static math3d.Math3dUtil.multiply;
+
 /**
  *
  * @author rasto
@@ -491,10 +495,19 @@ public class CIE1931StandardObserver implements Color{
     { 0.000001f, 0.000000f, 0.000000f }     // 830 nm
     };
     
+    private double[][] Minverse = {     {3.2404542, -1.5371385, -0.4985314},
+                                        {-0.9692660,  1.8760108,  0.0415560},
+                                        { 0.0556434, -0.2040259,  1.0572252}};
+    
     private float [] getXYZ(double lambda){
         int l = (int)lambda - firstlambda;
         if(lambda > vals.length){return new float[]{0,0,0};}
         return vals[l];
+    }
+    
+    private double sRGBcompaund(double v){
+        if(v <= 0.0031308){return v*12.92;}
+        else{return 1.055 * pow(v, 1/2.4) -0.055;}
     }
     
     /**
@@ -522,12 +535,31 @@ public class CIE1931StandardObserver implements Color{
         /*from here to bottom, it will be replaced 
         by http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html*/
         
-        double sum = X+Y+Z;
-        double x= X/sum;
-        double y= Y/sum;
-        double z= Z/sum;
+        /*double sum = X+Y+Z;
+        X= X/sum;
+        Y= Y/sum;
+        Z= Z/sum;*/
+        /*double maxXYZ = max(X,(max(Y,Z)));
+        X /= maxXYZ;
+        Y /= maxXYZ;
+        Z /= maxXYZ;*/
         
+        System.out.println( Double.toString(X) + " " +
+                            Double.toString(Y) + " " +
+                            Double.toString(Z));
         
-        return new int[]{(int)(255*x),(int)(255*y),(int)(255*z)};
+        //XYZ to RGB linear
+        double rgb[][] = multiply(Minverse, new double[][]{ {(double)X}, {(double)Y}, {(double)Z}});
+        
+        //companding (sRGB Companding)
+        /*rgb[0][0] = sRGBcompaund(rgb[0][0]);
+        rgb[1][0] = sRGBcompaund(rgb[1][0]);
+        rgb[2][0] = sRGBcompaund(rgb[2][0]);*/
+        
+        System.out.println( Double.toString(rgb[0][0]) + " " +
+                            Double.toString(rgb[1][0]) + " " +
+                            Double.toString(rgb[2][0]));
+        
+        return new int[]{(int)rgb[0][0] *255, (int)rgb[1][0] *255,(int)rgb[2][0] *255};
     }
 }

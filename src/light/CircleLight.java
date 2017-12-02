@@ -45,8 +45,12 @@ public class CircleLight extends LightSource{
         ret[0] = (float)a2[0];
         ret[1] = (float)a2[1];
         ret[2] = (float)a2[2];
-    
+        beams++;
         return ret;
+    }
+    
+    public Beam getNextBeamC(){
+        return new Beam(getNextBeam(),this);
     }
     
     

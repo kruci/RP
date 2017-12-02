@@ -55,8 +55,13 @@ public class SimpleSpotLight extends LightSource{
         r[3] = Math3dUtil.getPositiveAngle(r[3]);
         r[4] = Math3dUtil.getPositiveAngle(r[4]);
         r[5] = (float)spd.getNextLamnbda();
+        beams++;
         //-------------
         return r;
+    }
+    
+    public Beam getNextBeamC(){
+        return new Beam(getNextBeam(),this);
     }
     
     /**vX,vY,vZ*/

@@ -68,7 +68,12 @@ public class FadingSpotLight extends SimpleSpotLight{
         if(r[3] < 0){r[3] = 360 + r[3];}
         if(r[4] < 0){r[4] = 360 + r[4];}
         r[5] = (float)spd.getNextLamnbda();
+        beams++;
         //-------------
         return r;
+    }
+    
+    public Beam getNextBeamC(){
+        return new Beam(getNextBeam(),this);
     }
 }
