@@ -6,6 +6,7 @@
 package renderer;
 
 import color.SpectralPowerDistribution;
+import light.LightSource;
 
 /**
  *
@@ -36,8 +37,13 @@ public class SumerUltraSimpleCamera {
         this.resolution = resolution;
         coloredpixels = new int[resolution[0]][resolution[1]][3];
     }
-    
+    //x,y ,rgb
     int[][][] getPixels(){
         return coloredpixels;
+    }
+    
+    // takes beam and will calc if it seen by camera and to which pixel it contributes
+    void computeBeam(LightSource.Beam b){
+        
     }
 }
