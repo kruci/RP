@@ -21,7 +21,7 @@ public class UniformPointLightSource extends LightSource{
     }
     
     public float[] getNextBeam(){
-        float[] r = new float[5];
+        float[] r = new float[6];
         r[0] = position[0];
         r[1] = position[1];
         r[2] = position[2];

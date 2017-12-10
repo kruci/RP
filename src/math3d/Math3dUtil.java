@@ -64,6 +64,13 @@ public class Math3dUtil {
         return r;
     }
     
+    public static double wavelenghtEnergy(double l){
+        //nm to m
+        double lm = l*(1.0/1000000000.0);
+        //E = hc/lm
+        return (6.626 * Math.pow(10, -34) * 3.0* Math.pow(10,8))/lm;
+    }
+    
     /*
     //https://stackoverflow.com/questions/6721544/circular-rotation-around-an-arbitrary-axis
     public static float[] rotatePointAroundPoint(float[] staticp, float[] rotatedp, float angle){

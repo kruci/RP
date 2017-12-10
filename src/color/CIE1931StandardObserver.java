@@ -523,6 +523,9 @@ public class CIE1931StandardObserver implements Color{
     public int[] SPDtoRGB(SpectralPowerDistribution spd){
         
         double[] interval = spd.getFirstLastZero();
+                
+        if(interval[0]< 360){interval[0] = 360;}
+        if(interval[1]> 830){interval[1] = 830;}
         double X = 0,Y = 0,Z = 0;
         
         //http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_xyY.html
@@ -543,22 +546,22 @@ public class CIE1931StandardObserver implements Color{
         X /= maxXYZ;
         Y /= maxXYZ;
         Z /= maxXYZ;*/
-        
+        /*
         System.out.println( Double.toString(X) + " " +
                             Double.toString(Y) + " " +
-                            Double.toString(Z));
+                            Double.toString(Z));*/
         
         //XYZ to RGB linear
         double rgb[][] = multiply(Minverse, new double[][]{ {(double)X}, {(double)Y}, {(double)Z}});
         
         //companding (sRGB Companding)
-        /*rgb[0][0] = sRGBcompaund(rgb[0][0]);
+        rgb[0][0] = sRGBcompaund(rgb[0][0]);
         rgb[1][0] = sRGBcompaund(rgb[1][0]);
-        rgb[2][0] = sRGBcompaund(rgb[2][0]);*/
-        
+        rgb[2][0] = sRGBcompaund(rgb[2][0]);
+        /*
         System.out.println( Double.toString(rgb[0][0]) + " " +
                             Double.toString(rgb[1][0]) + " " +
-                            Double.toString(rgb[2][0]));
+                            Double.toString(rgb[2][0]));*/
         
         return new int[]{(int)rgb[0][0] *255, (int)rgb[1][0] *255,(int)rgb[2][0] *255};
     }
