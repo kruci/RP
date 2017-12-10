@@ -24,7 +24,6 @@ public class SuperUltraSimpleCamera {
     private int[] resolution;
     
     private int[][][] coloredpixels;
-    //private PixelSPD[][] spds;
     private ArrayList<ArrayList<PixelSPD>> spds;
     
     public class CameraSPDChatcher implements SpectralPowerDistribution{
@@ -50,8 +49,6 @@ public class SuperUltraSimpleCamera {
                 spds.get(a).add(new PixelSPD());
             }
         }
-        
-        //spds = new PixelSPD[resolution[0]][resolution[1]];
     }
     //x,y ,rgb
     public int[][][] getPixels(){
@@ -91,6 +88,10 @@ public class SuperUltraSimpleCamera {
             r[1] = 1000;
             
             return r;
+        }
+        
+        protected void addlambda(double lambda){
+            wavelenghts[(int)lambda]++;
         }
     }
 }

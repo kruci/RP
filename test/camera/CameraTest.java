@@ -47,8 +47,8 @@ public class CameraTest {
         for(int a = 0;a < pixels.length;++a){
             for(int b = 0;b < pixels[a].length;++b)
             {
-                //alpha, R, G, B
-                image.setRGB(b, b, new Color(255, pixels[a][b][0],pixels[a][b][1],pixels[a][b][2]).getRGB());
+                //R, G, B
+                image.setRGB(a, b, new Color(pixels[a][b][0],pixels[a][b][1],pixels[a][b][2]).getRGB());
             }
         }
         
