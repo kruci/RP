@@ -110,6 +110,14 @@ public class SuperUltraSimpleCamera {
                             " tz = " + Double.toString(b.n[2]*t3*beamvector[2]) + " t3 = " + Double.toString(t3));*/
         
     //2. detect if intersecting beam came from fov
+        /*This is why we need top and right vectors
+          we have to do pyramid from poz in dir direction that has
+          spole op 180-fov/2 fomr outside, or fov/2 from dir vectior on all sides
+    
+        then we just find out if origin of beam is in this pyramid*/
+        
+        //BUT HOW ?!... idk I go to bed
+        
     //3. detect which pixel it intersects with
     //4. add bem wavelenght to pixel spd
     }
