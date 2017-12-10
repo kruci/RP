@@ -535,19 +535,20 @@ public class CIE1931StandardObserver implements Color{
             Y += (double)currentXYZ[1]*spd.getValue(a+interval[0]);
             Z += (double)currentXYZ[2]*spd.getValue(a+interval[0]);
         }
+        //STIL DOESNT WORK
         /*from here to bottom, it will be replaced 
         by http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html*/
         
-        /*double sum = X+Y+Z;
+        double sum = X+Y+Z;
         X= X/sum;
         Y= Y/sum;
-        Z= Z/sum;*/
+        Z= Z/sum;
         /*double maxXYZ = max(X,(max(Y,Z)));
         X /= maxXYZ;
         Y /= maxXYZ;
         Z /= maxXYZ;*/
-        /*
-        System.out.println( Double.toString(X) + " " +
+        
+        /*System.out.println( Double.toString(X) + " " +
                             Double.toString(Y) + " " +
                             Double.toString(Z));*/
         
@@ -558,11 +559,22 @@ public class CIE1931StandardObserver implements Color{
         rgb[0][0] = sRGBcompaund(rgb[0][0]);
         rgb[1][0] = sRGBcompaund(rgb[1][0]);
         rgb[2][0] = sRGBcompaund(rgb[2][0]);
-        /*
-        System.out.println( Double.toString(rgb[0][0]) + " " +
+        
+        /*System.out.println( Double.toString(rgb[0][0]) + " " +
                             Double.toString(rgb[1][0]) + " " +
                             Double.toString(rgb[2][0]));*/
         
-        return new int[]{(int)rgb[0][0] *255, (int)rgb[1][0] *255,(int)rgb[2][0] *255};
+        int[] r = new int[3];
+        r[0] = (int)(fitinterval(rgb[0][0] *255.0,0,255));
+        r[1] = (int)(fitinterval(rgb[1][0] *255.0,0,255));
+        r[2] = (int)(fitinterval(rgb[2][0] *255.0,0,255));      
+                
+        return new int[]{r[0],r[1] ,r[2]};
+    }
+    
+    double fitinterval(double numb, double a, double b){
+        if(numb < a){return a;}
+        if(numb >b){return b;}
+        return numb;
     }
 }

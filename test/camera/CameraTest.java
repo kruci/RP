@@ -20,10 +20,10 @@ import renderer.SuperUltraSimpleCamera;
  */
 public class CameraTest {
     public static void main(String [] args){
-        int number_of_beams = 500000;    
+        int number_of_beams = 2000000;    
         
         SuperUltraSimpleCamera susc = new SuperUltraSimpleCamera(
-            new double[]{1,0,0},//poz
+            new double[]{10,10,10},//poz
             new double[]{1,0,0},//direction
             new double[]{1,1,0},//right
             new double[]{1,1,0},//up
@@ -32,8 +32,8 @@ public class CameraTest {
     
         CircleLight cl = new CircleLight(
             new SPD1(),
-            new float[]{1,0,0},//poz
-            new float[]{1,0,0},//dir
+            new float[]{20,10,10},//poz
+            new float[]{10,10,10},//dir
             5.0f);             //radius 
     
         for(int a = 0;a < number_of_beams;++a){
@@ -48,7 +48,9 @@ public class CameraTest {
             for(int b = 0;b < pixels[a].length;++b)
             {
                 //R, G, B
+                try{
                 image.setRGB(a, b, new Color(pixels[a][b][0],pixels[a][b][1],pixels[a][b][2]).getRGB());
+                } catch(Exception e){}
             }
         }
         

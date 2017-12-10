@@ -11,6 +11,7 @@ package math3d;
  *          3) fix getPerpendicularVector when v[2] == 0
  */
 import static java.lang.Math.sqrt;
+import light.LightSource;
 
 /**
  *
@@ -69,6 +70,29 @@ public class Math3dUtil {
         double lm = l*(1.0/1000000000.0);
         //E = hc/lm
         return (6.626 * Math.pow(10, -34) * 3.0* Math.pow(10,8))/lm;
+    }
+    
+    //Lx is angle in XY pane, from X counterclockwise
+    //Ly is angle in YZ pane, from Y counterclockwise
+    public static double[] beamArrayToVector(float v[]){
+        double[] r = new double[3];
+        
+        r[0] = Math.sin((double) v[3]);     //sin
+        r[1] = Math.cos((double) v[3]);     //cos
+        r[2] = Math.sin((double) v[4]);     //y is cos, Z is sin
+        
+        return r;
+    }
+    
+    public static double[] beamToVector(LightSource.Beam b){
+        return beamArrayToVector(b.n);
+    }
+    
+    public static boolean vithinError(double a, double b, double e){
+        if(a > b-e && a < b+e){
+            return true;
+        }
+        return false;
     }
     
     /*

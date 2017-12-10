@@ -9,6 +9,9 @@ import color.CIE1931StandardObserver;
 import color.SpectralPowerDistribution;
 import java.util.ArrayList;
 import light.LightSource;
+import static math3d.Math3dUtil.beamToVector;
+import static math3d.Math3dUtil.vithinError;
+import static math3d.Math3dUtil.wavelenghtEnergy;
 import renderer.SuperUltraSimpleCamera.PixelSPD;
 
 /**
@@ -53,6 +56,9 @@ public class SuperUltraSimpleCamera {
     //x,y ,rgb
     public int[][][] getPixels(){
         CIE1931StandardObserver sob1931 = new CIE1931StandardObserver();
+        
+        //coloredpixels[100][100] = sob1931.SPDtoRGB(spds.get(100).get(100));
+        
         for(int a = 0;a < spds.size();++a){
             for(int b = 0;b < spds.get(a).size();++b){
                 coloredpixels[a][b] = sob1931.SPDtoRGB(spds.get(a).get(b));
@@ -63,10 +69,41 @@ public class SuperUltraSimpleCamera {
     
     // takes beam and will calc if it seen by camera and to which pixel it contributes
     public void computeBeam(LightSource.Beam b){
-        //1. detect if beam intersect camera point
-        //2. detect if intersecting beam came from fov
-        //3. detect which pixel it intersects with
-        //4. add bem wavelenght to pixel spd
+        
+        double beamvector[] = beamToVector(b);
+        
+    //1. detect if beam intersect camera point
+        /*we wanna know if exists t that b.origin *t*beamvector == poz */
+        double t1, t2, t3;
+        
+        //TODO dynamic erro choosing 
+        double error = 0.5;
+        
+        t1 = (poz[0])/(b.n[0]*beamvector[0]);
+        if(poz[0] == 0 || b.n[0]*beamvector[0] == 0){t1 = 0;}
+        
+        t2 = (poz[1])/(b.n[1]*beamvector[1]);
+        if(poz[1] == 0 || b.n[1]*beamvector[1] == 0){t2 = 0;}
+        
+        t3 = (poz[2])/(b.n[2]*beamvector[2]);
+        if(poz[2] == 0 || b.n[2]*beamvector[2] == 0){t3 = 0;}
+        
+        //System.out.println(Double.toString(t1) + " " + Double.toString(t2) + " " +Double.toString(t3));
+                
+        if( vithinError(t1,t2, error) == false ||
+            vithinError(t1,t3, error) == false ||
+            vithinError(t3,t2, error) == false){
+           
+            return;
+        }
+        /*System.out.println( "Poz = [" + Double.toString(poz[0]) +", " + Double.toString(poz[1]) + ", " + Double.toString(poz[2]) + "]\n"+ 
+                            "tx = " + Double.toString(b.n[0]*t1*beamvector[0]) + " t1 = " + Double.toString(t1)+
+                            " ty = " + Double.toString(b.n[1]*t2*beamvector[1])  + " t2 = " + Double.toString(t2)+
+                            " tz = " + Double.toString(b.n[2]*t3*beamvector[2]) + " t3 = " + Double.toString(t3));*/
+        
+    //2. detect if intersecting beam came from fov
+    //3. detect which pixel it intersects with
+    //4. add bem wavelenght to pixel spd
     }
     
     //will store pixel spds
@@ -91,7 +128,8 @@ public class SuperUltraSimpleCamera {
         }
         
         protected void addlambda(double lambda){
-            wavelenghts[(int)lambda]++;
+            //we mus us this so we create SPD and not wavelenght distributor
+            wavelenghts[(int)lambda - 300] += wavelenghtEnergy(lambda);
         }
     }
 }

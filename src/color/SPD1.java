@@ -1,10 +1,12 @@
 package color;
 
 import java.util.Random;
+import static math3d.Math3dUtil.wavelenghtEnergy;
 
 /**
- *this has normalized power = 1 at l=555 and linearly drops to 0 over 100l
- * function for this spd graph should be f(x) = 1 - abs(x -555)/100
+ * 
+ * max = 1 at l=555 and linearly drops to 0 over 100l
+ * function for this lambda distribution graph should be f(x) = 1 - abs(x -555)/100
  * @author rasto
  */
 public class SPD1 implements SpectralPowerDistribution{
@@ -41,8 +43,10 @@ public class SPD1 implements SpectralPowerDistribution{
         return getSome(ran.nextDouble());
     }
     
+    //this will turn distribution to SPD .. kinda
+    //it isnt reall needed
     public double getValue(double lambda){
-        return fx(lambda);
+        return fx(lambda) * wavelenghtEnergy(lambda);
     }
     
     public double[] getFirstLastZero(){
