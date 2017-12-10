@@ -95,6 +95,12 @@ public class Math3dUtil {
         return false;
     }
     
+    public static double fitinterval(double numb, double a, double b){
+        if(numb < a){return a;}
+        if(numb >b){return b;}
+        return numb;
+    }
+    
     /*
     //https://stackoverflow.com/questions/6721544/circular-rotation-around-an-arbitrary-axis
     public static float[] rotatePointAroundPoint(float[] staticp, float[] rotatedp, float angle){

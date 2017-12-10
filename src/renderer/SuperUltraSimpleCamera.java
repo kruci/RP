@@ -73,26 +73,34 @@ public class SuperUltraSimpleCamera {
         double beamvector[] = beamToVector(b);
         
     //1. detect if beam intersect camera point
-        /*we wanna know if exists t that b.origin *t*beamvector == poz */
-        double t1, t2, t3;
+        /*we wanna know if exists t that b.origin *t*beamvector == poz +- error 
+          t = poz/(b.origin*beamvector) +- error/(b.origin*beamvector) */
         
-        //TODO dynamic erro choosing 
+        double t1, t2, t3;
+        double t1e, t2e, t3e; //for dynamic error choosing
+        
         double error = 0.5;
         
         t1 = (poz[0])/(b.n[0]*beamvector[0]);
         if(poz[0] == 0 || b.n[0]*beamvector[0] == 0){t1 = 0;}
+        t1e = error/(b.n[0]*beamvector[0]);
+        if(b.n[0]*beamvector[0] == 0){t1e = 0;}
         
         t2 = (poz[1])/(b.n[1]*beamvector[1]);
         if(poz[1] == 0 || b.n[1]*beamvector[1] == 0){t2 = 0;}
+        t2e = error/(b.n[1]*beamvector[1]);
+        if(b.n[1]*beamvector[1] == 0){t2e = 0;}
         
         t3 = (poz[2])/(b.n[2]*beamvector[2]);
         if(poz[2] == 0 || b.n[2]*beamvector[2] == 0){t3 = 0;}
+        t3e = error/(b.n[2]*beamvector[2]);
+        if(b.n[2]*beamvector[2] == 0){t3e = 0;}
         
         //System.out.println(Double.toString(t1) + " " + Double.toString(t2) + " " +Double.toString(t3));
                 
-        if( vithinError(t1,t2, error) == false ||
-            vithinError(t1,t3, error) == false ||
-            vithinError(t3,t2, error) == false){
+        if( vithinError(t1,t2, t1e) == false ||
+            vithinError(t1,t3, t2e) == false ||
+            vithinError(t3,t2, t3e) == false){
            
             return;
         }

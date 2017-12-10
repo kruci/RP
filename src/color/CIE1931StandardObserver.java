@@ -5,8 +5,8 @@
  */
 package color;
 
-import static java.lang.Math.max;
 import static java.lang.Math.pow;
+import static math3d.Math3dUtil.fitinterval;
 import static math3d.Math3dUtil.multiply;
 
 /**
@@ -572,9 +572,4 @@ public class CIE1931StandardObserver implements Color{
         return new int[]{r[0],r[1] ,r[2]};
     }
     
-    double fitinterval(double numb, double a, double b){
-        if(numb < a){return a;}
-        if(numb >b){return b;}
-        return numb;
-    }
 }
