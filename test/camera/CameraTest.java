@@ -59,5 +59,7 @@ public class CameraTest {
             File outputfile = new File("test/camera/image.png");
             ImageIO.write(image, "png", outputfile);
         } catch (IOException e) {}
+        
+        System.out.println(susc.beam);
     }
 }

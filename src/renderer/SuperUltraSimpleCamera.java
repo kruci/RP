@@ -29,6 +29,8 @@ public class SuperUltraSimpleCamera {
     private int[][][] coloredpixels;
     private ArrayList<ArrayList<PixelSPD>> spds;
     
+    public double beam;
+    
     public class CameraSPDChatcher implements SpectralPowerDistribution{
         public double getNextLamnbda(){return 0;}
         public double getValue(double lambda){return 0;}
@@ -76,10 +78,8 @@ public class SuperUltraSimpleCamera {
         /*we wanna know if exists t that b.origin *t*beamvector == poz +- error 
           t = poz/(b.origin*beamvector) +- error/(b.origin*beamvector) */
         
-        double t1, t2, t3;
-        double t1e, t2e, t3e; //for dynamic error choosing
-        
-        double error = 0.5;
+        double t1, t2, t3, t1e,t2e, t3e;        
+        double error = 0.01;
         
         t1 = (poz[0])/(b.n[0]*beamvector[0]);
         if(poz[0] == 0 || b.n[0]*beamvector[0] == 0){t1 = 0;}
@@ -95,12 +95,15 @@ public class SuperUltraSimpleCamera {
         if(poz[2] == 0 || b.n[2]*beamvector[2] == 0){t3 = 0;}
         t3e = error/(b.n[2]*beamvector[2]);
         if(b.n[2]*beamvector[2] == 0){t3e = 0;}
-        
-        //System.out.println(Double.toString(t1) + " " + Double.toString(t2) + " " +Double.toString(t3));
-                
-        if( vithinError(t1,t2, t1e) == false ||
-            vithinError(t1,t3, t2e) == false ||
-            vithinError(t3,t2, t3e) == false){
+                        
+        //we need all t to be same
+        //replace error with t-related value
+        if( vithinError(t1,t2, error) == false ||
+            vithinError(t1,t3, error) == false ||
+            vithinError(t2,t3, error) == false  
+            //beam "goes forward" form source    
+            || t1<0|| t2<0||t3<0    )
+        {
            
             return;
         }
@@ -116,10 +119,14 @@ public class SuperUltraSimpleCamera {
     
         then we just find out if origin of beam is in this pyramid*/
         
-        //BUT HOW ?!... idk I go to bed
+        //TODO
         
     //3. detect which pixel it intersects with
+        int spadsx = 0, spdsy = 0;
+        //TODO
     //4. add bem wavelenght to pixel spd
+        spds.get(spadsx).get(spdsy).addlambda(b.n[5]);
+        beam++;
     }
     
     //will store pixel spds
