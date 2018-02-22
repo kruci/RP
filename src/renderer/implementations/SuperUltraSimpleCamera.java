@@ -154,5 +154,6 @@ public class SuperUltraSimpleCamera {
             //we mus us this so we create SPD and not wavelenght distributor
             wavelenghts[(int)lambda - 300] += wavelenghtEnergy(lambda);
         }
+        
     }
 }

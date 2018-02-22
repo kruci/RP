@@ -1,6 +1,7 @@
 package light;
 
 import color.SpectralPowerDistribution;
+import java.util.*;
 
 /**
  *
@@ -9,6 +10,8 @@ import color.SpectralPowerDistribution;
 public abstract class LightSource implements java.io.Serializable{    
     protected SpectralPowerDistribution spd;
     protected double beams = 0;
+    protected double steradians = 0;
+    protected Optional<LightSource> source;
     
     public LightSource(SpectralPowerDistribution spd){
         this.spd = spd;
@@ -24,6 +27,18 @@ public abstract class LightSource implements java.io.Serializable{
     
     public double getNumberOfBeams(){
         return beams;
+    }
+    
+    public double getSteradians(){
+        return steradians;
+    }
+    
+    public Optional<LightSource> getParentLightSource(){
+        return source;
+    }
+    
+    public void setParentLightSource(Optional<LightSource> p){
+        source = p;
     }
     
     public class Beam{

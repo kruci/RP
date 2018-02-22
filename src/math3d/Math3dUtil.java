@@ -244,7 +244,7 @@ public class Math3dUtil {
     
     
     //https://stackoverflow.com/questions/21114796/3d-ray-quad-intersection-test-in-java
-    static class Vector3 {
+    public static class Vector3 {
         public double x, y, z;
 
         public Vector3(double x, double y, double z) {
@@ -259,7 +259,7 @@ public class Math3dUtil {
             this.z = v[2];
         }
         
-        public double[] V3toF(){
+        public double[] V3toD(){
             return new double[]{x,y,z};
         }
 
@@ -283,6 +283,16 @@ public class Math3dUtil {
 
         public double dot(Vector3 other) {
             return x * other.x + y * other.y + z * other.z;
+        }
+        
+        public double length(){
+            return sqrt((x * x) + (y * y) + (z * z));
+        }
+        
+        public Vector3 normalize(){
+            double l = length();
+            if(l == 0){return new Vector3(0, 0, 0);}
+            return new Vector3(x /l, y /l, z /l);
         }
     }
 

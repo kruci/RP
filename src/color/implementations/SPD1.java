@@ -13,6 +13,7 @@ import static math3d.Math3dUtil.wavelenghtEnergy;
 public class SPD1 implements SpectralPowerDistribution{
     private Random ran = new Random();
     private double npsum = 0;
+    private double Ys = 0;
     
     public SPD1(){
         for(int a = 0;a <= 200;++a){
@@ -47,10 +48,11 @@ public class SPD1 implements SpectralPowerDistribution{
     //this will turn distribution to SPD .. kinda
     //it isnt reall needed
     public double getValue(double lambda){
-        return fx(lambda) * wavelenghtEnergy(lambda);
+        return fx(lambda);// * wavelenghtEnergy(lambda);
     }
     
     public double[] getFirstLastZero(){
         return new double[]{455,655};
     }
+
 }
