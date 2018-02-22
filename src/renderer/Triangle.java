@@ -94,4 +94,19 @@ public class Triangle {
         return isIntersecting(origin, direction);
     }
     
+    public Vector3 getA(){
+        return p1;
+    }
+    
+    public Vector3 getB(){
+        return p2;
+    }
+    
+    public Vector3 getC(){
+        return p3;
+    }
+    
+    public Vector3 getNormal(){
+        return normal;
+    }
 }

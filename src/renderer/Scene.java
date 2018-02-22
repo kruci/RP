@@ -20,9 +20,12 @@ import light.LightSource;
  * @author rasto
  */
 public interface Scene {
-    public void addLightSource(LightSource ls);
+    /*public void addLightSource(LightSource ls);
     public void addCamera(Camera c);
-    public void addSceneObject(SceneObject so);
+    public void addSceneObject(SceneObject so);*/
     
+    /**
+     * Will generate and compute another beam
+     */
     public void next();
 }

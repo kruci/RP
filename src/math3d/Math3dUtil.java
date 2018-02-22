@@ -294,6 +294,12 @@ public class Math3dUtil {
             if(l == 0){return new Vector3(0, 0, 0);}
             return new Vector3(x /l, y /l, z /l);
         }
+        
+        public double distance(Vector3 other){
+            return sqrt( (x - other.x)*(x - other.x) + 
+                         (y - other.y)*(y - other.y) +
+                         (z - other.z)*(z - other.z) );
+        }
     }
 
     public static boolean intersectRayWithSquare(Vector3 R1, Vector3 R2,
@@ -324,4 +330,6 @@ public class Math3dUtil {
         return (u >= 0.0f && u <= dS21.dot(dS21)
              && v >= 0.0f && v <= dS31.dot(dS31));
     }
+    
+    
 }
