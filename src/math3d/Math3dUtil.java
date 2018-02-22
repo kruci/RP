@@ -24,8 +24,8 @@ public class Math3dUtil {
      * @param v
      * @return 
      */
-    public static float[] getPerpendicularVector(float[] v){
-        float r[] = new float[3];
+    public static double[] getPerpendicularVector(double[] v){
+        double r[] = new double[3];
         
         r[0] = r[1] = 1;
         if(v[2] == 0) {return r;}
@@ -37,28 +37,28 @@ public class Math3dUtil {
      * cos(f) = (a*b)/(||a||*||b||) 
      * @param a
      * @param b
-     * @return acos(cos(f)) * (float)(180/Math.PI) -> angle in degrees
+     * @return acos(cos(f)) * (double)(180/Math.PI) -> angle in degrees
      */
-    public static float angleBetvenVectors(float[] a, float[] b){
-        float axb[] = new float[3];
+    public static double angleBetvenVectors(double[] a, double[] b){
+        double axb[] = new double[3];
         axb[0] = a[0]*b[0];
         axb[1] = a[1]*b[1];
         axb[2] = a[2]*b[2];
-        return (float)Math.acos( (axb[0]+axb[1]+axb[2])/
-                ( (float)Math.sqrt(a[0]*a[0]+a[1]*a[1]+a[2]*a[2])*
-                  (float)Math.sqrt(b[0]*b[0]+b[1]*b[1]+b[2]*b[2]) )) * 
-                (float)(180/Math.PI);
+        return (double)Math.acos( (axb[0]+axb[1]+axb[2])/
+                ( (double)Math.sqrt(a[0]*a[0]+a[1]*a[1]+a[2]*a[2])*
+                  (double)Math.sqrt(b[0]*b[0]+b[1]*b[1]+b[2]*b[2]) )) * 
+                (double)(180/Math.PI);
     }
     
     // |v|
-    public static float vectorLenght(float[] v){
-        return (float)sqrt((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2]));
+    public static double vectorLenght(double[] v){
+        return (double)sqrt((v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2]));
     }
     
     //http://www.fundza.com/vectors/normalize/
-    public static float[] normalizeVector(float[] v){
-        float r[] = new float[3];
-        float l = vectorLenght(v);
+    public static double[] normalizeVector(double[] v){
+        double r[] = new double[3];
+        double l = vectorLenght(v);
         r[0] = v[0] /l;
         r[1] = v[1] /l;
         r[2] = v[2] /l;
@@ -74,7 +74,7 @@ public class Math3dUtil {
     
     //Lx is angle in XY pane, from X counterclockwise
     //Ly is angle in YZ pane, from Y counterclockwise
-    public static double[] beamArrayToVector(float v[]){
+    public static double[] beamArrayToVector(double v[]){
         double[] r = new double[3];
         
         r[0] = Math.sin((double) v[3]);     //sin
@@ -103,8 +103,8 @@ public class Math3dUtil {
     
     /*
     //https://stackoverflow.com/questions/6721544/circular-rotation-around-an-arbitrary-axis
-    public static float[] rotatePointAroundPoint(float[] staticp, float[] rotatedp, float angle){
-        float [] r = new float[3];
+    public static double[] rotatePointAroundPoint(double[] staticp, double[] rotatedp, double angle){
+        double [] r = new double[3];
         
         return r;
     }*/
@@ -119,7 +119,7 @@ public class Math3dUtil {
      * @param angle
      * @return 
      */
-    public static double[] rotatePointAroundVector(float[] vec, float[] p, float theta){
+    public static double[] rotatePointAroundVector(double[] vec, double[] p, double theta){
         double [] r = new double[3];
         double x = p[0], y = p[1], z = p[2], u = vec[0], v = vec[1], w = vec[2];
         
@@ -137,7 +137,7 @@ public class Math3dUtil {
         return r;
     }
     
-    public static float getPositiveAngle(float a){
+    public static double getPositiveAngle(double a){
         return ((360 + a) % 360);
     }
     
@@ -245,22 +245,22 @@ public class Math3dUtil {
     
     //https://stackoverflow.com/questions/21114796/3d-ray-quad-intersection-test-in-java
     static class Vector3 {
-        public float x, y, z;
+        public double x, y, z;
 
-        public Vector3(float x, float y, float z) {
+        public Vector3(double x, double y, double z) {
             this.x = x;
             this.y = y;
             this.z = z;
         }
         
-        public Vector3(float[] v){
+        public Vector3(double[] v){
             this.x = v[0];
             this.y = v[1];
             this.z = v[2];
         }
         
-        public float[] V3toF(){
-            return new float[]{x,y,z};
+        public double[] V3toF(){
+            return new double[]{x,y,z};
         }
 
         public Vector3 add(Vector3 other) {
@@ -271,7 +271,7 @@ public class Math3dUtil {
             return new Vector3(x - other.x, y - other.y, z - other.z);
         }
 
-        public Vector3 scale(float f) {
+        public Vector3 scale(double f) {
             return new Vector3(x * f, y * f, z * f);
         }
 
@@ -281,7 +281,7 @@ public class Math3dUtil {
                                x - other.y - y * other.x);
         }
 
-        public float dot(Vector3 other) {
+        public double dot(Vector3 other) {
             return x * other.x + y * other.y + z * other.z;
         }
     }
@@ -296,19 +296,19 @@ public class Math3dUtil {
         // 2.
         Vector3 dR = R1.sub(R2);
 
-        float ndotdR = n.dot(dR);
+        double ndotdR = n.dot(dR);
 
         if (Math.abs(ndotdR) < 1e-6f) { // Choose your tolerance
             return false;
         }
 
-        float t = -n.dot(R1.sub(S1)) / ndotdR;
+        double t = -n.dot(R1.sub(S1)) / ndotdR;
         Vector3 M = R1.add(dR.scale(t));
 
         // 3.
         Vector3 dMS1 = M.sub(S1);
-        float u = dMS1.dot(dS21);
-        float v = dMS1.dot(dS31);
+        double u = dMS1.dot(dS21);
+        double v = dMS1.dot(dS31);
 
         // 4.
         return (u >= 0.0f && u <= dS21.dot(dS21)

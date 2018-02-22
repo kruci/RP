@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package color;
+package color.implementations;
 
+import color.Color;
+import color.SpectralPowerDistribution;
 import static java.lang.Math.pow;
 import static math3d.Math3dUtil.fitinterval;
 import static math3d.Math3dUtil.multiply;
@@ -21,7 +23,7 @@ public class CIE1931StandardObserver implements Color{
      * [470][3] step is 1nm  X Y Z
      * taken from http://jcgt.org/published/0002/02/01/
      */
-    private static float[][] vals = {
+    private static double[][] vals = {
     { 0.000130f, 0.000004f, 0.000606f },    // 360 nm
     { 0.000146f, 0.000004f, 0.000681f },    // 361 nm
     { 0.000164f, 0.000005f, 0.000765f },    // 362 nm
@@ -499,10 +501,10 @@ public class CIE1931StandardObserver implements Color{
                                         {-0.9692660,  1.8760108,  0.0415560},
                                         { 0.0556434, -0.2040259,  1.0572252}};
     
-    private float [] getXYZ(double lambda){
+    private static double [] getXYZ(double lambda){
         int l = (int)lambda - firstlambda;
-        if(lambda > vals.length){return new float[]{0,0,0};}
-        return vals[l];
+        if(lambda > vals.length){return new double[]{0,0,0};}
+        return (vals[l]);
     }
     
     private double sRGBcompaund(double v){
@@ -530,7 +532,7 @@ public class CIE1931StandardObserver implements Color{
         
         //http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_xyY.html
         for(int a = 0;a <= interval[1]-interval[0];++a){
-            float[] currentXYZ = getXYZ(a+interval[0]);
+            double[] currentXYZ = getXYZ(a+interval[0]);
             X += (double)currentXYZ[0]*spd.getValue(a+interval[0]);
             Y += (double)currentXYZ[1]*spd.getValue(a+interval[0]);
             Z += (double)currentXYZ[2]*spd.getValue(a+interval[0]);

@@ -5,14 +5,14 @@
  */
 package camera;
 
-import color.SPD1;
+import color.implementations.SPD1;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import light.CircleLight;
-import renderer.SuperUltraSimpleCamera;
+import light.implementations.CircleLight;
+import renderer.implementations.SuperUltraSimpleCamera;
 
 /**
  *
@@ -32,8 +32,8 @@ public class CameraTest {
     
         CircleLight cl = new CircleLight(
             new SPD1(),
-            new float[]{20,10,10},//poz
-            new float[]{10,10,10},//dir
+            new double[]{20,10,10},//poz
+            new double[]{10,10,10},//dir
             5.0f);             //radius 
     
         for(int a = 0;a < number_of_beams;++a){

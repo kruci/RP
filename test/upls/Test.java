@@ -4,7 +4,8 @@ package upls;
  *
  * @author rasto
  */
-import color.SPD1;
+import light.implementations.UniformPointLightSource;
+import color.implementations.SPD1;
 import color.SpectralPowerDistribution;
 import light.*;
 import java.io.*;
@@ -18,7 +19,7 @@ public class Test {
         long occurencesX[] = new long[360 / step];
         long occurencesY[] = new long[360 / step];
         
-        float[] v3 = {0,0,0};  
+        double[] v3 = {0,0,0};  
         SpectralPowerDistribution spd = new SPD1();
         UniformPointLightSource upls = new UniformPointLightSource(spd, v3);
         
@@ -26,7 +27,7 @@ public class Test {
         FileWriter fw = new FileWriter("test/upls/uplsAnglesXY.txt");
         
         for(long a = 0;a < numberofbeams;++a){
-                float[] b = upls.getNextBeam();
+                double[] b = upls.getNextBeam();
                 //this part is to create histogram
                 occurencesX[(int)floor( b[3]/ step)]++; 
                 occurencesY[(int)floor( b[4]/ step)]++;

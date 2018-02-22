@@ -5,12 +5,12 @@
  */
 package cl;
 
-import color.SPD1;
+import color.implementations.SPD1;
 import color.SpectralPowerDistribution;
 import java.io.FileWriter;
 import java.io.IOException;
 import static java.lang.Math.floor;
-import light.CircleLight;
+import light.implementations.CircleLight;
 import static math3d.Math3dUtil.normalizeVector;
 
 /**
@@ -30,18 +30,18 @@ public class TestCL {
         long occurencesPZ[] = new long[radius*2];
         
         
-        float[] v3 = {0,0,0};  
+        double[] v3 = {0,0,0};  
         SpectralPowerDistribution spd = new SPD1();
-        CircleLight cl = new CircleLight(spd, new float[]{0,0,0}, normalizeVector(new float[]{1,2,3}), 5);
+        CircleLight cl = new CircleLight(spd, new double[]{0,0,0}, normalizeVector(new double[]{1,2,3}), 5);
         
         try{
         FileWriter fw = new FileWriter("test/cl/clAnglesXY.txt");
         
         for(long a = 0;a < numberofbeams;++a){
-                float[] b = cl.getNextBeam();
+                double[] b = cl.getNextBeam();
                 //this part is to create histogram
                 
-                //System.out.println(Float.toString(b[3]) + " " + Float.toString(b[4]));
+                //System.out.println(double.toString(b[3]) + " " + double.toString(b[4]));
                 occurencesX[(int)floor( b[3]/ step)]++; 
                 occurencesY[(int)floor( b[4]/ step)]++;
                 occurencesPX[(int)floor( b[0]+radius)]++;

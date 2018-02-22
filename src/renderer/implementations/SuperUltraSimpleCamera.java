@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package renderer;
+package renderer.implementations;
 
-import color.CIE1931StandardObserver;
+import color.implementations.CIE1931StandardObserver;
 import color.SpectralPowerDistribution;
 import java.util.ArrayList;
 import light.LightSource;
 import static math3d.Math3dUtil.beamToVector;
 import static math3d.Math3dUtil.vithinError;
 import static math3d.Math3dUtil.wavelenghtEnergy;
-import renderer.SuperUltraSimpleCamera.PixelSPD;
+import renderer.implementations.SuperUltraSimpleCamera.PixelSPD;
 
 /**
  *

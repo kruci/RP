@@ -27,17 +27,17 @@ public abstract class LightSource implements java.io.Serializable{
     }
     
     public class Beam{
-        public float[] n;
+        public double[] n;
         public LightSource origin;
         
-        public Beam(float[] v, LightSource ls){
+        public Beam(double[] v, LightSource ls){
             n = v;
             origin = ls;
         }
     }
     
     /** return [x,y,z, AngleX,AngleY, lambda]*/
-    public abstract float[] getNextBeam();
+    public abstract double[] getNextBeam();
     //was to lazy to rewrite getNextBeam ...
     public abstract Beam getNextBeamC();
 }

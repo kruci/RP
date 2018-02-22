@@ -9,7 +9,8 @@ package fsl;
  *
  * @author rasto
  */
-import color.SPD1;
+import light.implementations.FadingSpotLight;
+import color.implementations.SPD1;
 import color.SpectralPowerDistribution;
 import light.*;
 import java.io.*;
@@ -24,17 +25,17 @@ public class TestFSL {
         long occurencesY[] = new long[360 / step];
         //long occurencesL[] = new long[800 / step];
         
-        float[] v3 = {0,0,0};  
+        double[] v3 = {0,0,0};  
         SpectralPowerDistribution spd = new SPD1();
-        FadingSpotLight fsl = new FadingSpotLight(spd, new float[]{0,0,0}, new float[]{1,1,1},20.0f, (float)1.0f/12.0f);
+        FadingSpotLight fsl = new FadingSpotLight(spd, new double[]{0,0,0}, new double[]{1,1,1},20.0f, (double)1.0f/12.0f);
         
         try{
         FileWriter fw = new FileWriter("test/fsl/fslAnglesXY.txt");
         
         for(long a = 0;a < numberofbeams;++a){
-                float[] b = fsl.getNextBeam();
+                double[] b = fsl.getNextBeam();
                 //this part is to create histogram
-                //System.out.println(Float.toString(b[3]) + " " + Float.toString(b[4]));
+                //System.out.println(double.toString(b[3]) + " " + double.toString(b[4]));
                 occurencesX[(int)floor( b[3]/ step)]++; 
                 occurencesY[(int)floor( b[4]/ step)]++;
                 //occurencesL[(int)b[5]]++;

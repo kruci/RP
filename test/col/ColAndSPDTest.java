@@ -5,9 +5,9 @@
  */
 package col;
 
-import color.CIE1931StandardObserver;
+import color.implementations.CIE1931StandardObserver;
 import color.Color;
-import color.SPD1;
+import color.implementations.SPD1;
 import color.SpectralPowerDistribution;
 
 import javafx.application.Application;

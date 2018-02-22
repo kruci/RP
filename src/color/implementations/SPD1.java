@@ -1,5 +1,6 @@
-package color;
+package color.implementations;
 
+import color.SpectralPowerDistribution;
 import java.util.Random;
 import static math3d.Math3dUtil.wavelenghtEnergy;
 
