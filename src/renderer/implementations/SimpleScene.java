@@ -24,6 +24,7 @@ public class SimpleScene implements Scene{
     private List<Camera> cam_list;
     private List<LightSource> ls_list;
     private List<SceneObject> so_list;
+    public int hits = 0;
     
     public SimpleScene(){
         cam_list = new ArrayList<Camera>();

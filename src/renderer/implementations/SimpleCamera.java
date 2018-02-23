@@ -11,6 +11,7 @@ import java.util.Vector;
 import light.LightSource;
 import math3d.Math3dUtil;
 import math3d.Math3dUtil.Vector3;
+import static math3d.Math3dUtil.angleBetvenVectors;
 import static math3d.Math3dUtil.beamToVector;
 import renderer.Camera;
 
@@ -23,8 +24,10 @@ public class SimpleCamera implements Camera{
     private int w,h;
     private Color col;
     private Vector<Vector<SPDHolder>> spds;
-    private double Ax, Ay;
+    private double Ax, Ay, hits;
     
+    //calcspecific
+    private double dangleXperPixel, dangleYperPixel;
     /**
      * 
      * @param _poz
@@ -57,7 +60,10 @@ public class SimpleCamera implements Camera{
             }
             spds.add(v);
         }
-    }
+        
+        dangleXperPixel = (double)w / Ax;
+        dangleYperPixel = (double)h / Ay;
+    } 
     
     public boolean watch(Math3dUtil.Vector3 origin, Math3dUtil.Vector3 direction, double lambda)
     {
@@ -69,7 +75,31 @@ public class SimpleCamera implements Camera{
         }
         
         //what pixel did it hit ?
+        double dangleX = angleBetvenVectors(right.V3toD(), direction.V3toD());
+        double dangleY = angleBetvenVectors(up.V3toD(), direction.V3toD());
+       
         
+        dangleX -= 90 - Ax/2;
+        dangleY -= 90 - Ay/2;
+        
+        if((dangleX < 0 || dangleX > Ax) ||
+           ((dangleY < 0 || dangleY > Ay))){
+            return false;//we hit he camera, but not its fov
+        }
+            //System.out.println(dangleX + " " +dangleY);
+        
+        /*double dangleXperPixel = Ax / (double)w;
+        double dangleYperPixel = Ay / (double)h;*/
+            //System.out.println(dangleXperPixel + " " +dangleYperPixel);
+        
+        int px = (int)(dangleX * dangleXperPixel);
+        int py = (int)(dangleY *dangleYperPixel);
+            //System.out.println(dangleX * dangleXperPixel + " " +dangleY *dangleYperPixel);
+            //System.out.println(px + " " +py);
+        
+        spds.get(px).get(py).inc(lambda);
+        
+        hits++;
         return true;
     }
     
@@ -89,6 +119,10 @@ public class SimpleCamera implements Camera{
         return coloredpixels;
     }
     
+    public double getNumberOfHits(){
+        return hits;
+    }
+    
     
     class SPDHolder implements SpectralPowerDistribution{
         double wavelenghts[];// = new double[701];
@@ -103,6 +137,10 @@ public class SimpleCamera implements Camera{
         
         public double getValue(double lambda){
             return wavelenghts[(int)lambda-300];
+        }
+        
+        public void inc(double lambda){
+            wavelenghts[(int)lambda-300]++;
         }
         
         public double[] getFirstLastZero(){
