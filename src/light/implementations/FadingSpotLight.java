@@ -3,6 +3,7 @@ package light.implementations;
 import color.SpectralPowerDistribution;
 import math_and_utils.Math3dUtil;
 import static math_and_utils.Math3dUtil.anglesToVector3;
+import static math_and_utils.Math3dUtil.rotateVectorCC;
 
 /**
  *
@@ -56,7 +57,7 @@ public class FadingSpotLight extends SimpleSpotLight{
         return (double)(((a-1) % 360) + ( (f-d1) / (d2-d1) ));
     }
     
-    public double[] getNextBeamArray(){
+    private double[] getNextBeamArray(){
         double[] r = new double[6];
         r[0] = position[0];
         r[1] = position[1];
@@ -75,8 +76,28 @@ public class FadingSpotLight extends SimpleSpotLight{
         return r;
     }
     
+    /**
+     * check if "rot" and "rot2" is calculated correctly (it seems like it on Renderer test)
+     * @return 
+     */
     public Beam getNextBeam(){
-        double[] a = getNextBeamArray();
-        return new Beam(new Math3dUtil.Vector3(a[0],a[1],a[2]), anglesToVector3(Math.toRadians(a[3]), Math.toRadians(a[4])), a[5],this);
+        Math3dUtil.Vector3 poz = new Math3dUtil.Vector3(position[0],position[1],position[2]);
+        double lambda = (double)spd.getNextLamnbda();
+        
+        Math3dUtil.Vector3 dir = new Math3dUtil.Vector3(direction[0],direction[1],direction[2]).normalize();
+        //shift to side - this is where fading is done
+            //get orhtogonal vector - cross of dir and random vector
+            Math3dUtil.Vector3 orthogonal = dir.cross(new Math3dUtil.Vector3(658,781,356).normalize());
+        double rot = getSome(rndrAX.nextDouble()) - angle;
+        dir = rotateVectorCC(dir, orthogonal,Math.toRadians(rot));
+        //rotate around dir
+        double rot2 = (rndrAY.nextDouble() *360);
+        dir = rotateVectorCC(dir, new Math3dUtil.Vector3(direction[0],direction[1],direction[2]).normalize(),Math.toRadians(rot2));
+        
+        beams++;
+        return new Beam(poz, dir, lambda, this);
+        
+        /*double[] a = getNextBeamArray();
+        return new Beam(new Math3dUtil.Vector3(a[0],a[1],a[2]), anglesToVector3(Math.toRadians(a[3]), Math.toRadians(a[4])), a[5],this);*/
     }
 }

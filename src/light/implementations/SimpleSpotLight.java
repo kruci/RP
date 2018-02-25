@@ -77,7 +77,7 @@ public class SimpleSpotLight extends LightSource{
         double rot = (rndrAX.nextDouble() * angle);
         dir = rotateVectorCC(dir, orthogonal,Math.toRadians(rot));
         //rotate around dir
-        double rot2 = (rndrAX.nextDouble() *360);
+        double rot2 = (rndrAY.nextDouble() *360);
         dir = rotateVectorCC(dir, new Vector3(direction[0],direction[1],direction[2]).normalize(),Math.toRadians(rot2));
         
         beams++;

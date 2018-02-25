@@ -46,19 +46,19 @@ public class RendererTest extends Application{
                 new SPD1(),
                 new double[]{0,0,0}//poz
         );*/
-        SimpleSpotLight cl = new SimpleSpotLight(
+        /*SimpleSpotLight cl = new SimpleSpotLight(
                 new SPD1(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
                 10.0
-        );
-        /*FadingSpotLight cl = new FadingSpotLight(
+        );*/
+        FadingSpotLight cl = new FadingSpotLight(
                 new SPD1(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
                 10.0,
                 0.1
-        );*/
+        );
         
         SimpleScene ss= new SimpleScene();
         
