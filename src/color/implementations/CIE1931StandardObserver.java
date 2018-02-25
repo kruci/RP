@@ -8,8 +8,8 @@ package color.implementations;
 import color.Color;
 import color.SpectralPowerDistribution;
 import static java.lang.Math.pow;
-import static math3d.Math3dUtil.fitinterval;
-import static math3d.Math3dUtil.multiply;
+import static math_and_utils.Math3dUtil.fitinterval;
+import static math_and_utils.Math3dUtil.multiply;
 
 /**
  *

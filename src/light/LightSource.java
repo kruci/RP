@@ -2,6 +2,8 @@ package light;
 
 import color.SpectralPowerDistribution;
 import java.util.*;
+import math_and_utils.Math3dUtil.*;
+import static math_and_utils.Math3dUtil.anglesToVector3;
 
 /**
  *
@@ -10,8 +12,7 @@ import java.util.*;
 public abstract class LightSource implements java.io.Serializable{    
     protected SpectralPowerDistribution spd;
     protected double beams = 0;
-    protected double steradians = 0;
-    protected Optional<LightSource> source;
+    protected Optional<LightSource> parent;
     
     public LightSource(SpectralPowerDistribution spd){
         this.spd = spd;
@@ -29,30 +30,34 @@ public abstract class LightSource implements java.io.Serializable{
         return beams;
     }
     
-    public double getSteradians(){
-        return steradians;
-    }
-    
     public Optional<LightSource> getParentLightSource(){
-        return source;
+        return parent;
     }
     
-    public void setParentLightSource(Optional<LightSource> p){
-        source = p;
+    public void setParentLightSource(LightSource p){
+        parent.of(p);
     }
     
     public class Beam{
-        public double[] n;
-        public LightSource origin;
+        public Vector3 origin;
+        public Vector3 direction;
+        public double lambda;
+        LightSource source;
         
-        public Beam(double[] v, LightSource ls){
-            n = v;
-            origin = ls;
+        public Beam(Vector3 o, Vector3 d, double l, LightSource s){
+            origin = o;
+            direction = d;
+            lambda = l;
+            source = s;
+        }
+        
+        public Beam(double[] o, double[] angles, double l, LightSource s){
+            origin = new Vector3(o[0], o[1], o[2]);
+            direction = anglesToVector3(angles[0], angles[1]);
+            lambda = l;
+            source = s;
         }
     }
     
-    /** return [x,y,z, AngleX,AngleY, lambda]*/
-    public abstract double[] getNextBeam();
-    //was to lazy to rewrite getNextBeam ...
-    public abstract Beam getNextBeamC();
+    public abstract Beam getNextBeam();
 }

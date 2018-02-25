@@ -8,7 +8,8 @@ package light.implementations;
 import light.LightSource;
 import color.SpectralPowerDistribution;
 import java.util.Random;
-import math3d.Math3dUtil;
+import math_and_utils.Math3dUtil;
+import static math_and_utils.Math3dUtil.anglesToVector3;
 
 /**
  *
@@ -27,8 +28,8 @@ public class CircleLight extends LightSource{
         rndrCL = new Random();
     }
     
-    public double[] getNextBeam(){
-        double[] ret = ssl.getNextBeam();
+    public double[] getNextBeamArray(){
+        double[] ret = ssl.getNextBeamArray();
         
         double angleincircle = rndrAC.nextDouble()*360;
         double distanceformcentre = rndrCL.nextDouble()*radius;
@@ -50,8 +51,9 @@ public class CircleLight extends LightSource{
         return ret;
     }
     
-    public Beam getNextBeamC(){
-        return new Beam(getNextBeam(),this);
+    public Beam getNextBeam(){
+        double[] a = getNextBeamArray();
+        return new Beam(new Math3dUtil.Vector3(a[0],a[1],a[2]), anglesToVector3(a[3], a[4]), a[5],this);
     }
     
     

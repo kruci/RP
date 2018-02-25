@@ -9,10 +9,10 @@ import color.Color;
 import color.SpectralPowerDistribution;
 import java.util.Vector;
 import light.LightSource;
-import math3d.Math3dUtil;
-import math3d.Math3dUtil.Vector3;
-import static math3d.Math3dUtil.angleBetvenVectors;
-import static math3d.Math3dUtil.beamToVector;
+import math_and_utils.Math3dUtil;
+import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.angleBetvenVectors;
+import static math_and_utils.Math3dUtil.vithinError;
 import renderer.Camera;
 
 /**
@@ -36,8 +36,8 @@ public class SimpleCamera implements Camera{
      * @param _dir
      * @param _w
      * @param _h
-     * @param _AngleX half of it from the _dir on both sides
-     * @param _AngleY half of it from the _dir on both sides
+     * @param _AngleX half of this from the _dir on both sides, cant be more than 360 or less than 0
+     * @param _AngleY half of this from the _dir on both sides cant be more than 360 or less than 0
      * @param _col 
      */
     public SimpleCamera(Vector3 _poz, Vector3 _right, Vector3 _up, Vector3 _dir, 
@@ -48,8 +48,8 @@ public class SimpleCamera implements Camera{
         dir = _dir;
         w = _w;
         h = _h;
-        Ax = _AngleX;
-        Ay = _AngleY;
+        Ax = _AngleX ;
+        Ay = _AngleY ;
         col = _col;
         
         spds = new Vector<>();
@@ -65,32 +65,38 @@ public class SimpleCamera implements Camera{
         dangleYperPixel = (double)h / Ay;
     } 
     
+    @Override
     public boolean watch(Math3dUtil.Vector3 origin, Math3dUtil.Vector3 direction, double lambda)
     {
-        double length = direction.distance(poz);
+        double length = origin.distance(poz);
+        double e = 0.0001;
         
         //did it hit poz <-> camera centre?
-        if(poz.add(direction.scale(length*(-1))) ==  origin ){
-            return false; //no
-        }
+        Vector3 s = origin.add(direction.normalize().scale(-length));
+            //System.out.println(length + "   " + s.x + " "+ s.y+ " " +s.z);
+        if(vithinError(s.x, poz.x, e) == false ||
+           vithinError(s.y, poz.y, e) == false ||
+           vithinError(s.z, poz.z, e) == false){
+            return false; //we didnt hit the camera
+        }        
         
         //what pixel did it hit ?
-        double dangleX = angleBetvenVectors(right.V3toD(), direction.V3toD());
-        double dangleY = angleBetvenVectors(up.V3toD(), direction.V3toD());
-       
+        double dangleX = right.angle(direction);
+        double dangleY = up.angle(direction);
+            //System.out.println(Math.toDegrees(dangleX)-90 + " " + Math.toDegrees(dangleY)-90);
         
-        dangleX -= 90 - Ax/2;
-        dangleY -= 90 - Ay/2;
+        dangleX = dangleX - (Math.toRadians(180) - Math.toRadians(Ax/2.0)) + Math.toRadians(90);
+        dangleY = dangleY - (Math.toRadians(180) - Math.toRadians(Ay/2.0)) + Math.toRadians(90);
         
-        if((dangleX < 0 || dangleX > Ax) ||
-           ((dangleY < 0 || dangleY > Ay))){
+        dangleX = Math.toDegrees(dangleX);
+        dangleY = Math.toDegrees(dangleY);
+            //System.out.println(dangleX + " " + dangleY);
+        
+        // = is there so we would not go out of spds array
+        if((dangleX < 0 || dangleX >= Ax) ||
+           ((dangleY < 0 || dangleY >= Ay))){
             return false;//we hit he camera, but not its fov
         }
-            //System.out.println(dangleX + " " +dangleY);
-        
-        /*double dangleXperPixel = Ax / (double)w;
-        double dangleYperPixel = Ay / (double)h;*/
-            //System.out.println(dangleXperPixel + " " +dangleYperPixel);
         
         int px = (int)(dangleX * dangleXperPixel);
         int py = (int)(dangleY *dangleYperPixel);
@@ -103,11 +109,13 @@ public class SimpleCamera implements Camera{
         return true;
     }
     
-    public boolean watch(LightSource.Beam b){
-        double dir[] = beamToVector(b);
-        return watch(new Vector3(b.n[0], b.n[1], b.n[2]) ,new Vector3(dir[0], dir[1],dir[2]), b.n[5]);
+    @Override
+    public boolean watch(LightSource.Beam b)
+    {
+        return watch(b.origin, b.direction, b.lambda);
     }
     
+    @Override
     public int[][][] getPixels(){
         int coloredpixels[][][] = new int[w][h][3];
         
@@ -150,5 +158,9 @@ public class SimpleCamera implements Camera{
             
             return r;
         }
+    }
+    
+    public Vector3 GetPosition(){
+        return poz;
     }
 }

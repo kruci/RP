@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import light.LightSource;
-import math3d.Math3dUtil.Vector3;
-import math3d.Pair;
+import math_and_utils.Math3dUtil.Vector3;
+import math_and_utils.Pair;
 import renderer.SceneObject;
 import renderer.Triangle;
 

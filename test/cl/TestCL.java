@@ -11,7 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import static java.lang.Math.floor;
 import light.implementations.CircleLight;
-import static math3d.Math3dUtil.normalizeVector;
+import static math_and_utils.Math3dUtil.normalizeVector;
 
 /**
  *

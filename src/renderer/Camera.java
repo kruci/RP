@@ -6,7 +6,7 @@
 package renderer;
 
 import light.LightSource;
-import math3d.Math3dUtil.Vector3;
+import math_and_utils.Math3dUtil.Vector3;
 
 /**
  *
@@ -24,5 +24,16 @@ public interface Camera {
      * @return true if cam can see it
      */
     public boolean watch(LightSource.Beam b);
+    
+    /**
+     * So we do not have to create Beam instance if we need to change just the direction
+     * @param origin
+     * @param direction
+     * @param lambda
+     * @return 
+     */
     public boolean watch(Vector3 origin, Vector3 direction, double lambda);
+    
+    
+    public Vector3 GetPosition();
 }

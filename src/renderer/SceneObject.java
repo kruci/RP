@@ -6,7 +6,7 @@
 package renderer;
 import java.util.*;
 import light.*;
-import math3d.Pair;
+import math_and_utils.Pair;
 
 /**
  *something that interacts with light beams 

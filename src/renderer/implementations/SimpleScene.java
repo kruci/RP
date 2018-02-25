@@ -8,9 +8,8 @@ package renderer.implementations;
 import java.util.ArrayList;
 import java.util.List;
 import light.LightSource;
-import math3d.Math3dUtil.Vector3;
-import static math3d.Math3dUtil.beamToVector;
-import math3d.Pair;
+import math_and_utils.Math3dUtil.Vector3;
+import math_and_utils.Pair;
 import renderer.Camera;
 import renderer.Scene;
 import renderer.SceneObject;
@@ -46,17 +45,18 @@ public class SimpleScene implements Scene{
     }
     
     /**
-     * Uses only first LS
-     * Ignores transparency -> will choose closest Triangle
+     * Uses only first LS, does not create other
+     * Ignores transparency -> will choose closest Triangle (ONLY 1 TRIANGLE)
      * Will shoot directly to cams, ignoring obstacles
      */
     public void next(){
         if(ls_list.size() <= 0){return;}
         
-        LightSource.Beam b = ls_list.get(0).getNextBeamC();
+        LightSource.Beam b = ls_list.get(0).getNextBeam();
         Pair<Triangle, Double> closestT = Pair.createPair(null, Double.MAX_VALUE);
         
         
+        //check if it intersects with, and if so, chooses the colsest triangle
         for(SceneObject so : so_list){
             List<Pair<Triangle, Double>> contac = so.intersects(b);
             
@@ -67,14 +67,14 @@ public class SimpleScene implements Scene{
             }
         }
         
-        //closestT.first is now null -> return , or not null -> do something
+        //continu if it intersected with something
         if(closestT.first() == null){return;}
         
         //send beam form "difuse" reflection to all cams
         for(Camera cam : cam_list){
-            double [] dir = beamToVector(b);
-            cam.watch(new Vector3(b.n[0], b.n[1], b.n[2]),
-                    new Vector3(dir[0], dir[1], dir[2]),b.n[5]);
+            Vector3 intersectionPoint = b.origin.add(b.direction.scale(closestT.second()));
+            Vector3 difusedirection = cam.GetPosition().sub(intersectionPoint);//intersectionPoint.sub(cam.GetPosition());
+            cam.watch(b.origin, difusedirection, b.lambda);
         }
     
     }

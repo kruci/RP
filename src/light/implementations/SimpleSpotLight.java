@@ -3,7 +3,8 @@ package light.implementations;
 import color.SpectralPowerDistribution;
 import java.util.Random;
 import light.LightSource;
-import math3d.Math3dUtil;
+import math_and_utils.Math3dUtil;
+import static math_and_utils.Math3dUtil.anglesToVector3;
 
 /**
  *
@@ -43,7 +44,7 @@ public class SimpleSpotLight extends LightSource{
         this.angle = cone_angle;
     }
     
-    public double[] getNextBeam(){
+    public double[] getNextBeamArray(){
         double[] r = new double[6];
         r[0] = position[0];
         r[1] = position[1];
@@ -61,8 +62,9 @@ public class SimpleSpotLight extends LightSource{
         return r;
     }
     
-    public Beam getNextBeamC(){
-        return new Beam(getNextBeam(),this);
+    public Beam getNextBeam(){
+        double[] a = getNextBeamArray();
+        return new Beam(new Math3dUtil.Vector3(a[0],a[1],a[2]), anglesToVector3(a[3], a[4]), a[5],this);
     }
     
     /**vX,vY,vZ*/

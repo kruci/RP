@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package math3d;
+package math_and_utils;
 
 /**
  * TODO:    1) make sure rotation direction is same in every function
@@ -84,10 +84,6 @@ public class Math3dUtil {
         return r;
     }
     
-    public static double[] beamToVector(LightSource.Beam b){
-        return beamArrayToVector(b.n);
-    }
-    
     public static boolean vithinError(double a, double b, double e){
         if(a > b-e && a < b+e){
             return true;
@@ -100,14 +96,6 @@ public class Math3dUtil {
         if(numb >b){return b;}
         return numb;
     }
-    
-    /*
-    //https://stackoverflow.com/questions/6721544/circular-rotation-around-an-arbitrary-axis
-    public static double[] rotatePointAroundPoint(double[] staticp, double[] rotatedp, double angle){
-        double [] r = new double[3];
-        
-        return r;
-    }*/
     
     //TBD
     //https://www.cprogramming.com/tutorial/3d/rotation.html
@@ -240,10 +228,8 @@ public class Math3dUtil {
     
     
     
+
     
-    
-    
-    //https://stackoverflow.com/questions/21114796/3d-ray-quad-intersection-test-in-java
     public static class Vector3 {
         public double x, y, z;
 
@@ -263,73 +249,111 @@ public class Math3dUtil {
             return new double[]{x,y,z};
         }
 
+        /**
+         * Adding two vector (or vector and point) gives point
+         * @param other
+         * @return 
+         */
         public Vector3 add(Vector3 other) {
             return new Vector3(x + other.x, y + other.y, z + other.z);
         }
-
+        
+        /**
+         * Subtracting two points gives vector
+         * @param other
+         * @return 
+         */
         public Vector3 sub(Vector3 other) {
             return new Vector3(x - other.x, y - other.y, z - other.z);
         }
 
+        /**
+         * Useful to obtain point from vector and length
+         * @param f
+         * @return 
+         */
         public Vector3 scale(double f) {
             return new Vector3(x * f, y * f, z * f);
         }
-
+        
+        /**
+         * Orthogonal vector to plain created by "this" and "other"
+         * @param other
+         * @return perpendicular vector to "this" and "other"
+         */
         public Vector3 cross(Vector3 other) {
             return new Vector3(y * other.z - z * other.y,
                                z - other.x - x * other.z,
                                x - other.y - y * other.x);
         }
 
+        /**
+         * Projections of "this" into "other". In other words, how much is "this" in same direction as "other"
+         * @param other
+         * @return 
+         */
         public double dot(Vector3 other) {
             return x * other.x + y * other.y + z * other.z;
         }
         
+        //same as "norm" or "magnitude"
         public double length(){
             return sqrt((x * x) + (y * y) + (z * z));
         }
         
         public Vector3 normalize(){
             double l = length();
-            if(l == 0){return new Vector3(0, 0, 0);}
-            return new Vector3(x /l, y /l, z /l);
+            if(l >0)
+            {
+                //dont know if java would optimize this, so i have 1 div and 3 mutl(should be faster) rather than 3 divs
+                double inv_l = 1.0/l;
+                return new Vector3(x*inv_l, y*inv_l, z*inv_l);
+            }
+            return this;
         }
         
+        //shorter than chaining
+        /**
+         * Useful if "this" and "other" are points
+         * @param other point
+         * @return distance between those two points
+         */
         public double distance(Vector3 other){
             return sqrt( (x - other.x)*(x - other.x) + 
                          (y - other.y)*(y - other.y) +
                          (z - other.z)*(z - other.z) );
         }
-    }
-
-    public static boolean intersectRayWithSquare(Vector3 R1, Vector3 R2,
-                                                 Vector3 S1, Vector3 S2, Vector3 S3) {
-        // 1.
-        Vector3 dS21 = S2.sub(S1);
-        Vector3 dS31 = S3.sub(S1);
-        Vector3 n = dS21.cross(dS31);
-
-        // 2.
-        Vector3 dR = R1.sub(R2);
-
-        double ndotdR = n.dot(dR);
-
-        if (Math.abs(ndotdR) < 1e-6f) { // Choose your tolerance
-            return false;
+        
+        //shorter than chaining
+        /**
+         * his uses local instances of normalized "this" and "other" vectors and is calculated as acos betwen two normalized vectors. 
+         * @param other
+         * @return angle in radians between this vector and other vector
+         */
+        public double angle(Vector3 other){
+            return Math.acos(this.normalize().dot(other.normalize()));
         }
-
-        double t = -n.dot(R1.sub(S1)) / ndotdR;
-        Vector3 M = R1.add(dR.scale(t));
-
-        // 3.
-        Vector3 dMS1 = M.sub(S1);
-        double u = dMS1.dot(dS21);
-        double v = dMS1.dot(dS31);
-
-        // 4.
-        return (u >= 0.0f && u <= dS21.dot(dS21)
-             && v >= 0.0f && v <= dS31.dot(dS31));
     }
     
+     /**
+     * For Coordinate system info, look at Rp.odt -> 6.Renderer
+     * @param A is angle in Radians in XY plain starting form positive X axis going counter clockwise ( X Y -X -Y)
+     * @param B is angle in Radians ZY plain starting from negative Z axis going counter clockwise (-Z Y  Z -Y)
+     * @return normalized Vector3 as direction set by A and B angles
+     */
+    public static Vector3 anglesToVector3(double A, double B){
+        
+        double x = Math.cos(A);
+        double y = Math.sin(A)/2 + Math.sin(B)/2; //is this correct ? 
+        double z = -Math.cos(B);
+        
+        return new Vector3(x,y,z).normalize();
+    }
     
+    public static double[] Vector3ToAngles(Vector3 v){
+        double[] r = new double[2];
+        r[0] = Math.acos(v.x);
+        r[1] = -Math.acos(v.z);
+        return r;
+    }
 }

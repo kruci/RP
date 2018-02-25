@@ -7,8 +7,7 @@ package renderer;
 import static java.lang.Math.abs;
 import java.util.Optional;
 import light.LightSource;
-import math3d.Math3dUtil.*;
-import static math3d.Math3dUtil.beamToVector;
+import math_and_utils.Math3dUtil.*;
 /**
  *
  * @author rasto
@@ -86,12 +85,8 @@ public class Triangle {
         return intersects.of(t);
     }
     
-    public Optional<Double> isIntersecting(LightSource.Beam b){
-        Vector3 origin = new Vector3(b.n[0], b.n[1], b.n[2]);
-        double[] bv = beamToVector(b);
-        Vector3 direction = new Vector3(bv[0], bv[1], bv[2]);
-        
-        return isIntersecting(origin, direction);
+    public Optional<Double> isIntersecting(LightSource.Beam b){        
+        return isIntersecting(b.origin, b.direction);
     }
     
     public Vector3 getA(){
