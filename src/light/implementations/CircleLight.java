@@ -9,7 +9,8 @@ import light.LightSource;
 import color.SpectralPowerDistribution;
 import java.util.Random;
 import math_and_utils.Math3dUtil;
-import static math_and_utils.Math3dUtil.anglesToVector3;
+import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.rotateVectorCC;
 
 /**
  *
@@ -17,18 +18,18 @@ import static math_and_utils.Math3dUtil.anglesToVector3;
  */
 public class CircleLight extends LightSource{
     private SimpleSpotLight ssl;
-    private Random rndrAC,rndrCL;
+    private Random rndrShift,rndrRot;
     private double radius;
         
     public CircleLight(SpectralPowerDistribution spd, double[] position, double direction[], double radius){
         super(spd);
         ssl = new SimpleSpotLight(spd,position, direction,90);
         this.radius = radius;
-        rndrAC = new Random();
-        rndrCL = new Random();
+        rndrShift = new Random();
+        rndrRot = new Random();
     }
     
-    public double[] getNextBeamArray(){
+    private double[] getNextBeamArray(){
         double[] ret = new double[5];//ssl.getNextBeamArray();
         /*
         double angleincircle = rndrAC.nextDouble()*360;
@@ -51,9 +52,29 @@ public class CircleLight extends LightSource{
         return ret;
     }
     
+    /**
+     * Idk if it works ... its too late
+     * @return 
+     */
     public Beam getNextBeam(){
-        double[] a = getNextBeamArray();
-        return new Beam(new Math3dUtil.Vector3(a[0],a[1],a[2]), anglesToVector3(a[3], a[4]), a[5],this);
+        Beam b = ssl.getNextBeam();
+        
+        //shift to side
+            //get orhtogonal vector - cross of dir and random vector
+            Math3dUtil.Vector3 orthogonal = b.direction.cross(new Math3dUtil.Vector3(658,781,356).normalize()).normalize();
+        double shift = (rndrShift.nextDouble() * radius);
+        Vector3 dir = b.origin.add( orthogonal.scale(shift) );
+        //rotate around dir
+        double rot2 = (rndrRot.nextDouble() *360);
+        dir = rotateVectorCC(dir, b.direction.normalize(),Math.toRadians(rot2));
+        
+        beams++;
+        return new Beam(b.origin, b.direction, b.lambda, this);
+        
+        
+        
+        /*double[] a = getNextBeamArray();
+        return new Beam(new Math3dUtil.Vector3(a[0],a[1],a[2]), anglesToVector3(a[3], a[4]), a[5],this);*/
     }
     
     

@@ -24,8 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import light.implementations.FadingSpotLight;
-import light.implementations.SimpleSpotLight;
+import light.implementations.UniformPointLightSource;
 import math_and_utils.Math3dUtil.Vector3;
 import renderer.implementations.SimpleCamera;
 import renderer.implementations.SimpleScene;
@@ -42,23 +41,29 @@ public class RendererTest extends Application{
     
     @Override
     public void start(Stage primaryStage) {
-        /*UniformPointLightSource cl = new UniformPointLightSource(
+        UniformPointLightSource cl = new UniformPointLightSource(
                 new SPD1(),
                 new double[]{0,0,0}//poz
-        );*/
+        );
         /*SimpleSpotLight cl = new SimpleSpotLight(
                 new SPD1(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
-                10.0
+                15.0
         );*/
-        FadingSpotLight cl = new FadingSpotLight(
+        /*CircleLight cl = new CircleLight(
+            new SPD1(),
+            new double[]{0,0,0},//poz
+            new double[]{0,0,-1}, //dir
+            1//radius
+        );*/
+        /*FadingSpotLight cl = new FadingSpotLight(
                 new SPD1(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
-                10.0,
+                15.0,
                 0.1
-        );
+        );*/
         
         SimpleScene ss= new SimpleScene();
         

@@ -87,7 +87,7 @@ public class FadingSpotLight extends SimpleSpotLight{
         Math3dUtil.Vector3 dir = new Math3dUtil.Vector3(direction[0],direction[1],direction[2]).normalize();
         //shift to side - this is where fading is done
             //get orhtogonal vector - cross of dir and random vector
-            Math3dUtil.Vector3 orthogonal = dir.cross(new Math3dUtil.Vector3(658,781,356).normalize());
+            Math3dUtil.Vector3 orthogonal = dir.cross(new Math3dUtil.Vector3(658,781,356).normalize()).normalize();
         double rot = getSome(rndrAX.nextDouble()) - angle;
         dir = rotateVectorCC(dir, orthogonal,Math.toRadians(rot));
         //rotate around dir

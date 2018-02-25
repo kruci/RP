@@ -73,7 +73,7 @@ public class SimpleSpotLight extends LightSource{
         Vector3 dir = new Vector3(direction[0],direction[1],direction[2]).normalize();
         //shift to side
             //get orhtogonal vector - cross of dir and random vector
-            Vector3 orthogonal = dir.cross(new Vector3(658,781,356).normalize());
+            Vector3 orthogonal = dir.cross(new Vector3(658,781,356).normalize()).normalize();
         double rot = (rndrAX.nextDouble() * angle);
         dir = rotateVectorCC(dir, orthogonal,Math.toRadians(rot));
         //rotate around dir
