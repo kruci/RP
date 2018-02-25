@@ -65,8 +65,8 @@ public class FadingSpotLight extends SimpleSpotLight{
         r[3] = getSome(rndrAX.nextDouble());
         r[4] = getSome(rndrAY.nextDouble());
         //fix direction
-        r[3] += angleBetvenVectors(new double[]{1,0,0}, new double[]{direction[0], direction[1], 0}) - angle;
-        r[4] += angleBetvenVectors(new double[]{0,1,0}, new double[]{0, direction[1], direction[2]}) - angle;
+        r[3] += angleBetvenVectors(new double[]{1,0,0}, new double[]{direction[0], direction[1], direction[2]}) - angle;
+        r[4] += angleBetvenVectors(new double[]{0,0,-1}, new double[]{direction[0], direction[1], direction[2]}) - angle;
         if(r[3] < 0){r[3] = 360 + r[3];}
         if(r[4] < 0){r[4] = 360 + r[4];}
         r[5] = (double)spd.getNextLamnbda();
@@ -77,6 +77,6 @@ public class FadingSpotLight extends SimpleSpotLight{
     
     public Beam getNextBeam(){
         double[] a = getNextBeamArray();
-        return new Beam(new Math3dUtil.Vector3(a[0],a[1],a[2]), anglesToVector3(a[3], a[4]), a[5],this);
+        return new Beam(new Math3dUtil.Vector3(a[0],a[1],a[2]), anglesToVector3(Math.toRadians(a[3]), Math.toRadians(a[4])), a[5],this);
     }
 }

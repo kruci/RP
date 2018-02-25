@@ -344,23 +344,10 @@ public class Math3dUtil {
     public static Vector3 anglesToVector3(double A, double B){
         
         double x = Math.cos(A);
-        double y = Math.sin(A)/2 + Math.sin(B)/2; //is this correct ? 
+        double y = Math.sin(A)* Math.sin(B); 
         double z = -Math.cos(B);
-        
-        /*//https://stackoverflow.com/questions/30011741/3d-vector-defined-by-2-angles
-        double x = Math.cos(A)*Math.cos(B);
-        double y = Math.sin(B); 
-        double z = Math.sin(A)*Math.cos(B);*/
-        
         return new Vector3(x,y,z).normalize();
     }
-    
-    /*public static double[] Vector3ToAngles(Vector3 v){
-        double[] r = new double[2];
-        r[0] = Math.acos(v.x);
-        r[1] = -Math.acos(v.z);
-        return r;
-    }*/
     
     public static void printVector3(Vector3 a){
         System.out.println("("+a.x+", "+a.y+", "+a.z+")");

@@ -10,14 +10,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import light.LightSource;
-import light.implementations.CircleLight;
+import light.implementations.SimpleSpotLight;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
 import renderer.implementations.SimpleCamera;
 
 /**
- *  Will test camera pixels
+ * I once managed to hit SimpleCamera like this :D 
  * @author rasto
  */
 public class CameraTest extends Application{
@@ -27,6 +26,12 @@ public class CameraTest extends Application{
     
     @Override
     public void start(Stage primaryStage) {
+    SimpleSpotLight ssl = new SimpleSpotLight(
+            new SPD1(),
+            new double[]{0,0,-1},
+            new double[]{0,0,1},
+            2
+    );
     SimpleCamera cam = new SimpleCamera(
                 new Math3dUtil.Vector3(0,0,0),          //poz
                 new Math3dUtil.Vector3(1,0,0),             //right
@@ -48,10 +53,11 @@ public class CameraTest extends Application{
         bGen.setOnAction(value ->  {
             int togen = Integer.valueOf(textField.getText());
             for(int a = 0;a < togen;++a){
-                Vector3 origin = new Vector3(0,0,-10);
+                /*Vector3 origin = new Vector3(0,0,-10);
                 Vector3 direction = new Vector3(0, 0 ,1);
                 
-                cam.watch(origin, direction, 555);
+                cam.watch(origin, direction, 555);*/
+                cam.watch(ssl.getNextBeam());
             }
             RendererTest.save(cam, "test/renderer/CameraTest.png");
             lab.setText( Integer.toString((Integer.valueOf(lab.getText()) + togen) ));
