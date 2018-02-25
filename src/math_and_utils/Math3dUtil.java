@@ -49,6 +49,29 @@ public class Math3dUtil {
                   (double)Math.sqrt(b[0]*b[0]+b[1]*b[1]+b[2]*b[2]) )) * 
                 (double)(180/Math.PI);
     }
+    /**
+     * https://stackoverflow.com/questions/31225062/rotating-a-vector-by-angle-and-axis-in-java
+     * @param vec vector to rotate
+     * @param axis rotate around
+     * @param theta counterclockwise
+     * @return 
+     */
+    public static Vector3 rotateVectorCC(Vector3 vec, Vector3 axis, double theta){
+    double x, y, z;
+    double u, v, w;
+    x=vec.x;y=vec.y;z=vec.z;
+    u=axis.x;v=axis.y;w=axis.z;
+    double xPrime = u*(u*x + v*y + w*z)*(1d - Math.cos(theta)) 
+            + x*Math.cos(theta)
+            + (-w*y + v*z)*Math.sin(theta);
+    double yPrime = v*(u*x + v*y + w*z)*(1d - Math.cos(theta))
+            + y*Math.cos(theta)
+            + (w*x - u*z)*Math.sin(theta);
+    double zPrime = w*(u*x + v*y + w*z)*(1d - Math.cos(theta))
+            + z*Math.cos(theta)
+            + (-v*x + u*y)*Math.sin(theta);
+    return new Vector3(xPrime, yPrime, zPrime);
+}
     
     // |v|
     public static double vectorLenght(double[] v){
@@ -342,11 +365,20 @@ public class Math3dUtil {
      * @return normalized Vector3 as direction set by A and B angles
      */
     public static Vector3 anglesToVector3(double A, double B){
-        
-        double x = Math.cos(A);
-        double y = Math.sin(A)* Math.sin(B); 
-        double z = -Math.cos(B);
+        double x =  Math.cos(A); //add B component
+        double y =  Math.sin(A) * Math.sin(B); 
+        double z = -Math.cos(B); //add A component
         return new Vector3(x,y,z).normalize();
+        
+        /*
+        //https://en.wikipedia.org/wiki/Spherical_coordinate_system
+        //φ is A
+        //θ is 
+        //B = B + Math.toRadians(180);
+        double x =  Math.sin(B)*Math.cos(A);
+        double y =  Math.sin(B) * Math.sin(A); 
+        double z =  -Math.cos(B); 
+        return new Vector3(x,y,z).normalize();*/
     }
     
     public static void printVector3(Vector3 a){

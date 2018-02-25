@@ -3,8 +3,8 @@ package light.implementations;
 import color.SpectralPowerDistribution;
 import java.util.Random;
 import light.LightSource;
-import math_and_utils.Math3dUtil;
-import static math_and_utils.Math3dUtil.anglesToVector3;
+import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.rotateVectorCC;
 
 /**
  *
@@ -44,16 +44,16 @@ public class SimpleSpotLight extends LightSource{
         this.angle = cone_angle;
     }
     
-    public double[] getNextBeamArray(){
+    /**generates square*/
+    private double[] getNextBeamArray(){
         double[] r = new double[6];
         r[0] = position[0];
         r[1] = position[1];
         r[2] = position[2];
         r[3] = rndrAX.nextDouble() * angle *2;
-        r[4] = rndrAY.nextDouble() * angle *2;
-        //fix direction
-        r[3] += angleBetvenVectors(new double[]{1,0,0}, new double[]{direction[0], direction[1], direction[2]/*0*/}) - angle;
-        r[4] += angleBetvenVectors(new double[]{0,0,-1}, new double[]{/*0*/direction[0], direction[1], direction[2]}) - angle;
+        r[4] = rndrAY.nextDouble() * angle *2; 
+        r[3] += angleBetvenVectors(new double[]{1,0,0}, new double[]{direction[0], direction[1], direction[2]}) - angle;
+        r[4] += angleBetvenVectors(new double[]{0,0,-1}, new double[]{direction[0], direction[1], direction[2]}) - angle;
         //r[3] = Math3dUtil.getPositiveAngle(r[3]);
         //r[4] = Math3dUtil.getPositiveAngle(r[4]);
         r[5] = (double)spd.getNextLamnbda();
@@ -62,9 +62,26 @@ public class SimpleSpotLight extends LightSource{
         return r;
     }
     
+    /**
+     * looks like it works
+     * @return 
+     */
     public Beam getNextBeam(){
-        double[] a = getNextBeamArray();
-        return new Beam(new Math3dUtil.Vector3(a[0],a[1],a[2]), anglesToVector3( Math.toRadians(a[3]), Math.toRadians(a[4])), a[5],this);
+        Vector3 poz = new Vector3(position[0],position[1],position[2]);
+        double lambda = (double)spd.getNextLamnbda();
+        
+        Vector3 dir = new Vector3(direction[0],direction[1],direction[2]).normalize();
+        //shift to side
+            //get orhtogonal vector - cross of dir and random vector
+            Vector3 orthogonal = dir.cross(new Vector3(658,781,356).normalize());
+        double rot = (rndrAX.nextDouble() * angle);
+        dir = rotateVectorCC(dir, orthogonal,Math.toRadians(rot));
+        //rotate around dir
+        double rot2 = (rndrAX.nextDouble() *360);
+        dir = rotateVectorCC(dir, new Vector3(direction[0],direction[1],direction[2]).normalize(),Math.toRadians(rot2));
+        
+        beams++;
+        return new Beam(poz, dir, lambda, this);
     }
     
     /**vX,vY,vZ*/

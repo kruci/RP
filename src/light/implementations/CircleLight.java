@@ -29,8 +29,8 @@ public class CircleLight extends LightSource{
     }
     
     public double[] getNextBeamArray(){
-        double[] ret = ssl.getNextBeamArray();
-        
+        double[] ret = new double[5];//ssl.getNextBeamArray();
+        /*
         double angleincircle = rndrAC.nextDouble()*360;
         double distanceformcentre = rndrCL.nextDouble()*radius;
         //change coords to be randomly in circel
@@ -47,7 +47,7 @@ public class CircleLight extends LightSource{
         ret[0] = (double)a2[0];
         ret[1] = (double)a2[1];
         ret[2] = (double)a2[2];
-        beams++;
+        beams++;*/
         return ret;
     }
     
