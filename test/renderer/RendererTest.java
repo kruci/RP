@@ -45,6 +45,12 @@ public class RendererTest extends Application{
                 new SPD1(),
                 new double[]{0,0,0}//poz
         );
+        /*SimpleSpotLight cl = new SimpleSpotLight(
+                new SPD1(),
+                new double[]{0,0,0},//poz
+                new double[]{0,0,-1}, //dir
+                2.0
+        );*/
         
         SimpleScene ss= new SimpleScene();
         
@@ -59,9 +65,9 @@ public class RendererTest extends Application{
         );
         
         SimpleSceneObject sso = new SimpleSceneObject(
-                new Vector3(-1, 1, -10),
-                new Vector3(1, 1, -10),
-                new Vector3(0, -1, -10)
+                new Vector3(-1, 1, -1),
+                new Vector3(1, 1, -1),
+                new Vector3(0, -1, -1)
         );
         ss.addCamera(cam);
         ss.addLightSource(cl);

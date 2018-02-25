@@ -11,7 +11,7 @@ import java.util.Vector;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
-import static math_and_utils.Math3dUtil.angleBetvenVectors;
+import static math_and_utils.Math3dUtil.printVector3;
 import static math_and_utils.Math3dUtil.vithinError;
 import renderer.Camera;
 
@@ -25,6 +25,7 @@ public class SimpleCamera implements Camera{
     private Color col;
     private Vector<Vector<SPDHolder>> spds;
     private double Ax, Ay, hits;
+    private boolean debugprint = false;
     
     //calcspecific
     private double dangleXperPixel, dangleYperPixel;
@@ -69,42 +70,43 @@ public class SimpleCamera implements Camera{
     public boolean watch(Math3dUtil.Vector3 origin, Math3dUtil.Vector3 direction, double lambda)
     {
         double length = origin.distance(poz);
-        double e = 0.0001;
+        double e = 0.00001;
+        
+            if(debugprint == true){
+            System.out.print("origin = "); printVector3(origin);
+            System.out.print("direction = "); printVector3(direction);
+            System.out.println("distance betwen origin and camera = " + length);}
         
         //did it hit poz <-> camera centre?
-        Vector3 s = origin.add(direction.normalize().scale(-length));
-            //System.out.println(length + "   " + s.x + " "+ s.y+ " " +s.z);
-        if(vithinError(s.x, poz.x, e) == false ||
-           vithinError(s.y, poz.y, e) == false ||
-           vithinError(s.z, poz.z, e) == false){
+        Vector3 rorigin = poz.add(direction.normalize().scale(-length));
+            if(debugprint == true){
+            System.out.print("camera = "); printVector3(poz);
+            System.out.print("approx origin = "); printVector3(rorigin);
+            System.out.print("scaled flipped direction = "); printVector3(direction.normalize().scale(-length));}
+        if(vithinError(rorigin.x, origin.x, e) == false ||
+           vithinError(rorigin.y, origin.y, e) == false ||
+           vithinError(rorigin.z, origin.z, e) == false){
             return false; //we didnt hit the camera
-        }        
+        }    
+            if(debugprint == true){
+            System.out.println("origin ~ approx origin");}
         
         //what pixel did it hit ?
-        double dangleX = right.angle(direction);
-        double dangleY = up.angle(direction);
-            //System.out.println(Math.toDegrees(dangleX)-90 + " " + Math.toDegrees(dangleY)-90);
-        
-        dangleX = dangleX - (Math.toRadians(180) - Math.toRadians(Ax/2.0)) + Math.toRadians(90);
-        dangleY = dangleY - (Math.toRadians(180) - Math.toRadians(Ay/2.0)) + Math.toRadians(90);
-        
-        dangleX = Math.toDegrees(dangleX);
-        dangleY = Math.toDegrees(dangleY);
-            //System.out.println(dangleX + " " + dangleY);
-        
-        // = is there so we would not go out of spds array
-        if((dangleX < 0 || dangleX >= Ax) ||
-           ((dangleY < 0 || dangleY >= Ay))){
+        double dangleX = Math.toDegrees(right.angle(direction.normalize()));
+        double dangleY = Math.toDegrees(up.angle(direction.normalize()));
+            if(debugprint == true){
+            System.out.println("angleX in fov = " + (dangleX - (180.0-Ax)/2.0));
+            System.out.println("angleY in fov = " + (dangleY - (180.0-Ay)/2.0));}
+        if( (dangleX < (180.0-Ax)/2.0 )|| (dangleX >= (180.0-Ax)/2.0 +Ax) ||
+            (dangleY < (180.0-Ay)/2.0) || (dangleY >= (180.0-Ay)/2.0 +Ay) ){
             return false;//we hit he camera, but not its fov
         }
         
-        int px = (int)(dangleX * dangleXperPixel);
-        int py = (int)(dangleY *dangleYperPixel);
-            //System.out.println(dangleX * dangleXperPixel + " " +dangleY *dangleYperPixel);
-            //System.out.println(px + " " +py);
-        
+        int px = (int)( ( dangleX - (180.0-Ax)/2.0 ) * dangleXperPixel);
+        int py = (int)( (double)h-1.0- ( dangleY -((180.0-Ay)/2.0)  ) *dangleYperPixel);//becouse image has inverted Y
         spds.get(px).get(py).inc(lambda);
-        
+            if(debugprint == true){
+            System.out.println("x pixel= " +px + "  y pixel = " +py);}
         hits++;
         return true;
     }

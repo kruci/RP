@@ -52,8 +52,8 @@ public class SimpleSpotLight extends LightSource{
         r[3] = rndrAX.nextDouble() * angle *2;
         r[4] = rndrAY.nextDouble() * angle *2;
         //fix direction
-        r[3] += angleBetvenVectors(new double[]{1,0,0}, new double[]{direction[0], direction[1], 0}) - angle;
-        r[4] += angleBetvenVectors(new double[]{0,1,0}, new double[]{0, direction[1], direction[2]}) - angle;
+        r[3] += angleBetvenVectors(new double[]{1,0,0}, new double[]{direction[0], direction[1], direction[2]/*0*/}) - angle;
+        r[4] += angleBetvenVectors(new double[]{0,0,-1}, new double[]{/*0*/direction[0], direction[1], direction[2]}) - angle;
         r[3] = Math3dUtil.getPositiveAngle(r[3]);
         r[4] = Math3dUtil.getPositiveAngle(r[4]);
         r[5] = (double)spd.getNextLamnbda();

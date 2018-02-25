@@ -31,7 +31,7 @@ public class CameraTest extends Application{
                 new Math3dUtil.Vector3(0,0,0),          //poz
                 new Math3dUtil.Vector3(1,0,0),             //right
                 new Math3dUtil.Vector3(0,1,0),             //up
-                new Math3dUtil.Vector3(0,-1,0),             //dir
+                new Math3dUtil.Vector3(0,0,-1),             //dir
                 300,300,                        //resolution
                 90,90,                          //angles
                 new CIE1931StandardObserver()   //color
@@ -49,14 +49,14 @@ public class CameraTest extends Application{
             int togen = Integer.valueOf(textField.getText());
             for(int a = 0;a < togen;++a){
                 Vector3 origin = new Vector3(0,0,-10);
-                Vector3 direction = new Vector3(0,0,1);
+                Vector3 direction = new Vector3(0, 0 ,1);
                 
                 cam.watch(origin, direction, 555);
             }
             RendererTest.save(cam, "test/renderer/CameraTest.png");
             lab.setText( Integer.toString((Integer.valueOf(lab.getText()) + togen) ));
             imageView.setImage(new Image("file:test/renderer/CameraTest.png"));
-            //System.out.println(cam.getNumberOfHits());
+            System.out.println(cam.getNumberOfHits());
         });
            
         VBox bbox = new VBox(bGen,textField,lab,imageView);

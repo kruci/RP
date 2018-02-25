@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import light.LightSource;
 import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.printVector3;
 import math_and_utils.Pair;
 import renderer.Camera;
 import renderer.Scene;
@@ -24,6 +25,7 @@ public class SimpleScene implements Scene{
     private List<LightSource> ls_list;
     private List<SceneObject> so_list;
     public int hits = 0;
+    private boolean debugprint = false;
     
     public SimpleScene(){
         cam_list = new ArrayList<Camera>();
@@ -72,9 +74,18 @@ public class SimpleScene implements Scene{
         
         //send beam form "difuse" reflection to all cams
         for(Camera cam : cam_list){
-            Vector3 intersectionPoint = b.origin.add(b.direction.scale(closestT.second()));
-            Vector3 difusedirection = cam.GetPosition().sub(intersectionPoint);//intersectionPoint.sub(cam.GetPosition());
-            cam.watch(b.origin, difusedirection, b.lambda);
+            Vector3 intersectionPoint = b.origin.add((b.direction.normalize()).scale(closestT.second()));
+            Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();//intersectionPoint.sub(cam.GetPosition()).normalize();
+                
+                debugprint = false;
+                if(debugprint == true){
+                System.out.print("beam origin = ");printVector3(b.origin);
+                System.out.print("beam direction = ");printVector3(b.direction);
+                System.out.print("intersection = ");printVector3(intersectionPoint);
+                System.out.print("difusedirection = ");printVector3(difusedirection);
+                System.out.println("distance form LS to Intersection = " + closestT.second());}
+            
+            cam.watch(intersectionPoint, difusedirection, b.lambda);
         }
     
     }

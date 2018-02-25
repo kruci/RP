@@ -283,8 +283,8 @@ public class Math3dUtil {
          */
         public Vector3 cross(Vector3 other) {
             return new Vector3(y * other.z - z * other.y,
-                               z - other.x - x * other.z,
-                               x - other.y - y * other.x);
+                               z * other.x - x * other.z,
+                               x * other.y - y * other.x);
         }
 
         /**
@@ -347,13 +347,22 @@ public class Math3dUtil {
         double y = Math.sin(A)/2 + Math.sin(B)/2; //is this correct ? 
         double z = -Math.cos(B);
         
+        /*//https://stackoverflow.com/questions/30011741/3d-vector-defined-by-2-angles
+        double x = Math.cos(A)*Math.cos(B);
+        double y = Math.sin(B); 
+        double z = Math.sin(A)*Math.cos(B);*/
+        
         return new Vector3(x,y,z).normalize();
     }
     
-    public static double[] Vector3ToAngles(Vector3 v){
+    /*public static double[] Vector3ToAngles(Vector3 v){
         double[] r = new double[2];
         r[0] = Math.acos(v.x);
         r[1] = -Math.acos(v.z);
         return r;
+    }*/
+    
+    public static void printVector3(Vector3 a){
+        System.out.println("("+a.x+", "+a.y+", "+a.z+")");
     }
 }

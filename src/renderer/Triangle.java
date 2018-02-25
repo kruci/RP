@@ -8,12 +8,13 @@ import static java.lang.Math.abs;
 import java.util.Optional;
 import light.LightSource;
 import math_and_utils.Math3dUtil.*;
+import static math_and_utils.Math3dUtil.printVector3;
 /**
  *
  * @author rasto
  */
 public class Triangle {
-    public static final double epsilon = 0.000001;
+    public static final double epsilon = 0.00001;
     private Vector3 p1, p2, p3, normal;
     
     public Triangle(Vector3 _p1, Vector3 _p2, Vector3 _p3){
@@ -21,7 +22,8 @@ public class Triangle {
         p2 = _p2;
         p3 = _p3;
         Vector3 A = p2.sub(p1);
-        normal = A.cross(p3.sub(p1));
+        Vector3 B = p3.sub(p1);
+        normal = A.cross(B).normalize();
     }
     
     //https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
@@ -81,6 +83,7 @@ public class Triangle {
         if (normal.dot(C) < 0){
             return intersects;
         } // P is on the right side
+        
         
         return intersects.of(t);
     }
