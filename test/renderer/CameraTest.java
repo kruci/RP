@@ -53,10 +53,32 @@ public class CameraTest extends Application{
         bGen.setOnAction(value ->  {
             int togen = Integer.valueOf(textField.getText());
             for(int a = 0;a < togen;++a){
-                /*Vector3 origin = new Vector3(0,0,-10);
-                Vector3 direction = new Vector3(0, 0 ,1);
                 
-                cam.watch(origin, direction, 555);*/
+                //top right
+                Vector3 origin = new Vector3(1,1,-1);
+                Vector3 direction = new Vector3(-1, -1 ,1);
+                cam.watch(origin, direction, 490);
+                //top left
+                origin = new Vector3(-1,1,-1);
+                direction = new Vector3(1, -1 ,1);
+                cam.watch(origin, direction, 490);
+                //bottom left
+                origin = new Vector3(-1,-1,-1);
+                direction = new Vector3(1, 1 ,1);
+                cam.watch(origin, direction, 490);
+                //bottom right
+                origin = new Vector3(1,-1,-1);
+                direction = new Vector3(-1, 1 ,1);
+                cam.watch(origin, direction, 490);
+                //middle
+                origin = new Vector3(0,0,-1);
+                direction = new Vector3(0, 0 ,1);
+                cam.watch(origin, direction, 490);
+                //middle top
+                origin = new Vector3(0,1,-1);
+                direction = new Vector3(0, -1 ,1);
+                cam.watch(origin, direction, 490);
+                
                 cam.watch(ssl.getNextBeam());
             }
             RendererTest.save(cam, "test/renderer/CameraTest.png");

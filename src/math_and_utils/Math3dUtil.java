@@ -420,10 +420,18 @@ public class Math3dUtil {
             return new Vector3(res[0]/res[4], res[1]/res[4], res[2]/res[4]);
         }
         
+        /**
+         * Normalize before use
+         * @return 
+         */
         public double sphericalTheta(){
             return Math.acos(clamp(z,-1,1));
         }
         
+        /**
+         * Normalize before use
+         * @return 
+         */
         public double sphericalPhi(){
             double p = Math.atan2(y,x);
             return (p < 0) ? p + 2* Math.PI : p;

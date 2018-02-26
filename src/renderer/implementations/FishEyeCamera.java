@@ -13,9 +13,9 @@ import static math_and_utils.Math3dUtil.vithinError;
  *
  * @author rasto
  */
-public class PanoramaCamera extends SimpleCamera{
+public class FishEyeCamera extends SimpleCamera{
     
-    public PanoramaCamera(Math3dUtil.Vector3 _poz, Math3dUtil.Vector3 _right, Math3dUtil.Vector3 _up, Math3dUtil.Vector3 _dir, 
+    public FishEyeCamera(Math3dUtil.Vector3 _poz, Math3dUtil.Vector3 _right, Math3dUtil.Vector3 _up, Math3dUtil.Vector3 _dir, 
             int _w, int _h, double _AngleX, double _AngleY,Color _col){
         
         super(_poz,_right, _up, _dir, _w, _h, _AngleX, _AngleY, _col);
@@ -49,26 +49,6 @@ public class PanoramaCamera extends SimpleCamera{
             (dY < -Ay/2.0) || (dY >= Ay/2.0) ){
             return false;//we hit he camera, but not its fov
         }
-        /*
-        double dirangleX = Math.toDegrees((dir.angle(direction))) - dangleX; //angle betwen 
-        double dirangleY = Math.toDegrees((dir.angle(direction))) - dangleY;
-        double A = Math.toDegrees(direction.sphericalPhi());
-        double B = Math.toDegrees(direction.sphericalTheta());
-        System.out.println("# camera direction and beam angle = " +Math.toDegrees((dir.angle(direction))) + " Pthi = " + A + " Theta = " +B);
-        System.out.println("  " + (dirangleX) + " " + (dirangleY));
-        
-        double d_px = (Math.sin(Math.toRadians(dirangleX- Ax/2.0))) * (w/2.0);
-        int i_px = (int)((double)w - (((double)w/2.0) + (d_px)));
-        System.out.println("  " +d_px + " " + i_px);
-        
-        double d_py = Math.sin(Math.toRadians(dirangleY -Ay/2.0)) * (h/2.0);
-        int i_py = (int)((double)h - (((double)h/2.0) + (d_py)));
-        System.out.println("  " +d_py + " " + i_py);
-        
-        /*try{
-        spds.get(i_px).get(i_py).inc(lambda);} catch(Exception ex){System.out.println("Cam error");return false;}
-        hits++;
-        return true;*/ 
         
         double dpx = (dX + (dX*0) )*dangleXperPixel;
         double dpy = (dY + (dY*0) )*dangleYperPixel;
@@ -77,6 +57,7 @@ public class PanoramaCamera extends SimpleCamera{
         int px = w/2 +(int)(dpx);
         int py = (h-1) - (h/2 +(int)(dpy));//becouse image has inverted Y
         try{
+        lasthitspds = spds.get(px).get(py);    
         spds.get(px).get(py).inc(lambda);} catch(Exception ex){System.out.println("Cam error");return false;}
         hits++;
         return true;

@@ -50,7 +50,7 @@ public class RendererTest extends Application{
                 new SPD490(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
-                15.0
+                50.0
         );
         /*CircleLight cl = new CircleLight(
             new SPD490(),

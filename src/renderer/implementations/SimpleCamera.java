@@ -26,7 +26,7 @@ public class SimpleCamera implements Camera{
     protected Vector<Vector<SPDHolder>> spds;
     protected double Ax, Ay, hits;
     protected boolean debugprint = false;
-    private SpectralPowerDistribution lasthitspds;
+    protected SpectralPowerDistribution lasthitspds = null;
     
     //calcspecific
     protected double dangleXperPixel, dangleYperPixel;
@@ -74,50 +74,74 @@ public class SimpleCamera implements Camera{
         double e = 0.00001;
         
             if(debugprint == true){
-            System.out.print("origin = "); printVector3(origin);
-            System.out.print("direction = "); printVector3(direction);
-            System.out.println("distance betwen origin and camera = " + length);}
+            System.out.print("# origin = "); printVector3(origin);
+            System.out.print("  direction = "); printVector3(direction);
+            System.out.println("  distance betwen origin and camera = " + length);}
         
         //did it hit poz <-> camera centre?
         Vector3 rorigin = poz.add(direction.normalize().scale(-length));
             if(debugprint == true){
-            System.out.print("camera = "); printVector3(poz);
-            System.out.print("approx origin = "); printVector3(rorigin);
-            System.out.print("scaled flipped direction = "); printVector3(direction.normalize().scale(-length));}
+            System.out.print("  camera = "); printVector3(poz);
+            System.out.print("  approx origin = "); printVector3(rorigin);
+            System.out.print("  scaled flipped direction = "); printVector3(direction.normalize().scale(-length));}
         if(vithinError(rorigin.x, origin.x, e) == false ||
            vithinError(rorigin.y, origin.y, e) == false ||
            vithinError(rorigin.z, origin.z, e) == false){
             return false; //we didnt hit the camera
         }    
             if(debugprint == true){
-            System.out.println("origin ~ approx origin");}
+            System.out.println("  origin ~ approx origin");}
         
-        //what pixel did it hit ?
-        double dangleX = Math.toDegrees(right.angle(direction.normalize()));
-        double dangleY = Math.toDegrees(up.angle(direction.normalize()));
-            if(debugprint == true){
-            System.out.println("angleX in fov = " + (dangleX - (180.0-Ax)/2.0));
-            System.out.println("angleY in fov = " + (dangleY - (180.0-Ay)/2.0));}
-        if( (dangleX < (180.0-Ax)/2.0 )|| (dangleX >= (180.0-Ax)/2.0 +Ax) ||
-            (dangleY < (180.0-Ay)/2.0) || (dangleY >= (180.0-Ay)/2.0 +Ay) ){
-            return false;//we hit he camera, but not its fov
+    //it detects wrontg inFov and consequently FromDir
+        //is it in fov ?
+        double inFovX = Math.toDegrees(direction.angle(right)) - Ax/2.0; //from right fov border
+        double inFovY = Math.toDegrees(direction.angle(up)) - Ay/2.0; //from top fov border
+        
+        /*double dirPhi = Math.toDegrees(direction.normalize().sphericalPhi());// - Ax/2.0;
+        double dirTheta = Math.toDegrees(direction.normalize().sphericalTheta());// - Ay/2.0;
+        System.out.println(dirPhi+" " + dirTheta);*/
+            
+        if( (inFovX <= 0) || (inFovX > Ax) ||
+            (inFovY <= 0) || (inFovY > Ay) )
+        {
+            return false;//out of fov
         }
         
-        int px = (int)( ( dangleX - (180.0-Ax)/2.0 ) * dangleXperPixel);
-        int py = (int)( (double)h-1.0- ( dangleY -((180.0-Ay)/2.0)  ) *dangleYperPixel);//becouse image has inverted Y
-        spds.get(px).get(py).inc(lambda);
-        lasthitspds = spds.get(px).get(py);
-            if(debugprint == true){
-            System.out.println("x pixel= " +px + "  y pixel = " +py);}
+        
+        double fromDirX = -Ax/2.0 + inFovX;
+        double fromDirY = -Ay/2.0 + inFovY;
+        
+        double xscale = 1.0/Math.sin(Math.toRadians(Ax/2.0));
+        double yscale = 1.0/Math.sin(Math.toRadians(Ay/2.0));
+        
+        //this should be computed differently
+        double px = w/2.0 + Math.sin(Math.toRadians(fromDirX))*xscale * w/2.0;
+        double py = h/2.0 - Math.sin(Math.toRadians(fromDirY))*yscale * h/2.0;
+        
+        /*
+        System.out.println("# inFov : " + inFovX + " " + inFovY + "\n  fromDir: " +fromDirX + " " +fromDirY +
+                "\n  sacle: " + xscale + " " + yscale + "\n  points : " + px + " " + py +
+                "\n  p calc: " + (Math.sin(Math.toRadians(fromDirX))*xscale) + " " +(Math.sin(Math.toRadians(fromDirY))*yscale));
+        */
+        try{
+            lasthitspds = spds.get((int)px).get((int)py);    
+            spds.get((int)px).get((int)py).inc(lambda);
+        } catch(Exception ex){
+            System.out.println("Cam error");
+            return false;
+        }
+        
         hits++;
         return true;
+
+        
     }
     
     @Override
     public boolean watch(LightSource.Beam b)
     {
         boolean r = watch(b.origin, b.direction, b.lambda);
-        if(r == true){
+        if(r == true && lasthitspds != null){
             double newY = ((SPDHolder)lasthitspds).spdshits * (b.source.getPower()/ b.source.getNumberOfBeams());
             //System.out.println("newY= " + newY);
             lasthitspds.setY( newY);

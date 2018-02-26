@@ -6,7 +6,7 @@
 package renderer;
 
 import color.implementations.CIE1931StandardObserver;
-import color.implementations.SPD1;
+import color.implementations.SPD490;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -21,9 +21,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import light.implementations.SimpleSpotLight;
+import light.implementations.UniformPointLightSource;
 import math_and_utils.Math3dUtil;
-import renderer.implementations.PanoramaCamera;
+import renderer.implementations.FishEyeCamera;
 import renderer.implementations.SimpleScene;
 import renderer.implementations.SimpleSceneObject;
 
@@ -31,23 +31,23 @@ import renderer.implementations.SimpleSceneObject;
  *
  * @author rasto
  */
-public class PanoramaCameraTest extends Application{
+public class FishEyeCameraTest extends Application{
     public static void main(String [] args){
         launch(args);
     }
     
     @Override
     public void start(Stage primaryStage) {
-        /*UniformPointLightSource cl = new UniformPointLightSource(
-                new SPD1(),
+        UniformPointLightSource cl = new UniformPointLightSource(
+                new SPD490(),
                 new double[]{0,0,0}//poz
-        );*/
+        );/*
         SimpleSpotLight cl = new SimpleSpotLight(
                 new SPD1(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
                 50.0
-        );
+        );*/
         /*CircleLight cl = new CircleLight(
             new SPD1(),
             new double[]{0,0,0},//poz
@@ -64,13 +64,13 @@ public class PanoramaCameraTest extends Application{
         
         SimpleScene ss= new SimpleScene();
         
-        PanoramaCamera cam = new PanoramaCamera(
+        FishEyeCamera cam = new FishEyeCamera(
                 new Math3dUtil.Vector3(0,0,0),             //poz
                 new Math3dUtil.Vector3(1,0,0),             //right
                 new Math3dUtil.Vector3(0,1,0),             //up
                 new Math3dUtil.Vector3(0,0,-1),             //dir
                 300,300,                        //resolution
-                90,90,                          //angles
+                180,180,                          //angles
                 new CIE1931StandardObserver()   //color
         );
         
@@ -84,10 +84,18 @@ public class PanoramaCameraTest extends Application{
                 new Math3dUtil.Vector3(6, -1, -10),
                 new Math3dUtil.Vector3(9, 0, -10)
         );
+        SimpleSceneObject sso3 = new SimpleSceneObject(
+                new Math3dUtil.Vector3(3, 1, -3),
+                new Math3dUtil.Vector3(3, 1, -1),
+                new Math3dUtil.Vector3(3, -1, -2)
+        );
+        
+        cl.setPower(10000000);
         ss.addCamera(cam);
         ss.addLightSource(cl);
         ss.addSceneObject(sso);
         ss.addSceneObject(sso2);
+        ss.addSceneObject(sso3);
         
     //JAVAFX*********************************************
         primaryStage.setTitle("Renderer");
@@ -106,9 +114,9 @@ public class PanoramaCameraTest extends Application{
                 ss.next();
             }
             long endTime = System.nanoTime() - startTime;
-            save(cam, "test/renderer/PanoramaCameraTest.png");
+            save(cam, "test/renderer/FishEyeCameraTest.png");
             lab.setText( Integer.toString((Integer.valueOf(lab.getText()) + togen) ));
-            imageView.setImage(new Image("file:test/renderer/PanoramaCameraTest.png"));
+            imageView.setImage(new Image("file:test/renderer/FishEyeCameraTest.png"));
              System.out.println("# added " + (cam.getNumberOfHits() - lasth) + " hits, resulting in " + cam.getNumberOfHits() +
                     " total hits. This iteration took " + (endTime*0.000000001) + " seconds");
         });
