@@ -48,8 +48,8 @@ public class SimpleScene implements Scene{
     
     /**
      * Uses only first LS, does not create other
-     * Ignores transparency -> will choose closest Triangle (ONLY 1 TRIANGLE)
-     * Will shoot directly to cams, ignoring obstacles
+     * Ignores transparency -> will go through all intersections
+     * Will shoot directly to all cams, ignoring obstacles
      */
     public void next(){
         if(ls_list.size() <= 0){return;}
@@ -63,18 +63,18 @@ public class SimpleScene implements Scene{
             List<Pair<Triangle, Double>> contac = so.intersects(b);
             
             for(Pair<Triangle, Double> td : contac){
-                if(td.second() < closestT.second()){
+            /*    if(td.second() < closestT.second()){
                     closestT = td;
                 }
             }
-        }
+        }*/
         
         //continu if it intersected with something
-        if(closestT.first() == null){return;}
+        //if(closestT.first() == null){return;}
         
         //send beam form "difuse" reflection to all cams
         for(Camera cam : cam_list){
-            Vector3 intersectionPoint = b.origin.add((b.direction.normalize()).scale(closestT.second()));
+            Vector3 intersectionPoint = b.origin.add((b.direction.normalize()).scale(td.second()));
             Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();//intersectionPoint.sub(cam.GetPosition()).normalize();
                 
                 debugprint = false;
@@ -83,9 +83,11 @@ public class SimpleScene implements Scene{
                 System.out.print("beam direction = ");printVector3(b.direction);
                 System.out.print("intersection = ");printVector3(intersectionPoint);
                 System.out.print("difusedirection = ");printVector3(difusedirection);
-                System.out.println("distance form LS to Intersection = " + closestT.second());}
+                System.out.println("distance form LS to Intersection = " + td.second());}
             
             cam.watch(intersectionPoint, difusedirection, b.lambda);
+        }
+        }
         }
     
     }

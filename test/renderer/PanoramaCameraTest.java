@@ -8,15 +8,11 @@ package renderer;
 import color.implementations.CIE1931StandardObserver;
 import color.implementations.SPD1;
 import java.awt.Color;
-//import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javafx.application.Application;
-import javax.imageio.ImageIO;
-
 import static javafx.application.Application.launch;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -24,10 +20,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import light.implementations.UniformPointLightSource;
+import javax.imageio.ImageIO;
+import light.implementations.SimpleSpotLight;
 import math_and_utils.Math3dUtil;
-import math_and_utils.Math3dUtil.Vector3;
-import renderer.implementations.SimpleCamera;
+import renderer.implementations.PanoramaCamera;
 import renderer.implementations.SimpleScene;
 import renderer.implementations.SimpleSceneObject;
 
@@ -35,23 +31,23 @@ import renderer.implementations.SimpleSceneObject;
  *
  * @author rasto
  */
-public class RendererTest extends Application{
+public class PanoramaCameraTest extends Application{
     public static void main(String [] args){
         launch(args);
     }
     
     @Override
     public void start(Stage primaryStage) {
-        UniformPointLightSource cl = new UniformPointLightSource(
+        /*UniformPointLightSource cl = new UniformPointLightSource(
                 new SPD1(),
                 new double[]{0,0,0}//poz
-        );
-        /*SimpleSpotLight cl = new SimpleSpotLight(
+        );*/
+        SimpleSpotLight cl = new SimpleSpotLight(
                 new SPD1(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
-                15.0
-        );*/
+                50.0
+        );
         /*CircleLight cl = new CircleLight(
             new SPD1(),
             new double[]{0,0,0},//poz
@@ -68,20 +64,20 @@ public class RendererTest extends Application{
         
         SimpleScene ss= new SimpleScene();
         
-        SimpleCamera cam = new SimpleCamera(
-                new Vector3(0,0,0),             //poz
-                new Vector3(1,0,0),             //right
-                new Vector3(0,1,0),             //up
-                new Vector3(0,0,-1),             //dir
+        PanoramaCamera cam = new PanoramaCamera(
+                new Math3dUtil.Vector3(0,0,0),             //poz
+                new Math3dUtil.Vector3(1,0,0),             //right
+                new Math3dUtil.Vector3(0,1,0),             //up
+                new Math3dUtil.Vector3(0,0,-1),             //dir
                 300,300,                        //resolution
                 90,90,                          //angles
                 new CIE1931StandardObserver()   //color
         );
         
         SimpleSceneObject sso = new SimpleSceneObject(
-                new Vector3(-1, 1, -1),
-                new Vector3(1, 1, -1),
-                new Vector3(0, -1, -1)
+                new Math3dUtil.Vector3(-1, 1, -1),
+                new Math3dUtil.Vector3(1, 1, -1),
+                new Math3dUtil.Vector3(0, -1, -1)
         );
         SimpleSceneObject sso2 = new SimpleSceneObject(
                 new Math3dUtil.Vector3(6, 1, -10),
@@ -110,15 +106,15 @@ public class RendererTest extends Application{
                 ss.next();
             }
             long endTime = System.nanoTime() - startTime;
-            save(cam, "test/renderer/RendererTest.png");
+            save(cam, "test/renderer/PanoramaCameraTest.png");
             lab.setText( Integer.toString((Integer.valueOf(lab.getText()) + togen) ));
-            imageView.setImage(new Image("file:test/renderer/RendererTest.png"));
-            System.out.println("# added " + (cam.getNumberOfHits() - lasth) + " hits, resulting in " + cam.getNumberOfHits() +
+            imageView.setImage(new Image("file:test/renderer/PanoramaCameraTest.png"));
+             System.out.println("# added " + (cam.getNumberOfHits() - lasth) + " hits, resulting in " + cam.getNumberOfHits() +
                     " total hits. This iteration took " + (endTime*0.000000001) + " seconds");
         });
            
         VBox bbox = new VBox(bGen,textField,lab,imageView);
-        primaryStage.setScene(new Scene(bbox, 500, 500));
+        primaryStage.setScene(new javafx.scene.Scene(bbox, 500, 500));
         primaryStage.show();
     }
     

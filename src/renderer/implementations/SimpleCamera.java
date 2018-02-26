@@ -20,15 +20,15 @@ import renderer.Camera;
  * @author rasto
  */
 public class SimpleCamera implements Camera{
-    private Vector3 poz, right, up, dir;
-    private int w,h;
-    private Color col;
-    private Vector<Vector<SPDHolder>> spds;
-    private double Ax, Ay, hits;
-    private boolean debugprint = false;
+    protected Vector3 poz, right, up, dir;
+    protected int w,h;
+    protected Color col;
+    protected Vector<Vector<SPDHolder>> spds;
+    protected double Ax, Ay, hits;
+    protected boolean debugprint = false;
     
     //calcspecific
-    private double dangleXperPixel, dangleYperPixel;
+    protected double dangleXperPixel, dangleYperPixel;
     /**
      * 
      * @param _poz
@@ -37,8 +37,8 @@ public class SimpleCamera implements Camera{
      * @param _dir
      * @param _w
      * @param _h
-     * @param _AngleX half of this from the _dir on both sides, cant be more than 360 or less than 0
-     * @param _AngleY half of this from the _dir on both sides cant be more than 360 or less than 0
+     * @param _AngleX half of this from the _dir on both sides, undefined if more than 180 or less than 0
+     * @param _AngleY half of this from the _dir on both sides, undefined if than 180 or less than 0
      * @param _col 
      */
     public SimpleCamera(Vector3 _poz, Vector3 _right, Vector3 _up, Vector3 _dir, 

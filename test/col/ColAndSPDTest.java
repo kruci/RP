@@ -56,7 +56,5 @@ public class ColAndSPDTest extends Application {
         Color c = new CIE1931StandardObserver();
         
         int ret[] = c.SPDtoRGB(spd);
-        
-        
     }
 }
