@@ -85,7 +85,8 @@ public class SimpleScene implements Scene{
                 System.out.print("difusedirection = ");printVector3(difusedirection);
                 System.out.println("distance form LS to Intersection = " + td.second());}
             
-            cam.watch(intersectionPoint, difusedirection, b.lambda);
+            //cam.watch(intersectionPoint, difusedirection, b.lambda);
+            cam.watch(new LightSource.Beam(intersectionPoint,difusedirection,b.lambda,b.source));
         }
         }
         }

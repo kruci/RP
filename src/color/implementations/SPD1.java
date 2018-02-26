@@ -54,5 +54,12 @@ public class SPD1 implements SpectralPowerDistribution{
     public double[] getFirstLastZero(){
         return new double[]{455,655};
     }
-
+    
+    public void setY(double y){
+        Ys = y;
+    }
+    
+    public double getY(){
+        return Ys;
+    }
 }

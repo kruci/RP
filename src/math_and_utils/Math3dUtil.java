@@ -11,7 +11,6 @@ package math_and_utils;
  *          3) fix getPerpendicularVector when v[2] == 0
  */
 import static java.lang.Math.sqrt;
-import light.LightSource;
 
 /**
  *
@@ -156,9 +155,9 @@ public class Math3dUtil {
     
     /*------------------------------------------------------------------*/
     /**https://introcs.cs.princeton.edu/java/22library/Matrix.java.html**/
-
+    //should be Row-major 
     // return n-by-n identity matrix I
-    public static double[][] identity(int n) {
+    public static double[][] Midentity(int n) {
         double[][] a = new double[n][n];
         for (int i = 0; i < n; i++)
             a[i][i] = 1;
@@ -166,7 +165,7 @@ public class Math3dUtil {
     }
 
     // return x^T y
-    public static double dot(double[] x, double[] y) {
+    public static double Mdot(double[] x, double[] y) {
         if (x.length != y.length) throw new RuntimeException("Illegal vector dimensions.");
         double sum = 0.0;
         for (int i = 0; i < x.length; i++)
@@ -175,7 +174,7 @@ public class Math3dUtil {
     }
 
     // return B = A^T
-    public static double[][] transpose(double[][] a) {
+    public static double[][] Mtranspose(double[][] a) {
         int m = a.length;
         int n = a[0].length;
         double[][] b = new double[n][m];
@@ -186,7 +185,7 @@ public class Math3dUtil {
     }
 
     // return c = a + b
-    public static double[][] add(double[][] a, double[][] b) {
+    public static double[][] Madd(double[][] a, double[][] b) {
         int m = a.length;
         int n = a[0].length;
         double[][] c = new double[m][n];
@@ -197,7 +196,7 @@ public class Math3dUtil {
     }
 
     // return c = a - b
-    public static double[][] subtract(double[][] a, double[][] b) {
+    public static double[][] Msubtract(double[][] a, double[][] b) {
         int m = a.length;
         int n = a[0].length;
         double[][] c = new double[m][n];
@@ -208,7 +207,7 @@ public class Math3dUtil {
     }
 
     // return c = a * b
-    public static double[][] multiply(double[][] a, double[][] b) {
+    public static double[][] Mmultiply(double[][] a, double[][] b) {
         int m1 = a.length;
         int n1 = a[0].length;
         int m2 = b.length;
@@ -223,7 +222,7 @@ public class Math3dUtil {
     }
 
     // matrix-vector multiplication (y = A * x)
-    public static double[] multiply(double[][] a, double[] x) {
+    public static double[] Mmultiply(double[][] a, double[] x) {
         int m = a.length;
         int n = a[0].length;
         if (x.length != n) throw new RuntimeException("Illegal matrix dimensions.");
@@ -236,7 +235,7 @@ public class Math3dUtil {
 
 
     // vector-matrix multiplication (y = x^T A)
-    public static double[] multiply(double[] x, double[][] a) {
+    public static double[] Mmultiply(double[] x, double[][] a) {
         int m = a.length;
         int n = a[0].length;
         if (x.length != m) throw new RuntimeException("Illegal matrix dimensions.");
@@ -251,7 +250,48 @@ public class Math3dUtil {
     
     
     
-
+    public static double[][] createTranslationMatix(double x,double y,double z){
+        double [][] ret = new double[][]
+        { {1,0,0,0},
+          {0,1,0,0},
+          {0,0,1,0},
+          {x,y,z,1}
+        };
+        return ret;
+    }
+    
+    public static double[][] createRotXMatix(double angle)
+    {
+        double [][] ret = new double[][]
+        { {1,0,0,0},
+          {0, Math.cos(angle) , Math.sin(angle),0},
+          {0, -Math.sin(angle), Math.cos(angle),0},
+          {0,0,0,1}
+        };
+        return ret;
+    }
+    
+    public static double[][] createRotYMatix(double angle)
+    {
+        double [][] ret = new double[][]
+        { {Math.cos(angle) ,0,-Math.sin(angle),0},
+          {0, 1 , 0 , 0},
+          {Math.sin(angle), 0, Math.cos(angle),0},
+          {0,0,0,1}
+        };
+        return ret;
+    }
+    
+        public static double[][] createRotZMatix(double angle)
+    {
+        double [][] ret = new double[][]
+        { {Math.cos(angle) ,Math.sin(angle),0,0},
+          {- Math.sin(angle), Math.cos(angle) , 0 , 0},
+          {0, 0, 0,0},
+          {0,0,0,1}
+        };
+        return ret;
+    }
     
     public static class Vector3 {
         public double x, y, z;
@@ -268,7 +308,19 @@ public class Math3dUtil {
             this.z = v[2];
         }
         
-        public double[] V3toD(){
+        /**
+         * Creates vector from polar and azimuth angles, using left-handed Z-up convention
+         * See https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/spherical-coordinates-and-trigonometric-functions
+         * @param theta θ in radians
+         * @param phi ϕ in radians
+         */
+        public Vector3(double theta, double phi){
+            this.x = Math.cos(phi) * Math.sin(theta);
+            this.y = Math.sin(phi) * Math.sin(theta);
+            this.z = Math.cos(theta);
+        }
+        
+        public double[] V3toM(){
             return new double[]{x,y,z};
         }
 
@@ -334,7 +386,7 @@ public class Math3dUtil {
             }
             return this;
         }
-        
+      
         //shorter than chaining
         /**
          * Useful if "this" and "other" are points
@@ -356,7 +408,32 @@ public class Math3dUtil {
         public double angle(Vector3 other){
             return Math.acos(this.normalize().dot(other.normalize()));
         }
+        
+        public Vector3 multiplyM3(double[][] m){
+            double[] res = Mmultiply(new double[]{x,y,z}, m);
+            return new Vector3(res[0], res[1], res[2]);
+        }
+        
+        public Vector3 multiplyM4(double[][] m){
+            double[] res = Mmultiply(new double[]{x,y,z,1}, m);
+            if(res[4] == 0){res[4] = 1;}//to avoid dividing by 0
+            return new Vector3(res[0]/res[4], res[1]/res[4], res[2]/res[4]);
+        }
+        
+        public double sphericalTheta(){
+            return Math.acos(clamp(z,-1,1));
+        }
+        
+        public double sphericalPhi(){
+            double p = Math.atan2(y,x);
+            return (p < 0) ? p + 2* Math.PI : p;
+        }
     }
+    
+    public static double clamp(double val, double min, double max){
+        return Math.max(min, Math.min(max, val));
+    }
+
     
      /**
      * For Coordinate system info, look at Rp.odt -> 6.Renderer

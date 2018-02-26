@@ -8,8 +8,8 @@ package color.implementations;
 import color.Color;
 import color.SpectralPowerDistribution;
 import static java.lang.Math.pow;
+import static math_and_utils.Math3dUtil.Mmultiply;
 import static math_and_utils.Math3dUtil.fitinterval;
-import static math_and_utils.Math3dUtil.multiply;
 
 /**
  *
@@ -503,7 +503,8 @@ public class CIE1931StandardObserver implements Color{
     
     private static double [] getXYZ(double lambda){
         int l = (int)lambda - firstlambda;
-        if(lambda > vals.length){return new double[]{0,0,0};}
+        if(l > vals.length){return new double[]{0,0,0};}
+        //System.out.println(vals[l][0] + " " + vals[l][1] + " " + vals[l][2]);
         return (vals[l]);
     }
     
@@ -530,9 +531,12 @@ public class CIE1931StandardObserver implements Color{
         if(interval[1]> 830){interval[1] = 830;}
         double X = 0,Y = 0,Z = 0;
         
+        
+        
         //http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_xyY.html
-        for(int a = 0;a <= interval[1]-interval[0];++a){
+        for(int a = 1;a < interval[1]-interval[0] ;++a){
             double[] currentXYZ = getXYZ(a+interval[0]);
+            //System.out.println( a+interval[0]+"    "+ currentXYZ[0] + " " + currentXYZ[1] + " " + currentXYZ[2] );
             X += (double)currentXYZ[0]*spd.getValue(a+interval[0]);
             Y += (double)currentXYZ[1]*spd.getValue(a+interval[0]);
             Z += (double)currentXYZ[2]*spd.getValue(a+interval[0]);
@@ -541,10 +545,14 @@ public class CIE1931StandardObserver implements Color{
         /*from here to bottom, it will be replaced 
         by http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html*/
         
+        /*System.out.println( Double.toString(X) + " " +
+                            Double.toString(Y) + " " +
+                            Double.toString(Z));*/
+        
         double sum = X+Y+Z;
-        X= X/sum;
-        Y= Y/sum;
-        Z= Z/sum;
+        X= (X/sum) *spd.getY();
+        Y= (Y/sum) *spd.getY();
+        Z= (Z/sum) *spd.getY();
         /*double maxXYZ = max(X,(max(Y,Z)));
         X /= maxXYZ;
         Y /= maxXYZ;
@@ -555,7 +563,7 @@ public class CIE1931StandardObserver implements Color{
                             Double.toString(Z));*/
         
         //XYZ to RGB linear
-        double rgb[][] = multiply(Minverse, new double[][]{ {(double)X}, {(double)Y}, {(double)Z}});
+        double rgb[][] = Mmultiply(Minverse, new double[][]{ {(double)X}, {(double)Y}, {(double)Z}});
         
         //companding (sRGB Companding)
         rgb[0][0] = sRGBcompaund(rgb[0][0]);

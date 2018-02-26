@@ -37,7 +37,10 @@ public class UniformPointLightSource extends LightSource{
     
     public Beam getNextBeam(){
         double[] a = getNextBeamArray();
-        return new Beam(new Vector3(a[0],a[1],a[2]), anglesToVector3( Math.toRadians(a[3]), Math.toRadians(a[4])), a[5],this);
+        //return new Beam(new Vector3(a[0],a[1],a[2]), anglesToVector3( Math.toRadians(a[3]), Math.toRadians(a[4])), a[5],this);
+        return new Beam(new Vector3(a[0],a[1],a[2]), 
+                new Vector3( Math.toRadians(a[3]), Math.toRadians(a[4])), 
+                a[5],this);
     }
     
     /**X,Y,Z*/

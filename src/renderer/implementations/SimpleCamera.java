@@ -26,6 +26,7 @@ public class SimpleCamera implements Camera{
     protected Vector<Vector<SPDHolder>> spds;
     protected double Ax, Ay, hits;
     protected boolean debugprint = false;
+    private SpectralPowerDistribution lasthitspds;
     
     //calcspecific
     protected double dangleXperPixel, dangleYperPixel;
@@ -105,6 +106,7 @@ public class SimpleCamera implements Camera{
         int px = (int)( ( dangleX - (180.0-Ax)/2.0 ) * dangleXperPixel);
         int py = (int)( (double)h-1.0- ( dangleY -((180.0-Ay)/2.0)  ) *dangleYperPixel);//becouse image has inverted Y
         spds.get(px).get(py).inc(lambda);
+        lasthitspds = spds.get(px).get(py);
             if(debugprint == true){
             System.out.println("x pixel= " +px + "  y pixel = " +py);}
         hits++;
@@ -114,7 +116,13 @@ public class SimpleCamera implements Camera{
     @Override
     public boolean watch(LightSource.Beam b)
     {
-        return watch(b.origin, b.direction, b.lambda);
+        boolean r = watch(b.origin, b.direction, b.lambda);
+        if(r == true){
+            double newY = ((SPDHolder)lasthitspds).spdshits * (b.source.getPower()/ b.source.getNumberOfBeams());
+            //System.out.println("newY= " + newY);
+            lasthitspds.setY( newY);
+        }
+        return r;
     }
     
     @Override
@@ -136,6 +144,8 @@ public class SimpleCamera implements Camera{
     
     class SPDHolder implements SpectralPowerDistribution{
         double wavelenghts[];// = new double[701];
+        double Ys = 1;
+        public double spdshits = 0;
         
         public SPDHolder(){
             wavelenghts = new double[701];
@@ -151,6 +161,7 @@ public class SimpleCamera implements Camera{
         
         public void inc(double lambda){
             wavelenghts[(int)lambda-300]++;
+            spdshits++;
         }
         
         public double[] getFirstLastZero(){
@@ -159,6 +170,14 @@ public class SimpleCamera implements Camera{
             r[1] = 1000;
             
             return r;
+        }
+        
+        public void setY(double y){
+            Ys = y;
+        }
+    
+        public double getY(){
+            return Ys;
         }
     }
     

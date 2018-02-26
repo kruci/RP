@@ -9,14 +9,11 @@ import color.implementations.CIE1931StandardObserver;
 import color.Color;
 import color.implementations.SPD1;
 import color.SpectralPowerDistribution;
+import color.implementations.SPD490;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -32,7 +29,8 @@ public class ColAndSPDTest extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        SpectralPowerDistribution spd = new SPD1();
+        SpectralPowerDistribution spd = new SPD490();//SPD1();
+        spd.setY(1.5);
         Color c = new CIE1931StandardObserver();
         int ret[] = c.SPDtoRGB(spd);
         String cs = "rgb(" + ret[0]+", " + ret[1]+

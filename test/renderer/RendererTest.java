@@ -6,7 +6,7 @@
 package renderer;
 
 import color.implementations.CIE1931StandardObserver;
-import color.implementations.SPD1;
+import color.implementations.SPD490;
 import java.awt.Color;
 //import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -24,7 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import light.implementations.UniformPointLightSource;
+import light.implementations.SimpleSpotLight;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
 import renderer.implementations.SimpleCamera;
@@ -42,24 +42,24 @@ public class RendererTest extends Application{
     
     @Override
     public void start(Stage primaryStage) {
-        UniformPointLightSource cl = new UniformPointLightSource(
-                new SPD1(),
+        /*UniformPointLightSource cl = new UniformPointLightSource(
+                new SPD490(),
                 new double[]{0,0,0}//poz
-        );
-        /*SimpleSpotLight cl = new SimpleSpotLight(
-                new SPD1(),
+        );*/
+        SimpleSpotLight cl = new SimpleSpotLight(
+                new SPD490(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
                 15.0
-        );*/
+        );
         /*CircleLight cl = new CircleLight(
-            new SPD1(),
+            new SPD490(),
             new double[]{0,0,0},//poz
             new double[]{0,0,-1}, //dir
             1//radius
         );*/
         /*FadingSpotLight cl = new FadingSpotLight(
-                new SPD1(),
+                new SPD490(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
                 15.0,
@@ -88,6 +88,7 @@ public class RendererTest extends Application{
                 new Math3dUtil.Vector3(6, -1, -10),
                 new Math3dUtil.Vector3(9, 0, -10)
         );
+        cl.setPower(10000);
         ss.addCamera(cam);
         ss.addLightSource(cl);
         ss.addSceneObject(sso);

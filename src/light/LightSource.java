@@ -13,6 +13,7 @@ public abstract class LightSource implements java.io.Serializable{
     protected SpectralPowerDistribution spd;
     protected double beams = 0;
     protected Optional<LightSource> parent;
+    protected double power = 1;
     
     public LightSource(SpectralPowerDistribution spd){
         this.spd = spd;
@@ -34,15 +35,23 @@ public abstract class LightSource implements java.io.Serializable{
         return parent;
     }
     
+    public void setPower(double p){
+        power = p;
+    }
+    
+    public double getPower(){
+        return power;
+    }
+    
     public void setParentLightSource(LightSource p){
         parent.of(p);
     }
     
-    public class Beam{
+    public static class Beam{
         public Vector3 origin;
         public Vector3 direction;
         public double lambda;
-        LightSource source;
+        public LightSource source;
         
         public Beam(Vector3 o, Vector3 d, double l, LightSource s){
             origin = o;
