@@ -11,7 +11,7 @@ import java.util.Vector;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
-import static math_and_utils.Math3dUtil.printVector3;
+import static math_and_utils.Math3dUtil.WorldV3toSphericalV3;
 import static math_and_utils.Math3dUtil.vithinError;
 import renderer.Camera;
 
@@ -25,7 +25,6 @@ public class SimpleCamera implements Camera{
     protected Color col;
     protected Vector<Vector<SPDHolder>> spds;
     protected double Ax, Ay, hits;
-    protected boolean debugprint = false;
     protected SpectralPowerDistribution lasthitspds = null;
     
     //calcspecific
@@ -67,40 +66,50 @@ public class SimpleCamera implements Camera{
         dangleYperPixel = (double)h / Ay;
     } 
     
-    @Override
     public boolean watch(Math3dUtil.Vector3 origin, Math3dUtil.Vector3 direction, double lambda)
     {
         double length = origin.distance(poz);
         double e = 0.00001;
         
-            if(debugprint == true){
+            /*{
             System.out.print("# origin = "); printVector3(origin);
             System.out.print("  direction = "); printVector3(direction);
-            System.out.println("  distance betwen origin and camera = " + length);}
+            System.out.println("  distance betwen origin and camera = " + length);}*/
         
         //did it hit poz <-> camera centre?
         Vector3 rorigin = poz.add(direction.normalize().scale(-length));
-            if(debugprint == true){
+            /*{
             System.out.print("  camera = "); printVector3(poz);
             System.out.print("  approx origin = "); printVector3(rorigin);
-            System.out.print("  scaled flipped direction = "); printVector3(direction.normalize().scale(-length));}
+            System.out.print("  scaled flipped direction = "); printVector3(direction.normalize().scale(-length));}*/
         if(vithinError(rorigin.x, origin.x, e) == false ||
            vithinError(rorigin.y, origin.y, e) == false ||
            vithinError(rorigin.z, origin.z, e) == false){
             return false; //we didnt hit the camera
         }    
-            if(debugprint == true){
-            System.out.println("  origin ~ approx origin");}
+            /*{
+            System.out.println("  origin ~ approx origin");}*/
         
-    //it detects wrontg inFov and consequently FromDir
         //is it in fov ?
+       
+        
         double inFovX = Math.toDegrees(direction.angle(right)) - Ax/2.0; //from right fov border
         double inFovY = Math.toDegrees(direction.angle(up)) - Ay/2.0; //from top fov border
         
-        /*double dirPhi = Math.toDegrees(direction.normalize().sphericalPhi());// - Ax/2.0;
-        double dirTheta = Math.toDegrees(direction.normalize().sphericalTheta());// - Ay/2.0;
-        System.out.println(dirPhi+" " + dirTheta);*/
-            
+        
+        
+        /*double _xscale = 1.0/Math.sin(Math.toRadians(Ax/2.0));
+        double _yscale = 1.0/Math.sin(Math.toRadians(Ay/2.0));
+        double _inFovX = Math.toDegrees(direction.angle(right));
+        double _inFovY = Math.toDegrees(direction.angle(up));
+        System.out.println("_infov " + _inFovX + " " + _inFovY);
+        
+        direction = WorldV3toSphericalV3(direction);
+        
+        double inFovX = Math.toDegrees(direction.sphericalPhi()) - Ax/2.0; //from right fov border
+        double inFovY = Math.toDegrees(direction.sphericalTheta()) - Ay/2.0; //from top fov border
+        */
+        
         if( (inFovX <= 0) || (inFovX > Ax) ||
             (inFovY <= 0) || (inFovY > Ay) )
         {

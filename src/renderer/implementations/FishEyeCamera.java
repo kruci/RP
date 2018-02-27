@@ -19,9 +19,7 @@ public class FishEyeCamera extends SimpleCamera{
             int _w, int _h, double _AngleX, double _AngleY,Color _col){
         
         super(_poz,_right, _up, _dir, _w, _h, _AngleX, _AngleY, _col);
-        
-        debugprint = false;
-    }
+     }
     
     @Override
     public boolean watch(Math3dUtil.Vector3 origin, Math3dUtil.Vector3 direction, double lambda)

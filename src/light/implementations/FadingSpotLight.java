@@ -78,6 +78,7 @@ public class FadingSpotLight extends SimpleSpotLight{
     
     /**
      * check if "rot" and "rot2" is calculated correctly (it seems like it on Renderer test)
+     *  -(propably) need to change "getsome" to go from mid to border and remove "- angle" from "rot" calc
      * @return 
      */
     public Beam getNextBeam(){

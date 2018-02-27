@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import light.implementations.SimpleSpotLight;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.WorldV3toSphericalAngle;
+import static math_and_utils.Math3dUtil.printVector3;
 import renderer.implementations.SimpleCamera;
 
 /**
@@ -48,7 +50,24 @@ public class CameraTest extends Application{
         TextField textField = new TextField();
         Label lab = new Label("0");
         
-        //Testing area
+        //spherical coords testing
+        Vector3 sphv = new Vector3(Math.toRadians(135),Math.toRadians(90));//spherical vector
+        System.out.print("sphererical = ");printVector3(sphv);
+        System.out.println("  sph theta = " + Math.toDegrees(sphv.sphericalTheta()) + "  sph phi = " + Math.toDegrees(sphv.sphericalPhi()));
+        System.out.print("  world = ");printVector3(sphv.toWorldVector3());
+        System.out.println("  world theta = " + Math.toDegrees(sphv.toWorldVector3().sphericalTheta()) 
+                + "  world phi = " + Math.toDegrees(sphv.toWorldVector3().sphericalPhi()));
+        
+        double[] an = WorldV3toSphericalAngle(sphv.toWorldVector3());
+        System.out.println("  spV->worldV->spAngle : " + Math.toDegrees(an[0]) +" "+ Math.toDegrees(an[1]));
+        
+        double Ax = 90;
+        double AxfromRightFov = Math.toDegrees(sphv.sphericalPhi())- Ax/2.0;
+        double Ay = 90;
+        double AyfromTopFov = Math.toDegrees(sphv.sphericalTheta())-Ay/2.0;
+        System.out.println("  x,y : " + AxfromRightFov +" "+ AyfromTopFov);
+        
+        //camera Testing area
         Button bGen = new Button("Generate");
         bGen.setOnAction(value ->  {
             int togen = Integer.valueOf(textField.getText());

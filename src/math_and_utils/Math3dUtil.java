@@ -260,6 +260,16 @@ public class Math3dUtil {
         return ret;
     }
     
+        public static double[][] createScaleMatix(double x,double y,double z){
+        double [][] ret = new double[][]
+        { {x,0,0,0},
+          {0,y,0,0},
+          {0,0,z,0},
+          {0,0,0,1}
+        };
+        return ret;
+    }
+    
     public static double[][] createRotXMatix(double angle)
     {
         double [][] ret = new double[][]
@@ -282,7 +292,7 @@ public class Math3dUtil {
         return ret;
     }
     
-        public static double[][] createRotZMatix(double angle)
+    public static double[][] createRotZMatix(double angle)
     {
         double [][] ret = new double[][]
         { {Math.cos(angle) ,Math.sin(angle),0,0},
@@ -292,6 +302,58 @@ public class Math3dUtil {
         };
         return ret;
     }
+    
+    /**
+     * 
+     * @param tangent x-axis
+     * @param normal y-axis
+     * @param bitangent z-axis
+     * @return 
+     */
+    public static double[][] createOrientationMatix(Vector3 tangent, Vector3 normal, Vector3 bitangent)
+    {
+        double [][] ret = new double[][]
+        { {tangent.x,   tangent.y,   tangent.z ,0},
+          {normal.x,    normal.y ,   normal.z ,0},
+          {bitangent.x, bitangent.y, bitangent.z,0},
+          {0,0,0,1}
+        };
+        return ret;
+    }
+
+    public static Vector3 sphericalAngleToSphericalV3(double theta, double phi){
+        return new Vector3(
+            Math.cos(phi) * Math.sin(theta),
+            Math.sin(phi) * Math.sin(theta),
+            Math.cos(theta));
+    }
+     
+    public static Vector3 sphericalV3ToWorldV3(Vector3 spv){
+        return spv.multiplyByM4(createOrientationMatix(
+                new Vector3(1,0,0),
+                new Vector3(0,0,1),
+                new Vector3(0,1,0)
+        ));
+    }
+    
+    //we need to multiply it by inverze to OrientationMatrix form sphericalV3ToWorldV3, which is same matrix
+    public static Vector3 WorldV3toSphericalV3(Vector3 w){
+        return sphericalV3ToWorldV3(w);
+    }
+    
+    /**
+     * 
+     * @param cv3
+     * @return theta, phi
+     */
+    public static double[] WorldV3toSphericalAngle(Vector3 cv3){
+        double r[] = new double[2];
+        r[0] = Math.acos(cv3.z);
+        r[1] = Math.atan2(cv3.y, cv3.x);
+        return r;
+    }
+    
+    
     
     public static class Vector3 {
         public double x, y, z;
@@ -308,16 +370,22 @@ public class Math3dUtil {
             this.z = v[2];
         }
         
+        
+        public Vector3 toWorldVector3(){
+            return sphericalV3ToWorldV3(this);
+        }
+        
         /**
-         * Creates vector from polar and azimuth angles, using left-handed Z-up convention
+         * Creates spherical vector from polar and azimuth angles, using left-handed Z-up convention
          * See https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/spherical-coordinates-and-trigonometric-functions
-         * @param theta θ in radians
-         * @param phi ϕ in radians
+         * @param theta θ in radians - vertical angle 
+         * @param phi ϕ in radians - horizontal angle 
          */
         public Vector3(double theta, double phi){
-            this.x = Math.cos(phi) * Math.sin(theta);
-            this.y = Math.sin(phi) * Math.sin(theta);
-            this.z = Math.cos(theta);
+            Vector3 r = sphericalAngleToSphericalV3(theta,phi);
+            this.x = r.x;
+            this.y = r.y;
+            this.z = r.z;
         }
         
         public double[] V3toM(){
@@ -409,16 +477,18 @@ public class Math3dUtil {
             return Math.acos(this.normalize().dot(other.normalize()));
         }
         
-        public Vector3 multiplyM3(double[][] m){
+        public Vector3 multiplyByM3(double[][] m){
             double[] res = Mmultiply(new double[]{x,y,z}, m);
             return new Vector3(res[0], res[1], res[2]);
         }
         
-        public Vector3 multiplyM4(double[][] m){
+        public Vector3 multiplyByM4(double[][] m){
             double[] res = Mmultiply(new double[]{x,y,z,1}, m);
-            if(res[4] == 0){res[4] = 1;}//to avoid dividing by 0
-            return new Vector3(res[0]/res[4], res[1]/res[4], res[2]/res[4]);
+            if(res[3] == 0){res[3] = 1;}//to avoid dividing by 0
+            return new Vector3(res[0]/res[3], res[1]/res[3], res[2]/res[3]);
         }
+        
+        
         
         /**
          * Normalize before use

@@ -4,7 +4,6 @@ import color.SpectralPowerDistribution;
 import java.util.*;
 import light.LightSource;
 import math_and_utils.Math3dUtil.Vector3;
-import static math_and_utils.Math3dUtil.anglesToVector3;
 
 /**
  *
@@ -37,7 +36,9 @@ public class UniformPointLightSource extends LightSource{
     
     public Beam getNextBeam(){
         double[] a = getNextBeamArray();
-        //return new Beam(new Vector3(a[0],a[1],a[2]), anglesToVector3( Math.toRadians(a[3]), Math.toRadians(a[4])), a[5],this);
+        
+        //no spherical to cartezian coord transform, becouse it shines everiwhere  anyway
+        
         return new Beam(new Vector3(a[0],a[1],a[2]), 
                 new Vector3( Math.toRadians(a[3]), Math.toRadians(a[4])), 
                 a[5],this);

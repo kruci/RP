@@ -25,14 +25,7 @@ public interface Camera {
      */
     public boolean watch(LightSource.Beam b);
     
-    /**
-     * So we do not have to create Beam instance if we need to change just the direction
-     * @param origin
-     * @param direction
-     * @param lambda
-     * @return 
-     */
-    public boolean watch(Vector3 origin, Vector3 direction, double lambda);
+    //public boolean watch(Vector3 origin, Vector3 direction, double lambda);
     
     
     public Vector3 GetPosition();
