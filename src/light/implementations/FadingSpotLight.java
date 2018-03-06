@@ -52,7 +52,12 @@ public class FadingSpotLight extends SimpleSpotLight{
     public double getSome(double c){
         double find = c*integral; //we want to know what is the smallest angle that contains this integral
         double fangle = 0,last = 0, current = 0, delta = 0; //angle , integrals of cheched angles and current angle
-                
+        
+        if(find < (angle - fadeangles)/step ){
+            fangle = Math.floor(find*step)/step;
+            current = Math.floor(find*step)/step;
+        }
+        
         for(;fangle < angle/step && current <= find; fangle++){
             last = current;
             delta = fx(fangle*step); //value of integral betven previouse and this angle
