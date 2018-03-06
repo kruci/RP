@@ -63,8 +63,8 @@ public class RendererTest extends Application{
                 new SPD490(),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
-                15.0,
-                0.1
+                30.0,
+                0.07
         );
         
         SimpleScene ss= new SimpleScene();

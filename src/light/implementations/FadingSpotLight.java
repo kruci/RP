@@ -16,6 +16,9 @@ public class FadingSpotLight extends SimpleSpotLight{
     double constf;
     double integral;
     
+    //integration step -> less means more precise -> better fading but slower
+    private double step = 0.01;
+    
     public FadingSpotLight(SpectralPowerDistribution spd, double[] position, double cone_direction[], double cone_angle, double fade_per_angle){
         super(spd, position, cone_direction, cone_angle);
         fade = fade_per_angle;
@@ -29,10 +32,10 @@ public class FadingSpotLight extends SimpleSpotLight{
     
     public void setFade(double fade){
         this.fade = fade;
-        fadeangles = 1/fade;
+        fadeangles = (1/fade);
         
-        for(int a = 0;a <= angle/**2*/;++a){
-            integral += fx(a);
+        for(int a = 0;a < angle/step;++a){
+            integral += fx(a*step);
         }
     }
     
@@ -46,19 +49,19 @@ public class FadingSpotLight extends SimpleSpotLight{
         else{return (double)1.0- Math.abs((angle*2.0-x)- fadeangles)*fade;}*/
     }
     
-    private double getSome(double c){
+    public double getSome(double c){
         double find = c*integral; //we want to know what is the smallest angle that contains this integral
         double fangle = 0,last = 0, current = 0, delta = 0; //angle , integrals of cheched angles and current angle
-        
-        for(;fangle <= angle && current <= find; fangle++){
+                
+        for(;fangle < angle/step && current <= find; fangle++){
             last = current;
-            delta = fx(fangle); //value of integral betven previouse and this angle
+            delta = fx(fangle*step); //value of integral betven previouse and this angle
             current += delta; //computes integral for current angle
         }//find is betven last and current
                 
         double ffade = (find - last)/delta;
-         
-        return (fangle-1.0) + ffade;
+        
+        return (fangle*step-1.0) + ffade;
     }
     
     private double[] getNextBeamArray(){
