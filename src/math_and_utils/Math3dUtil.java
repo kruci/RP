@@ -630,4 +630,19 @@ public class Math3dUtil {
     public static void printVector3(Vector3 a){
         System.out.println("("+a.x+", "+a.y+", "+a.z+")");
     }
+    
+    /**
+     * http://www.physicsinsights.org/snells_law_1.html
+     * @param fromN refraction index on entering side 
+     * @param toN refraction index on exiting side
+     * @param fromAngle angle of entering beam (radians)
+     * @param fromLambda wavelength of exiting beam (nm)
+     * @return toAngle (radians),toLambda (nm)
+     */
+    public Pair<Double,Double> refract(double fromN, double toN, double fromAngle, double fromLambda){        
+        double toLambda = (fromN/toN)*fromLambda;
+        double toAngle = Math.asin((fromN/toN)*Math.sin(fromAngle));
+        
+        return new Pair<Double,Double>(toAngle,toLambda);
+    }
 }

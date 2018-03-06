@@ -48,7 +48,7 @@ public class FSL extends Application{
         }
         
         for(int a = 0;a < result.length;++a){
-            System.out.println("angle " + (Math.floor(a*logstep)) + " :" + result[a]);
+            System.out.println("angle " + ((int)Math.floor(a*logstep))+"."+ ((int)(a*logstep*10 - 10*Math.floor(a*logstep)))+ " :" + result[a]);
         }
     }
     
