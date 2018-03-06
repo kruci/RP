@@ -19,10 +19,12 @@ import renderer.Triangle;
  * @author rasto
  */
 public class SimpleSceneObject implements SceneObject{
-    private Triangle triang;
+    public Triangle triang;
+    private boolean trans = false;
     
     public SimpleSceneObject(Vector3 A,Vector3 B,Vector3 C){
         triang = new Triangle(A,B,C);
+        triang.parent = this;
     }
     
     public List<Pair<Triangle, Double>> intersects(LightSource.Beam b){
@@ -33,5 +35,13 @@ public class SimpleSceneObject implements SceneObject{
         }
         
         return l;
+    }
+    
+    public boolean isTransparent(){
+        return trans;
+    }
+    
+    public void setTransparent(boolean t){
+        trans = t;
     }
 }

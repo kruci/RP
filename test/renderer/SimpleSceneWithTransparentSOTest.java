@@ -6,17 +6,13 @@
 package renderer;
 
 import color.implementations.CIE1931StandardObserver;
-import color.implementations.SPDsingle;
+import color.implementations.SPD400to800;
 import java.awt.Color;
-//import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javafx.application.Application;
-import javax.imageio.ImageIO;
-
 import static javafx.application.Application.launch;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -24,18 +20,19 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import light.implementations.FadingSpotLight;
+import javax.imageio.ImageIO;
+import light.implementations.SimpleSpotLight;
 import math_and_utils.Math3dUtil;
-import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.printVector3;
 import renderer.implementations.SimpleCamera;
-import renderer.implementations.SimpleScene;
 import renderer.implementations.SimpleSceneObject;
+import renderer.implementations.SimpleSceneWithTransparentSO;
 
 /**
  *
  * @author rasto
  */
-public class RendererTest extends Application{
+public class SimpleSceneWithTransparentSOTest extends Application{
     public static void main(String [] args){
         launch(args);
     }
@@ -45,58 +42,60 @@ public class RendererTest extends Application{
     
     @Override
     public void start(Stage primaryStage) {
-        /*UniformPointLightSource cl = new UniformPointLightSource(
-                new SPDsingle(singlelambda),
-                new double[]{0,0,0}//poz
-        );*/
-        /*
+
         SimpleSpotLight cl = new SimpleSpotLight(
-                new SPDsingle(singlelambda),
+                new SPD400to800(),//new SPDsingle(singlelambda),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
-                30.0
-        );*/
-        /*CircleLight cl = new CircleLight(
-            new SPDsingle(singlelambda),
-            new double[]{0,0,0},//poz
-            new double[]{0,0,-1}, //dir
-            1//radius
-        );*/
-        FadingSpotLight cl = new FadingSpotLight(
-                new SPDsingle(singlelambda),
-                new double[]{0,0,0},//poz
-                new double[]{0,0,-1}, //dir
-                30.0,
-                0.07
+                1.0
         );
         
-        SimpleScene ss= new SimpleScene();
+        SimpleSceneWithTransparentSO ss= new SimpleSceneWithTransparentSO();
 
         SimpleCamera cam = new SimpleCamera(
-            new Vector3(0,0,0),//from
-            new Vector3(0,0,-1),//to
+            new Math3dUtil.Vector3(0,0,0),//from
+            new Math3dUtil.Vector3(0,0,-1),//to
             300,300,//resolution
-            90,90,//angles
+            3,3,//angles
             new CIE1931StandardObserver(),//color
-            singlelambda,singlelambda//first and last lambda to be observed(saved) by camera 
+            300,900//first and last lambda to be observed(saved) by camera 
         );
-        //triangle pointing down
+        
+        //transparent t
         SimpleSceneObject sso = new SimpleSceneObject(
-                new Vector3(-1, 1, -1),
-                new Vector3(1, 1, -1),
-                new Vector3(0, -1, -1)
+                new Math3dUtil.Vector3(-1, 1, -1),
+                new Math3dUtil.Vector3(1, 1, -1),
+                new Math3dUtil.Vector3(0, -1, -1)
         );
-        //triangle pointing to right
+        sso.setTransparent(true);
+        sso.triang.n0 = 1.5;
+        sso.triang.n1 = 1.0;
+        
+        //transparent t
         SimpleSceneObject sso2 = new SimpleSceneObject(
-                new Math3dUtil.Vector3(6, 1, -10),
-                new Math3dUtil.Vector3(6, -1, -10),
-                new Math3dUtil.Vector3(9, 0, -10)
+                new Math3dUtil.Vector3(-2, 2, -2),
+                new Math3dUtil.Vector3(2, 2, -2),
+                new Math3dUtil.Vector3(0, -2, -2)
         );
+        sso2.setTransparent(true);
+        sso2.triang.n0 = 1.0;
+        sso2.triang.n1 = 1.5;
+        
+        //printVector3(sso2.triang.normal);
+        
+        //nontransparent t
+        SimpleSceneObject sso3 = new SimpleSceneObject(
+                new Math3dUtil.Vector3(-10, 10, -3),
+                new Math3dUtil.Vector3(10, 10, -3),
+                new Math3dUtil.Vector3(0, -10, -3)
+        );
+        
         cl.setPower(power);
         ss.addCamera(cam);
         ss.addLightSource(cl);
         ss.addSceneObject(sso);
         ss.addSceneObject(sso2);
+        ss.addSceneObject(sso3);
         
     //JAVAFX*********************************************
         primaryStage.setTitle("Renderer");
@@ -115,15 +114,15 @@ public class RendererTest extends Application{
                 ss.next();
             }
             long endTime = System.nanoTime() - startTime;
-            save(cam, "test/renderer/RendererTest.png");
+            save(cam, "test/renderer/SceneWithTranspaenci.png");
             lab.setText( Integer.toString((Integer.valueOf(lab.getText()) + togen) ));
-            imageView.setImage(new Image("file:test/renderer/RendererTest.png"));
+            imageView.setImage(new Image("file:test/renderer/SceneWithTranspaenci.png"));
             System.out.println("# added " + (cam.getNumberOfHits() - lasth) + " hits, resulting in " + cam.getNumberOfHits() +
                     " total hits. This iteration took " + (endTime*0.000000001) + " seconds");
         });
            
         VBox bbox = new VBox(bGen,textField,lab,imageView);
-        primaryStage.setScene(new Scene(bbox, 600, 600));
+        primaryStage.setScene(new javafx.scene.Scene(bbox, 600, 600));
         primaryStage.show();
     }
     

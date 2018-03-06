@@ -15,8 +15,9 @@ import static math_and_utils.Math3dUtil.printVector3;
  */
 public class Triangle {
     public static final double epsilon = 0.00001;
-    private Vector3 p1, p2, p3, normal;
-    private double n0 = 1, n1 = 1;
+    public Vector3 p1, p2, p3, normal;
+    public double n0 = 1, n1 = 1; //n0 is on normal side
+    public SceneObject parent = null;
     
     public Triangle(Vector3 _p1, Vector3 _p2, Vector3 _p3){
         p1 = _p1;

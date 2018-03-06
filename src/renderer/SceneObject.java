@@ -20,4 +20,5 @@ public interface SceneObject {
      * @return List of triangles and their distances form b origin
      */
     public List<Pair<Triangle, Double>> intersects(LightSource.Beam b);
+    public boolean isTransparent();
 }

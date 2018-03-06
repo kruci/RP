@@ -639,7 +639,7 @@ public class Math3dUtil {
      * @param fromLambda wavelength of exiting beam (nm)
      * @return toAngle (radians),toLambda (nm)
      */
-    public Pair<Double,Double> refract(double fromN, double toN, double fromAngle, double fromLambda){        
+    public static Pair<Double,Double> refract(double fromN, double toN, double fromAngle, double fromLambda){        
         double toLambda = (fromN/toN)*fromLambda;
         double toAngle = Math.asin((fromN/toN)*Math.sin(fromAngle));
         

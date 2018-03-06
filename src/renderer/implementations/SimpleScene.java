@@ -25,7 +25,6 @@ public class SimpleScene implements Scene{
     private List<LightSource> ls_list;
     private List<SceneObject> so_list;
     public int hits = 0;
-    private boolean debugprint = false;
     
     public SimpleScene(){
         cam_list = new ArrayList<Camera>();
@@ -58,7 +57,7 @@ public class SimpleScene implements Scene{
         Pair<Triangle, Double> closestT = Pair.createPair(null, Double.MAX_VALUE);
         
         
-        //check if it intersects with, and if so, chooses the colsest triangle
+        
         for(SceneObject so : so_list){
             List<Pair<Triangle, Double>> contac = so.intersects(b);
             
@@ -77,15 +76,14 @@ public class SimpleScene implements Scene{
             Vector3 intersectionPoint = b.origin.add((b.direction.normalize()).scale(td.second()));
             Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();//intersectionPoint.sub(cam.GetPosition()).normalize();
                 
-                debugprint = false;
-                if(debugprint == true){
+                /*
                 System.out.print("beam origin = ");printVector3(b.origin);
                 System.out.print("beam direction = ");printVector3(b.direction);
                 System.out.print("intersection = ");printVector3(intersectionPoint);
                 System.out.print("difusedirection = ");printVector3(difusedirection);
-                System.out.println("distance form LS to Intersection = " + td.second());}
-            
-            //cam.watch(intersectionPoint, difusedirection, b.lambda);
+                System.out.println("distance form LS to Intersection = " + td.second());
+                */
+                
             cam.watch(new LightSource.Beam(intersectionPoint,difusedirection,b.lambda,b.source));
         }
         }

@@ -117,7 +117,7 @@ public class SimpleCamera implements Camera{
             lasthitspds = spds.get((int)Px).get((int)Py);
             spds.get((int)Px).get((int)Py).inc(lambda);
         } catch(Exception ex){
-            System.out.println("Cam error");
+            //System.out.println("Cam error");
             return false;
         }
         
