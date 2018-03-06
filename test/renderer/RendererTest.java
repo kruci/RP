@@ -6,7 +6,7 @@
 package renderer;
 
 import color.implementations.CIE1931StandardObserver;
-import color.implementations.SPD490;
+import color.implementations.SPDsingle;
 import java.awt.Color;
 //import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -40,27 +40,30 @@ public class RendererTest extends Application{
         launch(args);
     }
     
+    private static int singlelambda = 577;
+    private static double power = 10000;
+    
     @Override
     public void start(Stage primaryStage) {
         /*UniformPointLightSource cl = new UniformPointLightSource(
-                new SPD490(),
+                new SPDsingle(singlelambda),
                 new double[]{0,0,0}//poz
         );*/
         /*
         SimpleSpotLight cl = new SimpleSpotLight(
-                new SPD490(),
+                new SPDsingle(singlelambda),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
                 15.0
         );*/
         /*CircleLight cl = new CircleLight(
-            new SPD490(),
+            new SPDsingle(singlelambda),
             new double[]{0,0,0},//poz
             new double[]{0,0,-1}, //dir
             1//radius
         );*/
         FadingSpotLight cl = new FadingSpotLight(
-                new SPD490(),
+                new SPDsingle(singlelambda),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
                 30.0,
@@ -75,7 +78,7 @@ public class RendererTest extends Application{
             300,300,//resolution
             90,90,//angles
             new CIE1931StandardObserver(),//color
-            490,490//first and last lambda to be observed(saved) by camera 
+            singlelambda,singlelambda//first and last lambda to be observed(saved) by camera 
         );
         //triangle pointing down
         SimpleSceneObject sso = new SimpleSceneObject(
@@ -89,7 +92,7 @@ public class RendererTest extends Application{
                 new Math3dUtil.Vector3(6, -1, -10),
                 new Math3dUtil.Vector3(9, 0, -10)
         );
-        cl.setPower(10000);
+        cl.setPower(power);
         ss.addCamera(cam);
         ss.addLightSource(cl);
         ss.addSceneObject(sso);

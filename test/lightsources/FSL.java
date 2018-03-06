@@ -5,7 +5,7 @@
  */
 package lightsources;
 
-import color.implementations.SPD490;
+import color.implementations.SPDsingle;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
@@ -31,7 +31,7 @@ public class FSL extends Application{
     
     public void start(Stage primaryStage){
         FadingSpotLight fsl = new FadingSpotLight(
-                new SPD490(), 
+                new SPDsingle(555), 
                 new Vector3(0,0,0).V3toM(), 
                 new Vector3(0,0,-1).V3toM(), 
                 angles, 

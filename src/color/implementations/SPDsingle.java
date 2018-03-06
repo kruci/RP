@@ -25,7 +25,7 @@ public class SPDsingle implements SpectralPowerDistribution{
     }
     
     public double getValue(double l){
-        return Ys;
+        return 1.0;
     }
     
     public double[] getFirstLastZero(){

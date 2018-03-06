@@ -9,7 +9,6 @@ import color.implementations.CIE1931StandardObserver;
 import color.Color;
 import color.implementations.SPD1;
 import color.SpectralPowerDistribution;
-import color.implementations.SPD490;
 import color.implementations.SPDsingle;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -35,7 +34,7 @@ public class ColAndSPDTest extends Application {
     @Override
     public void start(Stage primaryStage) {
         Color c = new CIE1931StandardObserver();
-        int begL = 300, endL = 800, height = 20;
+        int begL = 360, endL = 830, height = 20;
         BufferedImage image = new BufferedImage(endL-begL,height,BufferedImage.TYPE_INT_RGB);
         
         for(int a = 0;a < endL-begL;++a){
@@ -49,10 +48,10 @@ public class ColAndSPDTest extends Application {
                 } catch(Exception e){}
             }
         }
-        ImageSave("test/col/spectrum300-800.png", image);
+        ImageSave("test/col/spectrum360-830.png", image);
         
         
-        SpectralPowerDistribution spd = new SPD490();//SPD1();
+        SpectralPowerDistribution spd = new SPDsingle(555);
         spd.setY(1.5);
         int ret[] = c.SPDtoRGB(spd);
         String cs = "rgb(" + ret[0]+", " + ret[1]+
