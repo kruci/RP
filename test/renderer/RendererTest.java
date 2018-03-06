@@ -24,7 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import light.implementations.FadingSpotLight;
+import light.implementations.UniformPointLightSource;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
 import renderer.implementations.SimpleCamera;
@@ -45,10 +45,10 @@ public class RendererTest extends Application{
     
     @Override
     public void start(Stage primaryStage) {
-        /*UniformPointLightSource cl = new UniformPointLightSource(
+        UniformPointLightSource cl = new UniformPointLightSource(
                 new SPDsingle(singlelambda),
                 new double[]{0,0,0}//poz
-        );*/
+        );
         /*
         SimpleSpotLight cl = new SimpleSpotLight(
                 new SPDsingle(singlelambda),
@@ -62,20 +62,20 @@ public class RendererTest extends Application{
             new double[]{0,0,-1}, //dir
             1//radius
         );*/
-        FadingSpotLight cl = new FadingSpotLight(
+        /*FadingSpotLight cl = new FadingSpotLight(
                 new SPDsingle(singlelambda),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
                 30.0,
                 0.07
-        );
+        );*/
         
         SimpleScene ss= new SimpleScene();
 
         SimpleCamera cam = new SimpleCamera(
             new Vector3(0,0,0),//from
             new Vector3(0,0,-1),//to
-            300,300,//resolution
+            800,800,//resolution
             90,90,//angles
             new CIE1931StandardObserver(),//color
             singlelambda,singlelambda//first and last lambda to be observed(saved) by camera 

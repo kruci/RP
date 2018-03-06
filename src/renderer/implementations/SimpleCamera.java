@@ -28,6 +28,7 @@ public class SimpleCamera implements Camera{
     protected SpectralPowerDistribution lasthitspds = null;
     protected double canvasWhalf, canvasHhalf;
     protected double PixelsCW, PixelsCH;
+    //protected double depth = 1;
     
     /**
      * Place camera to "from" and look to "to" point. 
@@ -101,9 +102,9 @@ public class SimpleCamera implements Camera{
                 return false; //we didnt hit the camera
             }
         */
-        
-        double Px = (b_origin.x)/(-b_origin.z);
-        double Py = (b_origin.y)/(-b_origin.z);
+        //depth = Math.abs(b_origin.z);
+        double Px = /*depth*/ (b_origin.x)/(-b_origin.z);
+        double Py = /*depth*/ (b_origin.y)/(-b_origin.z);
         //System.out.println(Px+ " " + Py + "  " + canvasWhalf + " " + canvasHhalf);
         if( Math.abs(Px) > canvasWhalf ||
             Math.abs(Py) > canvasHhalf

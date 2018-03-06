@@ -54,9 +54,9 @@ public class SimpleSceneWithTransparentSOTest extends Application{
 
         SimpleCamera cam = new SimpleCamera(
             new Math3dUtil.Vector3(0,0,0),//from
-            new Math3dUtil.Vector3(0,0,-1),//to
+            new Math3dUtil.Vector3(0,0,-3),//to
             300,300,//resolution
-            3,3,//angles
+            5,5,//angles
             new CIE1931StandardObserver(),//color
             300,900//first and last lambda to be observed(saved) by camera 
         );

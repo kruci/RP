@@ -83,13 +83,18 @@ public class SimpleSceneWithTransparentSO implements Scene {
             
             //if we hit transparent, generate new beam with refraction and repeat while
             if(closestT.first().parent.isTransparent() == true){
+                double A1 = b.direction.normalize().angle(closestT.first().normal);
+                //System.out.println(b.direction.dot(closestT.first().normal));
                 Pair<Double,Double> ref = refract(closestT.first().n0, closestT.first().n1, 
-                        b.direction.normalize().angle(closestT.first().normal),b.lambda);
+                        A1,b.lambda);
                 /*
                 System.out.println("fromA: " + b.direction.normalize().angle(closestT.first().normal) + " fromL: " + b.lambda);
                 System.out.println("toA: " + ref.first() + " toL: " + ref.second());
                 */
-                Math3dUtil.Vector3 newdir = rotateVectorCC(b.direction.normalize(), closestT.first().normal, ref.first());
+                
+                Math3dUtil.Vector3 newdir = rotateVectorCC(b.direction.normalize(), closestT.first().normal, 
+                        -(A1 - ref.first()));
+                
                 
                 b = new LightSource.Beam(intersectionPoint, newdir, ref.second(), ls_list.get(0));
                 //to ignore last triangle
