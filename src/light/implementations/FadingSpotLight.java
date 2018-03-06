@@ -31,30 +31,34 @@ public class FadingSpotLight extends SimpleSpotLight{
         this.fade = fade;
         fadeangles = 1/fade;
         
-        for(int a = 0;a <= angle*2;++a){
+        for(int a = 0;a <= angle/**2*/;++a){
             integral += fx(a);
         }
     }
     
     //occurences function
     private double fx(double x){
+        if(x < angle-fadeangles){return 1;}
         
-        if(x < fadeangles){return (double)1.0 - Math.abs(x- fadeangles)*fade;}
+        return (double)1.0 - (x-(angle-fadeangles))*fade;
+        /*if(x < fadeangles){return (double)1.0 - Math.abs(x- fadeangles)*fade;}
         else if(x<= angle*2.0 -fadeangles){return 1;}
-        else{return (double)1.0- Math.abs((angle*2.0-x)- fadeangles)*fade;}
+        else{return (double)1.0- Math.abs((angle*2.0-x)- fadeangles)*fade;}*/
     }
     
     private double getSome(double c){
-        double f = (double)c * integral;
-        double a = 0, d1 = 0, d2 = 0;
-        for(;a<=angle*2 && d2<f;++a){
-            d1 = d2;
-            d2+= fx(a);
-        }
-        //if c ==0 then a-1 = -1 and we dont want to return that
-        if(a <=0.0){a = 1;}
-        //last part (after +) is for smoothing
-        return (double)(((a-1) % 360) + ( (f-d1) / (d2-d1) ));
+        double find = c*integral; //we want to know what is the smallest angle that contains this integral
+        double fangle = 0,last = 0, current = 0, delta = 0; //angle , integrals of cheched angles and current angle
+        
+        for(;fangle <= angle && current <= find; fangle++){
+            last = current;
+            delta = fx(fangle); //value of integral betven previouse and this angle
+            current += delta; //computes integral for current angle
+        }//find is betven last and current
+                
+        double ffade = (find - last)/delta;
+         
+        return (fangle-1.0) + ffade;
     }
     
     private double[] getNextBeamArray(){
@@ -89,7 +93,7 @@ public class FadingSpotLight extends SimpleSpotLight{
         //shift to side - this is where fading is done
             //get orhtogonal vector - cross of dir and random vector
             Math3dUtil.Vector3 orthogonal = dir.cross(new Math3dUtil.Vector3(658,781,356).normalize()).normalize();
-        double rot = getSome(rndrAX.nextDouble()) - angle;
+        double rot = getSome(rndrAX.nextDouble());// - angle;
         dir = rotateVectorCC(dir, orthogonal,Math.toRadians(rot));
         //rotate around dir
         double rot2 = (rndrAY.nextDouble() *360);

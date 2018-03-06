@@ -10,9 +10,9 @@ import color.SpectralPowerDistribution;
 import java.util.Vector;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
+import static math_and_utils.Math3dUtil.Minvert;
 import math_and_utils.Math3dUtil.Vector3;
-import static math_and_utils.Math3dUtil.WorldV3toSphericalV3;
-import static math_and_utils.Math3dUtil.vithinError;
+import static math_and_utils.Math3dUtil.printVector3;
 import renderer.Camera;
 
 /**
@@ -20,121 +20,102 @@ import renderer.Camera;
  * @author rasto
  */
 public class SimpleCamera implements Camera{
-    protected Vector3 poz, right, up, dir;
+    protected double[][] camToWorld, worldToCam;
     protected int w,h;
     protected Color col;
     protected Vector<Vector<SPDHolder>> spds;
-    protected double Ax, Ay, hits;
+    protected double Aw, Ah, hits;
     protected SpectralPowerDistribution lasthitspds = null;
+    protected double canvasWhalf, canvasHhalf;
+    protected double PixelsCW, PixelsCH;
     
-    //calcspecific
-    protected double dangleXperPixel, dangleYperPixel;
     /**
-     * 
-     * @param _poz
-     * @param _right
-     * @param _up
-     * @param _dir
-     * @param _w
-     * @param _h
-     * @param _AngleX half of this from the _dir on both sides, undefined if more than 180 or less than 0
-     * @param _AngleY half of this from the _dir on both sides, undefined if than 180 or less than 0
-     * @param _col 
+     * Place camera to "from" and look to "to" point. 
+     * The smaller "(lastlambda - firstlambda)", the less memory does this camera need
+     * @param from camera position
+     * @param to point to where we are looking
+     * @param pixelwidth width of generated image
+     * @param pixelheight height of generated image
+     * @param AngleX total horizontal camera angle (half of it on both sides from direction)
+     * @param AngleY total vertical camera angle (half of it on both sides from direction)
+     * @param color 
+     * @param firstlambda first lambda that will be observed
+     * @param lastlambda last lambda that will be observed
      */
-    public SimpleCamera(Vector3 _poz, Vector3 _right, Vector3 _up, Vector3 _dir, 
-            int _w, int _h, double _AngleX, double _AngleY,Color _col){
-        poz = _poz;
-        right = _right;
-        up = _up;
-        dir = _dir;
-        w = _w;
-        h = _h;
-        Ax = _AngleX ;
-        Ay = _AngleY ;
-        col = _col;
+    public SimpleCamera(Vector3 from, Vector3 to, int pixelwidth, int pixelheight, 
+            double AngleX, double AngleY,Color color, int firstlambda, int lastlambda)
+    {
+        
+        Vector3 forward = from.sub(to).normalize();
+        Vector3 right = ((new Vector3(0,1,0).normalize()).cross(forward)).normalize();
+        Vector3 up = (forward.cross(right)).normalize();
+        
+        camToWorld = new double[][]{right.V3toM4(0), up.V3toM4(0), forward.V3toM4(0), from.V3toM4(1)};
+        worldToCam = Minvert(camToWorld);
+        /*for(int a = 0;a < 4;++a){
+            for(int b = 0;b < 4;++b){
+                System.out.print(camToWorld[a][b] + " ");
+            }
+            System.out.println();
+        }*/
+
+        w = pixelwidth; h = pixelheight;
+        Aw = AngleX; Ah = AngleY;
+        col = color;
         
         spds = new Vector<>();
         for(int a = 0;a < w;++a ){
             Vector<SPDHolder> v = new Vector<>();
             for(int b = 0;b < h;++b){
-                v.add(new SPDHolder());
+                v.add(new SPDHolder(firstlambda,lastlambda));
             }
             spds.add(v);
         }
         
-        dangleXperPixel = (double)w / Ax;
-        dangleYperPixel = (double)h / Ay;
-    } 
+        canvasWhalf = Math.sin(Math.toRadians(Aw/2.0)) / Math.sin(Math.toRadians(90 - Aw/2.0));
+        canvasHhalf = Math.sin(Math.toRadians(Ah/2.0)) / Math.sin(Math.toRadians(90 - Ah/2.0));
+        //System.out.println( canvasWhalf + " " + canvasHhalf);
+        
+        PixelsCW = w/ (canvasWhalf*2.0);
+        PixelsCH = h/ (canvasHhalf*2.0);
+    }
     
-    public boolean watch(Math3dUtil.Vector3 origin, Math3dUtil.Vector3 direction, double lambda)
-    {
-        double length = origin.distance(poz);
-        double e = 0.00001;
+    public boolean watch(Math3dUtil.Vector3 _origin, Math3dUtil.Vector3 _direction, double lambda){
+        Vector3 b_origin = _origin.multiplyByM4(worldToCam);
+        //printVector3(_origin); printVector3(b_origin);
         
-            /*{
-            System.out.print("# origin = "); printVector3(origin);
-            System.out.print("  direction = "); printVector3(direction);
-            System.out.println("  distance betwen origin and camera = " + length);}*/
-        
-        //did it hit poz <-> camera centre?
-        Vector3 rorigin = poz.add(direction.normalize().scale(-length));
-            /*{
-            System.out.print("  camera = "); printVector3(poz);
-            System.out.print("  approx origin = "); printVector3(rorigin);
-            System.out.print("  scaled flipped direction = "); printVector3(direction.normalize().scale(-length));}*/
-        if(vithinError(rorigin.x, origin.x, e) == false ||
-           vithinError(rorigin.y, origin.y, e) == false ||
-           vithinError(rorigin.z, origin.z, e) == false){
-            return false; //we didnt hit the camera
-        }    
-            /*{
-            System.out.println("  origin ~ approx origin");}*/
-        
-        //is it in fov ?
-       
-        
-        double inFovX = Math.toDegrees(direction.angle(right)) - Ax/2.0; //from right fov border
-        double inFovY = Math.toDegrees(direction.angle(up)) - Ay/2.0; //from top fov border
-        
-        
-        
-        /*double _xscale = 1.0/Math.sin(Math.toRadians(Ax/2.0));
-        double _yscale = 1.0/Math.sin(Math.toRadians(Ay/2.0));
-        double _inFovX = Math.toDegrees(direction.angle(right));
-        double _inFovY = Math.toDegrees(direction.angle(up));
-        System.out.println("_infov " + _inFovX + " " + _inFovY);
-        
-        direction = WorldV3toSphericalV3(direction);
-        
-        double inFovX = Math.toDegrees(direction.sphericalPhi()) - Ax/2.0; //from right fov border
-        double inFovY = Math.toDegrees(direction.sphericalTheta()) - Ay/2.0; //from top fov border
-        */
-        
-        if( (inFovX <= 0) || (inFovX > Ax) ||
-            (inFovY <= 0) || (inFovY > Ay) )
-        {
-            return false;//out of fov
-        }
-        
-        
-        double fromDirX = -Ax/2.0 + inFovX;
-        double fromDirY = -Ay/2.0 + inFovY;
-        
-        double xscale = 1.0/Math.sin(Math.toRadians(Ax/2.0));
-        double yscale = 1.0/Math.sin(Math.toRadians(Ay/2.0));
-        
-        //this should be computed differently
-        double px = w/2.0 + Math.sin(Math.toRadians(fromDirX))*xscale * w/2.0;
-        double py = h/2.0 - Math.sin(Math.toRadians(fromDirY))*yscale * h/2.0;
-        
+        //needed only if we dont send beems directly to camera
         /*
-        System.out.println("# inFov : " + inFovX + " " + inFovY + "\n  fromDir: " +fromDirX + " " +fromDirY +
-                "\n  sacle: " + xscale + " " + yscale + "\n  points : " + px + " " + py +
-                "\n  p calc: " + (Math.sin(Math.toRadians(fromDirX))*xscale) + " " +(Math.sin(Math.toRadians(fromDirY))*yscale));
+            //remove translation form direction vector
+            Vector3 b_direction = _direction.multiplyByM4(worldToCam);
+            b_direction.x -= _direction.x*camToWorld[3][0];
+            b_direction.y -= _direction.x*camToWorld[3][1];
+            b_direction.z -= _direction.x*camToWorld[3][2];
+        
+            double length = b_origin.distance(GetPosition());
+            double e = 0.00001;
+            Vector3 rorigin = poz.add(b_direction.normalize().scale(-length));
+            if(vithinError(rorigin.x, b_origin.x, e) == false ||
+                vithinError(rorigin.y, b_origin.y, e) == false ||
+                vithinError(rorigin.z, b_origin.z, e) == false){
+                return false; //we didnt hit the camera
+            }
         */
+        
+        double Px = (b_origin.x)/(-b_origin.z);
+        double Py = (b_origin.y)/(-b_origin.z);
+        //System.out.println(Px+ " " + Py + "  " + canvasWhalf + " " + canvasHhalf);
+        if( Math.abs(Px) > canvasWhalf ||
+            Math.abs(Py) > canvasHhalf
+           ){return false;}
+        
+        Px = w/2.0 + Px*PixelsCW;
+        Py = h/2.0 - Py*PixelsCH; // - to flip y
+        //System.out.println(Px+ " " + Py);
+        
         try{
-            lasthitspds = spds.get((int)px).get((int)py);    
-            spds.get((int)px).get((int)py).inc(lambda);
+            lasthitspds = spds.get((int)Px).get((int)Py);    
+            spds.get((int)Px).get((int)Py).inc(lambda);
         } catch(Exception ex){
             System.out.println("Cam error");
             return false;
@@ -142,17 +123,14 @@ public class SimpleCamera implements Camera{
         
         hits++;
         return true;
-
-        
     }
     
     @Override
     public boolean watch(LightSource.Beam b)
     {
         boolean r = watch(b.origin, b.direction, b.lambda);
-        if(r == true && lasthitspds != null){
+        if(r == true && lasthitspds != null){//works only if all beams are from 1 LS
             double newY = ((SPDHolder)lasthitspds).spdshits * (b.source.getPower()/ b.source.getNumberOfBeams());
-            //System.out.println("newY= " + newY);
             lasthitspds.setY( newY);
         }
         return r;
@@ -176,12 +154,19 @@ public class SimpleCamera implements Camera{
     
     
     class SPDHolder implements SpectralPowerDistribution{
-        double wavelenghts[];// = new double[701];
+        double wavelenghts[];
         double Ys = 1;
         public double spdshits = 0;
+        public int first = 300, last = 800;
         
         public SPDHolder(){
-            wavelenghts = new double[701];
+            wavelenghts = new double[last-first +1];
+        }
+        
+        public SPDHolder(int first, int last){
+            this.first = first;
+            this.last = last;
+            wavelenghts = new double[last-first +1];
         }
         
         public double getNextLamnbda(){
@@ -189,18 +174,18 @@ public class SimpleCamera implements Camera{
         }
         
         public double getValue(double lambda){
-            return wavelenghts[(int)lambda-300];
+            return wavelenghts[(int)lambda-first];
         }
         
         public void inc(double lambda){
-            wavelenghts[(int)lambda-300]++;
+            wavelenghts[(int)lambda-first]++;
             spdshits++;
         }
         
         public double[] getFirstLastZero(){
             double[] r = new double[2];
-            r[0] = 300;
-            r[1] = 1000;
+            r[0] = first-1;
+            r[1] = last+1;
             
             return r;
         }
@@ -215,6 +200,6 @@ public class SimpleCamera implements Camera{
     }
     
     public Vector3 GetPosition(){
-        return poz;
+        return new Vector3(camToWorld[3]);
     }
 }
