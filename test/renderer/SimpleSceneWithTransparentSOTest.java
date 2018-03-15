@@ -15,6 +15,7 @@ import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -67,9 +68,7 @@ public class SimpleSceneWithTransparentSOTest extends Application{
                 new Math3dUtil.Vector3(1, 1, -1),
                 new Math3dUtil.Vector3(0, -1, -1)
         );
-        sso.setTransparent(true);
-        sso.triang.n0 = 1.5;
-        sso.triang.n1 = 1.0;
+        
         
         //transparent t
         SimpleSceneObject sso2 = new SimpleSceneObject(
@@ -77,9 +76,7 @@ public class SimpleSceneWithTransparentSOTest extends Application{
                 new Math3dUtil.Vector3(2, 2, -2),
                 new Math3dUtil.Vector3(0, -2, -2)
         );
-        sso2.setTransparent(true);
-        sso2.triang.n0 = 1.0;
-        sso2.triang.n1 = 1.5;
+        
         
         //printVector3(sso2.triang.normal);
         
@@ -120,8 +117,9 @@ public class SimpleSceneWithTransparentSOTest extends Application{
             System.out.println("# added " + (cam.getNumberOfHits() - lasth) + " hits, resulting in " + cam.getNumberOfHits() +
                     " total hits. This iteration took " + (endTime*0.000000001) + " seconds");
         });
-           
-        VBox bbox = new VBox(bGen,textField,lab,imageView);
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(imageView);   
+        VBox bbox = new VBox(bGen,textField,lab,sp);
         primaryStage.setScene(new javafx.scene.Scene(bbox, 600, 600));
         primaryStage.show();
     }

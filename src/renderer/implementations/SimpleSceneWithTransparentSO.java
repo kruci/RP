@@ -15,6 +15,7 @@ import math_and_utils.Pair;
 import renderer.Camera;
 import renderer.Scene;
 import renderer.SceneObject;
+import renderer.SceneObjectProperty;
 import renderer.Triangle;
 
 /**
@@ -82,10 +83,13 @@ public class SimpleSceneWithTransparentSO implements Scene {
             Math3dUtil.Vector3 intersectionPoint = b.origin.add((b.direction.normalize()).scale(closestT.second()));
             
             //if we hit transparent, generate new beam with refraction and repeat while
-            if(closestT.first().parent.isTransparent() == true){
+            SceneObjectProperty side = closestT.first().parent.getSideProperty(closestT.first(), b.direction);
+            SceneObjectProperty oside = closestT.first().parent.getOtherSideProperty(closestT.first(), b.direction);
+            if(side instanceof Transparency &&
+               oside instanceof Transparency ){
                 double A1 = b.direction.normalize().angle(closestT.first().normal);
                 //System.out.println(b.direction.dot(closestT.first().normal));
-                Pair<Double,Double> ref = refract(closestT.first().n0, closestT.first().n1, 
+                Pair<Double,Double> ref = refract(((Transparency)side).getN(b.lambda), ((Transparency)oside).getN(b.lambda), 
                         A1,b.lambda);
                 /*
                 System.out.println("fromA: " + b.direction.normalize().angle(closestT.first().normal) + " fromL: " + b.lambda);

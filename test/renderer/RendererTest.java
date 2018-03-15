@@ -8,22 +8,21 @@ package renderer;
 import color.implementations.CIE1931StandardObserver;
 import color.implementations.SPDsingle;
 import java.awt.Color;
-//import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javafx.application.Application;
-import javax.imageio.ImageIO;
-
 import static javafx.application.Application.launch;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javax.imageio.ImageIO;
 import light.implementations.UniformPointLightSource;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
@@ -121,8 +120,10 @@ public class RendererTest extends Application{
             System.out.println("# added " + (cam.getNumberOfHits() - lasth) + " hits, resulting in " + cam.getNumberOfHits() +
                     " total hits. This iteration took " + (endTime*0.000000001) + " seconds");
         });
-           
-        VBox bbox = new VBox(bGen,textField,lab,imageView);
+        
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(imageView);
+        VBox bbox = new VBox(bGen,textField,lab,sp);
         primaryStage.setScene(new Scene(bbox, 600, 600));
         primaryStage.show();
     }

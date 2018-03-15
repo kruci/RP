@@ -6,6 +6,7 @@
 package renderer;
 import java.util.*;
 import light.*;
+import math_and_utils.Math3dUtil;
 import math_and_utils.Pair;
 
 /**
@@ -20,5 +21,6 @@ public interface SceneObject {
      * @return List of triangles and their distances form b origin
      */
     public List<Pair<Triangle, Double>> intersects(LightSource.Beam b);
-    public boolean isTransparent();
+    public SceneObjectProperty getSideProperty(Triangle t,Math3dUtil.Vector3 direction);
+    public SceneObjectProperty getOtherSideProperty(Triangle t,Math3dUtil.Vector3 direction);
 }

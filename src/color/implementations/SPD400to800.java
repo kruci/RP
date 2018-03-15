@@ -25,7 +25,7 @@ public class SPD400to800 implements SpectralPowerDistribution{
     }
     
     public double getValue(double l){
-        return 1.0;
+        return 1.0*Ys;
     }
     
     public double[] getFirstLastZero(){
