@@ -30,6 +30,8 @@ public class SimpleCamera implements Camera{
     protected double PixelsCW, PixelsCH;
     //protected double depth = 1;
     
+    protected Vector3 cdir;
+    
     /**
      * Place camera to "from" and look to "to" point. 
      * The smaller "(lastlambda - firstlambda)", the less memory does this camera need
@@ -50,6 +52,8 @@ public class SimpleCamera implements Camera{
         Vector3 forward = from.sub(to).normalize();
         Vector3 right = ((new Vector3(0,1,0).normalize()).cross(forward)).normalize();
         Vector3 up = (forward.cross(right)).normalize();
+        
+        cdir = forward.scale(-1);
         
         camToWorld = new double[][]{right.V3toM4(0), up.V3toM4(0), forward.V3toM4(0), from.V3toM4(1)};
         worldToCam = Minvert(camToWorld);
@@ -83,25 +87,21 @@ public class SimpleCamera implements Camera{
     
     public boolean watch(Math3dUtil.Vector3 _origin, Math3dUtil.Vector3 _direction, double lambda){
         Vector3 b_origin = _origin.multiplyByM4(worldToCam);
-        //printVector3(_origin); printVector3(b_origin);
         
-        //needed only if we dont send beems directly to camera
         /*
-            //remove translation form direction vector
-            Vector3 b_direction = _direction.multiplyByM4(worldToCam);
+        Vector3 b_direction = _direction.multiplyByM4(worldToCam);
+        //remove translation form direction vector   
             b_direction.x -= _direction.x*camToWorld[3][0];
             b_direction.y -= _direction.x*camToWorld[3][1];
             b_direction.z -= _direction.x*camToWorld[3][2];
+        b_direction = b_direction.normalize();*/
         
-            double length = b_origin.distance(GetPosition());
-            double e = 0.00001;
-            Vector3 rorigin = poz.add(b_direction.normalize().scale(-length));
-            if(vithinError(rorigin.x, b_origin.x, e) == false ||
-                vithinError(rorigin.y, b_origin.y, e) == false ||
-                vithinError(rorigin.z, b_origin.z, e) == false){
-                return false; //we didnt hit the camera
-            }
-        */
+        //check if direction is correct
+        if(cdir.dot(_direction) >0 )
+        {//
+            return false;
+        }
+        
         //depth = Math.abs(b_origin.z);
         double Px = /*depth*/ (b_origin.x)/(-b_origin.z);
         double Py = /*depth*/ (b_origin.y)/(-b_origin.z);

@@ -74,7 +74,7 @@ public class RendererTest extends Application{
         SimpleCamera cam = new SimpleCamera(
             new Vector3(0,0,0),//from
             new Vector3(0,0,-1),//to
-            800,800,//resolution
+            500,500,//resolution
             90,90,//angles
             new CIE1931StandardObserver(),//color
             singlelambda,singlelambda//first and last lambda to be observed(saved) by camera 

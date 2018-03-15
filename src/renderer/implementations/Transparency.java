@@ -14,7 +14,7 @@ import renderer.SceneObjectProperty;
  * @author rasto
  */
 public class Transparency implements SceneObjectProperty {
-    private double b1,b2,b3,c1,c2,c3;
+    private double b1= 0,b2= 0,b3= 0,c1= 0,c2= 0,c3= 0;
     
     /**
      * some values on https://refractiveindex.info/?shelf=glass&book=BK7&page=SCHOTT
