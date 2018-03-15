@@ -28,6 +28,7 @@ import static math_and_utils.Math3dUtil.printVector3;
 import renderer.implementations.SimpleCamera;
 import renderer.implementations.SimpleSceneObject;
 import renderer.implementations.SimpleSceneWithTransparentSO;
+import renderer.implementations.Transparency;
 
 /**
  *
@@ -62,29 +63,39 @@ public class SimpleSceneWithTransparentSOTest extends Application{
             300,900//first and last lambda to be observed(saved) by camera 
         );
         
+        Transparency tspr = new Transparency(0.6961663, 0.4079426, 0.8974794,
+                                            0.0684043*0.0684043, 0.1162414*0.1162414, 9.896161*9.896161);
+        
         //transparent t
         SimpleSceneObject sso = new SimpleSceneObject(
-                new Math3dUtil.Vector3(-1, 1, -1),
-                new Math3dUtil.Vector3(1, 1, -1),
-                new Math3dUtil.Vector3(0, -1, -1)
+                new Math3dUtil.Vector3(-100, 100, -1),
+                new Math3dUtil.Vector3(100, 100, -0.5),
+                new Math3dUtil.Vector3(0, -100, -0.5)
         );
+        sso.front = new Transparency(0,0,0,0,0,0);
+        sso.back = tspr;
+        printVector3(sso.triang.get(0).normal);
+        
         
         
         //transparent t
         SimpleSceneObject sso2 = new SimpleSceneObject(
-                new Math3dUtil.Vector3(-2, 2, -2),
-                new Math3dUtil.Vector3(2, 2, -2),
-                new Math3dUtil.Vector3(0, -2, -2)
+                new Math3dUtil.Vector3(-100, 100, -2),
+                new Math3dUtil.Vector3(100, 100, -1.5),
+                new Math3dUtil.Vector3(0, -100, -1.5)
         );
+        sso.back = new Transparency(0,0,0,0,0,0);
+        sso.front = tspr;
+        printVector3(sso.triang.get(0).normal);
         
         
         //printVector3(sso2.triang.normal);
         
         //nontransparent t
         SimpleSceneObject sso3 = new SimpleSceneObject(
-                new Math3dUtil.Vector3(-10, 10, -3),
-                new Math3dUtil.Vector3(10, 10, -3),
-                new Math3dUtil.Vector3(0, -10, -3)
+                new Math3dUtil.Vector3(-100, 100, -5),
+                new Math3dUtil.Vector3(100, 100, -5),
+                new Math3dUtil.Vector3(0, -100, -5)
         );
         
         cl.setPower(power);
@@ -111,9 +122,9 @@ public class SimpleSceneWithTransparentSOTest extends Application{
                 ss.next();
             }
             long endTime = System.nanoTime() - startTime;
-            save(cam, "test/renderer/SceneWithTranspaenci.png");
+            save(cam, "test/renderer/SceneWithTranspaency.png");
             lab.setText( Integer.toString((Integer.valueOf(lab.getText()) + togen) ));
-            imageView.setImage(new Image("file:test/renderer/SceneWithTranspaenci.png"));
+            imageView.setImage(new Image("file:test/renderer/SceneWithTranspaency.png"));
             System.out.println("# added " + (cam.getNumberOfHits() - lasth) + " hits, resulting in " + cam.getNumberOfHits() +
                     " total hits. This iteration took " + (endTime*0.000000001) + " seconds");
         });

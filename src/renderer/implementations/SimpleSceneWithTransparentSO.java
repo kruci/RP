@@ -58,7 +58,7 @@ public class SimpleSceneWithTransparentSO implements Scene {
         }
 
         LightSource.Beam b = ls_list.get(0).getNextBeam();
-        
+        //System.out.println("Start " + b.lambda);
 
         //until we hit nontransparent or we hit nothing
         
@@ -85,8 +85,10 @@ public class SimpleSceneWithTransparentSO implements Scene {
             //if we hit transparent, generate new beam with refraction and repeat while
             SceneObjectProperty side = closestT.first().parent.getSideProperty(closestT.first(), b.direction);
             SceneObjectProperty oside = closestT.first().parent.getOtherSideProperty(closestT.first(), b.direction);
+            
             if(side instanceof Transparency &&
-               oside instanceof Transparency ){
+               oside instanceof Transparency )
+            {
                 double A1 = b.direction.normalize().angle(closestT.first().normal);
                 //System.out.println(b.direction.dot(closestT.first().normal));
                 Pair<Double,Double> ref = refract(((Transparency)side).getN(b.lambda), ((Transparency)oside).getN(b.lambda), 
@@ -103,7 +105,7 @@ public class SimpleSceneWithTransparentSO implements Scene {
                 b = new LightSource.Beam(intersectionPoint, newdir, ref.second(), ls_list.get(0));
                 //to ignore last triangle
                 lastT = closestT.first();
-                closestT = Pair.createPair(null, Double.MAX_VALUE);
+                //closestT = Pair.createPair(null, Double.MAX_VALUE);
                 continue;
             }
             else{//if we hit nontransparent, send to camera and break while
@@ -111,6 +113,7 @@ public class SimpleSceneWithTransparentSO implements Scene {
                     Math3dUtil.Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();
                     cam.watch(new LightSource.Beam(intersectionPoint,difusedirection,b.lambda,b.source));
                 }
+                //System.out.println("End " + b.lambda);
                 break;
             }
         }

@@ -49,8 +49,14 @@ public class SimpleSceneObject implements SceneObject{
         return l;
     }
     
+    /**
+     * get property of side that was hit from direction
+     * @param t
+     * @param direction
+     * @return 
+     */
     public SceneObjectProperty getSideProperty(Triangle t,Vector3 direction){
-        if(t.normal.dot(direction) >=0)//from direction that normal extends to
+        if(t.normal.dot(direction) <0)//from direction that normal extends to
         {
             return front;
         }
@@ -61,7 +67,7 @@ public class SimpleSceneObject implements SceneObject{
     }
     
     public SceneObjectProperty getOtherSideProperty(Triangle t,Math3dUtil.Vector3 direction){
-        if(t.normal.dot(direction) >=0)//from direction that normal extends to
+        if(t.normal.dot(direction) <0)//from direction that normal extends to
         {
             return back;//front;
         }
