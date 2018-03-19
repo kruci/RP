@@ -39,4 +39,8 @@ public class SPDsingle implements SpectralPowerDistribution{
     public double getY(){
         return Ys;
     }
+    
+    public void setLambda(int l){
+        lambda = l;
+    }
 }

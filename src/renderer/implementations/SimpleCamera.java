@@ -7,12 +7,12 @@ package renderer.implementations;
 
 import color.Color;
 import color.SpectralPowerDistribution;
+import color.implementations.SPDsingle;
 import java.util.Vector;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
 import static math_and_utils.Math3dUtil.Minvert;
 import math_and_utils.Math3dUtil.Vector3;
-import static math_and_utils.Math3dUtil.printVector3;
 import renderer.Camera;
 
 /**
@@ -23,12 +23,13 @@ public class SimpleCamera implements Camera{
     protected double[][] camToWorld, worldToCam;
     protected int w,h;
     protected Color col;
-    protected Vector<Vector<SPDHolder>> spds;
+    protected Vector<Vector<XYZHolder>> spds;
     protected double Aw, Ah, hits;
     protected SpectralPowerDistribution lasthitspds = null;
     protected double canvasWhalf, canvasHhalf;
     protected double PixelsCW, PixelsCH;
     //protected double depth = 1;
+    protected SPDsingle spdsingle;
     
     protected Vector3 cdir;
     
@@ -70,12 +71,13 @@ public class SimpleCamera implements Camera{
         
         spds = new Vector<>();
         for(int a = 0;a < w;++a ){
-            Vector<SPDHolder> v = new Vector<>();
+            Vector<XYZHolder> v = new Vector<>();
             for(int b = 0;b < h;++b){
-                v.add(new SPDHolder(firstlambda,lastlambda));
+                v.add(new XYZHolder(firstlambda,lastlambda));
             }
             spds.add(v);
         }
+        spdsingle = new SPDsingle(500);
         
         canvasWhalf = Math.sin(Math.toRadians(Aw/2.0)) / Math.sin(Math.toRadians(90 - Aw/2.0));
         canvasHhalf = Math.sin(Math.toRadians(Ah/2.0)) / Math.sin(Math.toRadians(90 - Ah/2.0));
@@ -116,7 +118,9 @@ public class SimpleCamera implements Camera{
         
         try{
             lasthitspds = spds.get((int)Px).get((int)Py);
-            spds.get((int)Px).get((int)Py).inc(lambda);
+            //spds.get((int)Px).get((int)Py).inc(lambda);
+            spdsingle.setLambda((int)lambda);
+            spds.get((int)Px).get((int)Py).inc(col.SPDtoXYZ(spdsingle));
         } catch(Exception ex){
             //System.out.println("Cam error");
             return false;
@@ -131,7 +135,7 @@ public class SimpleCamera implements Camera{
     {
         boolean r = watch(b.origin, b.direction, b.lambda);
         if(r == true && lasthitspds != null){//works only if all beams are from 1 LS
-            double newY = ((SPDHolder)lasthitspds).spdshits * (b.source.getPower()/ b.source.getNumberOfBeams());
+            double newY = ((XYZHolder)lasthitspds).spdshits * (b.source.getPower()/ b.source.getNumberOfBeams());
             lasthitspds.setY( newY);
         }
         return r;
@@ -143,7 +147,11 @@ public class SimpleCamera implements Camera{
         
         for(int a = 0;a < spds.size();++a){
             for(int b = 0;b < spds.get(a).size();++b){
-                coloredpixels[a][b] = col.SPDtoRGB(spds.get(a).get(b));
+                //coloredpixels[a][b] = col.SPDtoRGB(spds.get(a).get(b));
+                coloredpixels[a][b] = col.XYZtoRGB(
+                        spds.get(a).get(b).XYZ[0], 
+                        spds.get(a).get(b).XYZ[1],
+                        spds.get(a).get(b).XYZ[2], spds.get(a).get(b).Ys);
             }
         }
         return coloredpixels;
@@ -151,6 +159,10 @@ public class SimpleCamera implements Camera{
     
     public double getNumberOfHits(){
         return hits;
+    }
+    
+    public Vector3 GetPosition(){
+        return new Vector3(camToWorld[3]);
     }
     
     
@@ -200,7 +212,54 @@ public class SimpleCamera implements Camera{
         }
     }
     
-    public Vector3 GetPosition(){
-        return new Vector3(camToWorld[3]);
+    //mabe replace with just 5element array ? array would cost arount 5*64*(1/8)*(1/1000^3) GB of ram
+    class XYZHolder implements SpectralPowerDistribution{
+        double XYZ[];
+        double Ys = 1;
+        public double spdshits = 0;
+        
+        public XYZHolder(){
+            XYZ = new double[3];
+        }
+        
+        public XYZHolder(int first, int last){
+            XYZ = new double[3];
+        }
+        
+        public double getNextLamnbda(){
+            return 0;
+        }
+        
+        public double getValue(double lambda){
+            return 0;
+        }
+        
+        public void inc(double lambda){
+            return ;
+        }
+        
+        public double[] getFirstLastZero(){
+            double[] r = new double[2];
+            r[0] = 360;
+            r[1] = 830;
+            
+            return r;
+        }
+        
+        public void setY(double y){
+            Ys = y;
+        }
+    
+        public double getY(){
+            return Ys;
+        }
+        
+        public void inc(double xyz[]){
+            spdshits++;
+            for(int a = 0;a < 3;++a){
+                XYZ[a] += xyz[a];
+            }
+        }
     }
+
 }

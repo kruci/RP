@@ -582,4 +582,51 @@ public class CIE1931StandardObserver implements Color{
         return new int[]{r[0],r[1] ,r[2]};
     }
     
+    /**
+     * return non scaled XYZ
+     * @param spd
+     * @return 
+     */
+    public double[] SPDtoXYZ(SpectralPowerDistribution spd){
+        double[] interval = spd.getFirstLastZero();
+                
+        if(interval[0]< 360){interval[0] = 360;}
+        if(interval[1]> 830){interval[1] = 830;}
+        double X = 0,Y = 0,Z = 0;
+        
+        for(int a = 1;a < interval[1]-interval[0] ;++a){
+            double[] currentXYZ = getXYZ(a+interval[0]);
+            //System.out.println( a+interval[0]+"    "+ currentXYZ[0] + " " + currentXYZ[1] + " " + currentXYZ[2] );
+            X += (double)currentXYZ[0]*spd.getValue(a+interval[0]);
+            Y += (double)currentXYZ[1]*spd.getValue(a+interval[0]);
+            Z += (double)currentXYZ[2]*spd.getValue(a+interval[0]);
+        }
+        /*
+        double sum = X+Y+Z;
+        X= (X/sum) ;//*spd.getY();
+        Y= (Y/sum) ;//*spd.getY();
+        Z= (Z/sum) ;//*spd.getY();
+        */
+        return new double[]{X,Y,Z};
+    }
+    
+    public int[] XYZtoRGB(double X, double Y, double Z, double scale){
+        double sum = X+Y+Z;
+        X= (X/sum) *scale;
+        Y= (Y/sum) *scale;
+        Z= (Z/sum) *scale;
+        
+        double rgb[][] = Mmultiply(Minverse, new double[][]{ {(double)X}, {(double)Y}, {(double)Z}});
+        
+        rgb[0][0] = sRGBcompaund(rgb[0][0]);
+        rgb[1][0] = sRGBcompaund(rgb[1][0]);
+        rgb[2][0] = sRGBcompaund(rgb[2][0]);
+        
+        int[] r = new int[3];
+        r[0] = (int)(fitinterval(rgb[0][0] *255.0,0,255));
+        r[1] = (int)(fitinterval(rgb[1][0] *255.0,0,255));
+        r[2] = (int)(fitinterval(rgb[2][0] *255.0,0,255));      
+                
+        return new int[]{r[0],r[1] ,r[2]};
+    }
 }

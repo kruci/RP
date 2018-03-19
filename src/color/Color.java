@@ -37,4 +37,6 @@ public interface Color {
     }*/
     
     public int[] SPDtoRGB(SpectralPowerDistribution spd);
+    public double[] SPDtoXYZ(SpectralPowerDistribution spd);
+    public int[] XYZtoRGB(double X, double Y, double Z, double scale);
 }
