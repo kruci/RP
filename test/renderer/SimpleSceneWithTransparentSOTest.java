@@ -24,7 +24,6 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import light.implementations.SimpleSpotLight;
 import math_and_utils.Math3dUtil;
-import static math_and_utils.Math3dUtil.printVector3;
 import renderer.implementations.SimpleCamera;
 import renderer.implementations.SimpleSceneObject;
 import renderer.implementations.SimpleSceneWithTransparentSO;
@@ -49,18 +48,17 @@ public class SimpleSceneWithTransparentSOTest extends Application{
                 new SPD400to800(),//new SPDsingle(singlelambda),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
-                1.0
+                5.0
         );
         
         SimpleSceneWithTransparentSO ss= new SimpleSceneWithTransparentSO();
 
         SimpleCamera cam = new SimpleCamera(
             new Math3dUtil.Vector3(0,0,0),//from
-            new Math3dUtil.Vector3(0,0,-3),//to
-            300,300,//resolution
-            5,5,//angles
-            new CIE1931StandardObserver(),//color
-            300,900//first and last lambda to be observed(saved) by camera 
+            new Math3dUtil.Vector3(0,0,-1),//to
+            500,500,//resolution
+            30,30,//angles
+            new CIE1931StandardObserver()//color
         );
         
         Transparency tspr = new Transparency(0.6961663, 0.4079426, 0.8974794,
@@ -68,41 +66,40 @@ public class SimpleSceneWithTransparentSOTest extends Application{
         
         //transparent t
         SimpleSceneObject sso = new SimpleSceneObject(
-                new Math3dUtil.Vector3(-100, 100, -1),
-                new Math3dUtil.Vector3(100, 100, -0.5),
-                new Math3dUtil.Vector3(0, -100, -0.5)
-        );
-        sso.front = new Transparency(0,0,0,0,0,0);
-        sso.back = tspr;
-        printVector3(sso.triang.get(0).normal);
-        
-        
-        
-        //transparent t
-        SimpleSceneObject sso2 = new SimpleSceneObject(
-                new Math3dUtil.Vector3(-100, 100, -2),
-                new Math3dUtil.Vector3(100, 100, -1.5),
-                new Math3dUtil.Vector3(0, -100, -1.5)
-        );
-        sso.back = new Transparency(0,0,0,0,0,0);
-        sso.front = tspr;
-        printVector3(sso.triang.get(0).normal);
-        
-        
-        //printVector3(sso2.triang.normal);
-        
-        //nontransparent t
-        SimpleSceneObject sso3 = new SimpleSceneObject(
                 new Math3dUtil.Vector3(-100, 100, -5),
                 new Math3dUtil.Vector3(100, 100, -5),
                 new Math3dUtil.Vector3(0, -100, -5)
         );
+        sso.front = new Transparency(0,0,0,0,0,0);
+        sso.back = tspr;
+        sso.triang.get(0).id = "1";
+        //printVector3(sso.triang.get(0).normal);
+        
+        //transparent t
+        SimpleSceneObject sso2 = new SimpleSceneObject(
+                new Math3dUtil.Vector3(-100, 100, -10),
+                new Math3dUtil.Vector3(100, 100, -10),
+                new Math3dUtil.Vector3(0, -100, -10)
+        );
+        sso2.back = new Transparency(0,0,0,0,0,0);
+        sso2.front = tspr;
+        sso2.triang.get(0).id = "2";
+        //printVector3(sso2.triang.get(0).normal);
+        
+        
+        //nontransparent t
+        SimpleSceneObject sso3 = new SimpleSceneObject(
+                new Math3dUtil.Vector3(-100, 100, -15),
+                new Math3dUtil.Vector3(100, 100, -15),
+                new Math3dUtil.Vector3(0, -100, -15)
+        );
+        sso3.triang.get(0).id="3";
         
         cl.setPower(power);
         ss.addCamera(cam);
         ss.addLightSource(cl);
         ss.addSceneObject(sso);
-        ss.addSceneObject(sso2);
+        //ss.addSceneObject(sso2);
         ss.addSceneObject(sso3);
         
     //JAVAFX*********************************************

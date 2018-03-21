@@ -76,8 +76,7 @@ public class RendererTest extends Application{
             new Vector3(0,0,-1),//to
             500,500,//resolution
             90,90,//angles
-            new CIE1931StandardObserver(),//color
-            singlelambda,singlelambda//first and last lambda to be observed(saved) by camera 
+            new CIE1931StandardObserver()//color
         );
         //triangle pointing down
         SimpleSceneObject sso = new SimpleSceneObject(

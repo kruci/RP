@@ -8,15 +8,16 @@ import static java.lang.Math.abs;
 import java.util.Optional;
 import light.LightSource;
 import math_and_utils.Math3dUtil.*;
-import static math_and_utils.Math3dUtil.printVector3;
+import static math_and_utils.Math3dUtil.epsilon;
 /**
  *
  * @author rasto
  */
 public class Triangle {
-    public static final double epsilon = 0.00001;
+    //public static final double epsilon = 0.00001;
     public Vector3 p1, p2, p3, normal;
     public SceneObject parent = null;
+    public String id;
     
     public Triangle(Vector3 _p1, Vector3 _p2, Vector3 _p3){
         p1 = _p1;
@@ -24,7 +25,7 @@ public class Triangle {
         p3 = _p3;
         Vector3 A = p2.sub(p1);
         Vector3 B = p3.sub(p1);
-        normal = A.cross(B).normalize();
+        normal = (A.cross(B)).normalize();
     }
     
     //https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
@@ -56,8 +57,8 @@ public class Triangle {
         } // the triangle is behind
         
         // compute the intersection point using equation 1
-        Vector3 P = origin.add(direction.scale(t)); 
-        
+        Vector3 P = origin.add(direction.scale(t));
+        System.out.println( normal.dot(origin)+" " + d+ " " + NdotRayDirection + " " + t);
     // Step 2: inside-outside test----------------------------------------------
         Vector3 C; // vector perpendicular to triangle's plane 
         
@@ -90,6 +91,7 @@ public class Triangle {
     }
     
     public Optional<Double> isIntersecting(LightSource.Beam b){        
+        //IntersectInfo ii = MollerTrumbore(b.origin, b.direction);
         return isIntersecting(b.origin, b.direction);
     }
     
@@ -108,5 +110,39 @@ public class Triangle {
     public Vector3 getNormal(){
         return normal;
     }
+ 
+    public class IntersectInfo{
+        boolean intersects = false;
+        double t = 0;
+        double u = 0;
+        double v = 0;
+    }
     
+    // https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection
+    IntersectInfo MollerTrumbore(Vector3 origin, Vector3 direction){
+        IntersectInfo ret = new IntersectInfo();
+        
+        Vector3 v0v1 = p2.sub(p1);//v1 - v0; 
+        Vector3 v0v2 = p3.sub(p1);//v2 - v0; 
+        Vector3 pvec = direction.cross(v0v2); 
+        double det = v0v1.dot(pvec);
+        
+        double invDet = 1 / det; 
+ 
+        Vector3 tvec = origin.sub(p1);//orig - v0; 
+        double u = tvec.dot(pvec) * invDet; 
+        if (u < 0 || u > 1) return ret; 
+ 
+        Vector3 qvec = tvec.cross(v0v1); 
+        double v = direction.dot(qvec) * invDet; 
+        if (v < 0 || u + v > 1) return ret; 
+ 
+        double t = v0v2.dot(qvec) * invDet; 
+        
+        ret.intersects = true;
+        ret.t = t;
+        ret.u = u;
+        ret.v = v;
+        return ret; 
+    }
 }

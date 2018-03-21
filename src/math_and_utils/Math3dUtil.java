@@ -17,6 +17,8 @@ import static java.lang.Math.sqrt;
  * @author rasto
  */
 public class Math3dUtil {
+    public static final double epsilon = 0.00001;
+    
     //https://stackoverflow.com/questions/11132681/what-is-a-formula-to-get-a-vector-perpendicular-to-another-vector
     /**
      * It isnt normalized

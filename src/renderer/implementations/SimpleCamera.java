@@ -25,7 +25,7 @@ public class SimpleCamera implements Camera{
     protected Color col;
     protected Vector<Vector<XYZHolder>> spds;
     protected double Aw, Ah, hits;
-    protected SpectralPowerDistribution lasthitspds = null;
+    protected XYZHolder lasthitspds = null;
     protected double canvasWhalf, canvasHhalf;
     protected double PixelsCW, PixelsCH;
     //protected double depth = 1;
@@ -43,11 +43,9 @@ public class SimpleCamera implements Camera{
      * @param AngleX total horizontal camera angle (half of it on both sides from direction)
      * @param AngleY total vertical camera angle (half of it on both sides from direction)
      * @param color 
-     * @param firstlambda first lambda that will be observed
-     * @param lastlambda last lambda that will be observed
      */
     public SimpleCamera(Vector3 from, Vector3 to, int pixelwidth, int pixelheight, 
-            double AngleX, double AngleY,Color color, int firstlambda, int lastlambda)
+            double AngleX, double AngleY,Color color)
     {
         
         Vector3 forward = from.sub(to).normalize();
@@ -73,7 +71,7 @@ public class SimpleCamera implements Camera{
         for(int a = 0;a < w;++a ){
             Vector<XYZHolder> v = new Vector<>();
             for(int b = 0;b < h;++b){
-                v.add(new XYZHolder(firstlambda,lastlambda));
+                v.add(new XYZHolder());
             }
             spds.add(v);
         }
@@ -212,17 +210,13 @@ public class SimpleCamera implements Camera{
         }
     }
     
-    //mabe replace with just 5element array ? array would cost arount 5*64*(1/8)*(1/1000^3) GB of ram
-    class XYZHolder implements SpectralPowerDistribution{
+    //mabe replace with just 5element array ? 1 such array would cost arount 5*64*(8^-1)*(1/1000^3) GB of ram
+    class XYZHolder{// implements SpectralPowerDistribution{
         double XYZ[];
         double Ys = 1;
         public double spdshits = 0;
         
         public XYZHolder(){
-            XYZ = new double[3];
-        }
-        
-        public XYZHolder(int first, int last){
             XYZ = new double[3];
         }
         

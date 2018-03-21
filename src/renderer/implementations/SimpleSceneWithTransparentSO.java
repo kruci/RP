@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
-import static math_and_utils.Math3dUtil.refract;
-import static math_and_utils.Math3dUtil.rotateVectorCC;
+import static math_and_utils.Math3dUtil.printVector3;
 import math_and_utils.Pair;
 import renderer.Camera;
 import renderer.Scene;
@@ -46,16 +45,77 @@ public class SimpleSceneWithTransparentSO implements Scene {
     public void addSceneObject(SceneObject so) {
         so_list.add(so);
     }
-
+    
     /**
      * Uses only first LS, does not create other will refract through
      * transparent SO till collision with non-transparent SO, then it will shoot
      * directly to all cams, ignoring obstacles
      */
-    public void next() {
-        if (ls_list.size() <= 0) {
-            return;
+    public void next(){
+        LightSource.Beam b = ls_list.get(0).getNextBeam();
+        Triangle ignoredT = null;
+        double iter = 0;
+        
+        while(true){
+            Pair<Triangle, Double> closestT = Pair.createPair(null, Double.MAX_VALUE);
+            
+            for(SceneObject so : so_list){
+               List<Pair<Triangle, Double>> contact = so.intersects(b);
+               
+               for(Pair<Triangle, Double> pair : contact){
+                   if(pair.second() < closestT.second() && pair.first() != null && pair.first() != ignoredT){
+                       closestT = Pair.createPair(pair.first(), pair.second());
+                   }
+               }
+            }
+            if(closestT.first() == null){
+                return;
+            }
+            //System.out.print(iter + " "+ closestT.first().id + " ");printVector3(b.origin);System.out.print(" ");//printVector3(b.direction);
+            Math3dUtil.Vector3 intersectionPoint = b.origin.add((b.direction).scale(closestT.second()));
+            /*System.out.print(closestT.second() + " ");printVector3(b.origin);
+            System.out.print(closestT.second() + " ");printVector3(intersectionPoint);*/
+            SceneObjectProperty side = closestT.first().parent.getSideProperty(closestT.first(), b.direction);
+            SceneObjectProperty oside = closestT.first().parent.getOtherSideProperty(closestT.first(), b.direction);
+            
+            if(side != null && side instanceof Transparency &&
+               oside != null && oside instanceof Transparency )//transparent triangle
+            {
+                /*
+                double A1 = b.direction.normalize().angle(closestT.first().normal);
+                
+                Pair<Double,Double> ref = refract(((Transparency)side).getN(b.lambda), ((Transparency)oside).getN(b.lambda), 
+                        A1,b.lambda);
+                
+                Math3dUtil.Vector3 newdir = rotateVectorCC(b.direction.normalize(), closestT.first().normal, 
+                        -(A1 - ref.first()));
+
+                b = new LightSource.Beam(intersectionPoint, newdir.normalize(), ref.second(), ls_list.get(0));
+                */
+                
+                b = new LightSource.Beam(intersectionPoint, b.direction, b.lambda, b.source);
+                
+                ignoredT = closestT.first();
+            }
+            else if(side == null && oside == null)//nontransparent triangle
+            {
+                for(Camera cam : cam_list){
+                    Math3dUtil.Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();
+                    cam.watch(new LightSource.Beam(intersectionPoint,difusedirection, b.lambda, b.source));
+                }
+                return;
+            }
+            else//idk lol
+            {
+                System.out.println("SSWTSO undefined behavior");
+                return;
+            }
+            iter++;
+            
         }
+    }
+    
+    /*public void next() {
 
         LightSource.Beam b = ls_list.get(0).getNextBeam();
         //System.out.println("Start " + b.lambda);
@@ -63,9 +123,11 @@ public class SimpleSceneWithTransparentSO implements Scene {
         //until we hit nontransparent or we hit nothing
         
         Triangle lastT = null;
-        while (true) {
+        boolean f = true;
+        Pair<Triangle, Double> closestT = Pair.createPair(null, Double.MAX_VALUE-1);
+        while (f) {
             //find closest triangle that intersects with beam
-            Pair<Triangle, Double> closestT = Pair.createPair(null, Double.MAX_VALUE);
+            closestT = Pair.createPair(null, Double.MAX_VALUE-1);
             for (SceneObject so : so_list) {
                 List<Pair<Triangle, Double>> contac = so.intersects(b);
 
@@ -73,13 +135,16 @@ public class SimpleSceneWithTransparentSO implements Scene {
                     if(td.first() == lastT){
                         continue;
                     }
-                    if (td.second() < closestT.second()) {
+                    else if (td.second() < closestT.second()) {
                         closestT = td;
                     }
                 }
             }
             
-            if(closestT.first() == null){break;}
+            if(closestT.first() == null){System.out.println("null");}else{
+            System.out.println(closestT.first().id);}
+            
+            if(closestT.first() == null){f = false;break;}
             Math3dUtil.Vector3 intersectionPoint = b.origin.add((b.direction.normalize()).scale(closestT.second()));
             
             //if we hit transparent, generate new beam with refraction and repeat while
@@ -90,13 +155,9 @@ public class SimpleSceneWithTransparentSO implements Scene {
                oside instanceof Transparency )
             {
                 double A1 = b.direction.normalize().angle(closestT.first().normal);
-                //System.out.println(b.direction.dot(closestT.first().normal));
+                
                 Pair<Double,Double> ref = refract(((Transparency)side).getN(b.lambda), ((Transparency)oside).getN(b.lambda), 
                         A1,b.lambda);
-                /*
-                System.out.println("fromA: " + b.direction.normalize().angle(closestT.first().normal) + " fromL: " + b.lambda);
-                System.out.println("toA: " + ref.first() + " toL: " + ref.second());
-                */
                 
                 Math3dUtil.Vector3 newdir = rotateVectorCC(b.direction.normalize(), closestT.first().normal, 
                         -(A1 - ref.first()));
@@ -114,8 +175,9 @@ public class SimpleSceneWithTransparentSO implements Scene {
                     cam.watch(new LightSource.Beam(intersectionPoint,difusedirection,b.lambda,b.source));
                 }
                 //System.out.println("End " + b.lambda);
+                f = false;
                 break;
             }
         }
-    }
+    }*/
 }
