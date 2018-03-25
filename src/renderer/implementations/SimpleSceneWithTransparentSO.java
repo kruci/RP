@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
-import static math_and_utils.Math3dUtil.printVector3;
+import static math_and_utils.Math3dUtil.refract;
+import static math_and_utils.Math3dUtil.rotateVectorCC;
 import math_and_utils.Pair;
 import renderer.Camera;
 import renderer.Scene;
@@ -56,6 +57,8 @@ public class SimpleSceneWithTransparentSO implements Scene {
         Triangle ignoredT = null;
         double iter = 0;
         
+        //System.out.print(b.lambda + " ");
+        
         while(true){
             Pair<Triangle, Double> closestT = Pair.createPair(null, Double.MAX_VALUE);
             
@@ -71,17 +74,15 @@ public class SimpleSceneWithTransparentSO implements Scene {
             if(closestT.first() == null){
                 return;
             }
-            //System.out.print(iter + " "+ closestT.first().id + " ");printVector3(b.origin);System.out.print(" ");//printVector3(b.direction);
             Math3dUtil.Vector3 intersectionPoint = b.origin.add((b.direction).scale(closestT.second()));
-            /*System.out.print(closestT.second() + " ");printVector3(b.origin);
-            System.out.print(closestT.second() + " ");printVector3(intersectionPoint);*/
+            
             SceneObjectProperty side = closestT.first().parent.getSideProperty(closestT.first(), b.direction);
-            SceneObjectProperty oside = closestT.first().parent.getOtherSideProperty(closestT.first(), b.direction);
+            SceneObjectProperty oside = closestT.first().parent.getOtherSideProperty(closestT.first(), b.direction);    
             
             if(side != null && side instanceof Transparency &&
                oside != null && oside instanceof Transparency )//transparent triangle
             {
-                /*
+                //System.out.println(((Transparency)side).getN(666) + " " + ((Transparency)oside).getN(666)+" " + closestT.first().id);
                 double A1 = b.direction.normalize().angle(closestT.first().normal);
                 
                 Pair<Double,Double> ref = refract(((Transparency)side).getN(b.lambda), ((Transparency)oside).getN(b.lambda), 
@@ -91,9 +92,8 @@ public class SimpleSceneWithTransparentSO implements Scene {
                         -(A1 - ref.first()));
 
                 b = new LightSource.Beam(intersectionPoint, newdir.normalize(), ref.second(), ls_list.get(0));
-                */
                 
-                b = new LightSource.Beam(intersectionPoint, b.direction, b.lambda, b.source);
+                //System.out.println(Math.toDegrees(A1) + " " + Math.toDegrees(ref.first()) + " " + intersectionPoint.z);
                 
                 ignoredT = closestT.first();
             }
@@ -103,6 +103,8 @@ public class SimpleSceneWithTransparentSO implements Scene {
                     Math3dUtil.Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();
                     cam.watch(new LightSource.Beam(intersectionPoint,difusedirection, b.lambda, b.source));
                 }
+                //System.out.println(b.lambda);
+                //System.out.println(++iter);
                 return;
             }
             else//idk lol

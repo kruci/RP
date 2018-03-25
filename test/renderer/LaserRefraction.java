@@ -22,8 +22,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import light.implementations.SimpleSpotLight;
+import light.implementations.Laser;
 import math_and_utils.Math3dUtil;
+import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.printVector3;
 import renderer.implementations.SimpleCamera;
 import renderer.implementations.SimpleSceneObject;
 import renderer.implementations.SimpleSceneWithTransparentSO;
@@ -33,73 +35,107 @@ import renderer.implementations.Transparency;
  *
  * @author rasto
  */
-public class SimpleSceneWithTransparentSOTest extends Application{
+public class LaserRefraction extends Application{
     public static void main(String [] args){
         launch(args);
     }
     
-    private static int singlelambda = 577;
     private static double power = 10000;
     
     @Override
     public void start(Stage primaryStage) {
-
+        /*
         SimpleSpotLight cl = new SimpleSpotLight(
                 new SPD400to800(),//new SPDsingle(singlelambda),
                 new double[]{0,0,0},//poz
                 new double[]{0,0,-1}, //dir
-                5.0
+                1.0
+        );
+        */
+        /*
+        CircleLight cl = new CircleLight(
+                new SPD400to800(),//new SPDsingle(singlelambda),
+                new double[]{0,0,0},//poz
+                new double[]{0,0,-1}, //dir
+                0.5
+        );*/
+        Laser cl = new Laser(
+                new SPD400to800(),
+                new Vector3(10,0,10),//poz
+                new Vector3(0,0,-1)//dir
         );
         
         SimpleSceneWithTransparentSO ss= new SimpleSceneWithTransparentSO();
 
         SimpleCamera cam = new SimpleCamera(
             new Math3dUtil.Vector3(0,0,0),//from
-            new Math3dUtil.Vector3(0,0,-1),//to
+            new Math3dUtil.Vector3(0.1,0,-1),//to
             500,500,//resolution
-            30,30,//angles
+            15,15,//angles
             new CIE1931StandardObserver()//color
         );
-        
+        /*
         Transparency tspr = new Transparency(0.6961663, 0.4079426, 0.8974794,
                                             0.0684043*0.0684043, 0.1162414*0.1162414, 9.896161*9.896161);
+        */
+        // https://refractiveindex.info/?shelf=glass&book=HIKARI-SF&page=SF1
+        Transparency tspr = (double l) -> {
+                l*=0.001; 
+                return 
+                Math.sqrt(  2.839803 - 
+                            0.004469128*l*l +
+                            0.03464028* 1/(l*l) +
+                            0.001334322* 1/(l*l*l*l) -
+                            0.00005451762* 1/(l*l * l*l * l*l)+
+                            0.00001214724* 1/(l*l * l*l * l*l * l*l)
+                            );
+                };
+        Transparency air = (double l) ->{return 1;};
         
         //transparent t
         SimpleSceneObject sso = new SimpleSceneObject(
-                new Math3dUtil.Vector3(-100, 100, -5),
-                new Math3dUtil.Vector3(100, 100, -5),
-                new Math3dUtil.Vector3(0, -100, -5)
+                new Math3dUtil.Vector3(-100, 100, -45),
+                new Math3dUtil.Vector3(100, 100, 0),
+                new Math3dUtil.Vector3(0, -100, -22.5)
         );
-        sso.front = new Transparency(0,0,0,0,0,0);
-        sso.back = tspr;
+        sso.back = air;
+        sso.front = tspr;
         sso.triang.get(0).id = "1";
-        //printVector3(sso.triang.get(0).normal);
+        printVector3(sso.triang.get(0).normal);
         
         //transparent t
         SimpleSceneObject sso2 = new SimpleSceneObject(
-                new Math3dUtil.Vector3(-100, 100, -10),
-                new Math3dUtil.Vector3(100, 100, -10),
-                new Math3dUtil.Vector3(0, -100, -10)
+                new Math3dUtil.Vector3(-100, 100, -45),
+                new Math3dUtil.Vector3(100, 100, -90),
+                new Math3dUtil.Vector3(0, -100, -67.5)
         );
-        sso2.back = new Transparency(0,0,0,0,0,0);
-        sso2.front = tspr;
+        sso2.front = air;
+        sso2.back = tspr;
         sso2.triang.get(0).id = "2";
-        //printVector3(sso2.triang.get(0).normal);
+        printVector3(sso2.triang.get(0).normal);
         
         
         //nontransparent t
         SimpleSceneObject sso3 = new SimpleSceneObject(
-                new Math3dUtil.Vector3(-100, 100, -15),
-                new Math3dUtil.Vector3(100, 100, -15),
-                new Math3dUtil.Vector3(0, -100, -15)
+                
+                new Math3dUtil.Vector3(-100, 100, -100),
+                new Math3dUtil.Vector3(100, 100, -100),
+                new Math3dUtil.Vector3(0, -100, -100)
+                
+                /*
+                new Math3dUtil.Vector3(-1000, -20.5, -100),
+                new Math3dUtil.Vector3(0, 0.1, -1600),
+                new Math3dUtil.Vector3(1000, -20.5, -100)
+                */
         );
         sso3.triang.get(0).id="3";
+        printVector3(sso3.triang.get(0).normal);
         
         cl.setPower(power);
         ss.addCamera(cam);
         ss.addLightSource(cl);
         ss.addSceneObject(sso);
-        //ss.addSceneObject(sso2);
+        ss.addSceneObject(sso2);
         ss.addSceneObject(sso3);
         
     //JAVAFX*********************************************
@@ -119,9 +155,9 @@ public class SimpleSceneWithTransparentSOTest extends Application{
                 ss.next();
             }
             long endTime = System.nanoTime() - startTime;
-            save(cam, "test/renderer/SceneWithTranspaency.png");
+            save(cam, "test/renderer/LaserRefraction.png");
             lab.setText( Integer.toString((Integer.valueOf(lab.getText()) + togen) ));
-            imageView.setImage(new Image("file:test/renderer/SceneWithTranspaency.png"));
+            imageView.setImage(new Image("file:test/renderer/LaserRefraction.png"));
             System.out.println("# added " + (cam.getNumberOfHits() - lasth) + " hits, resulting in " + cam.getNumberOfHits() +
                     " total hits. This iteration took " + (endTime*0.000000001) + " seconds");
         });

@@ -37,7 +37,6 @@ public class Triangle {
      */
     public Optional<Double> isIntersecting(Vector3 origin, Vector3 direction){
         Optional<Double> intersects = Optional.empty();
-        
     // Step 1: finding P (hit point)--------------------------------------------
  
         // check if ray and plane are parallel ?
@@ -50,7 +49,11 @@ public class Triangle {
         double d = normal.dot(p1);
         
         // compute t (equation 3) - t is the distance
-        double t = (normal.dot(origin) + d) / NdotRayDirection; 
+        /**
+         * was (normal.dot(origin) + d) / NdotRayDirection; 
+         * this need more investigation (becouse "was" is from scratchpixel, ...)
+         */
+        double t = (-normal.dot(origin) + d) / NdotRayDirection; 
         // check if the triangle is in behind the ray
         if (t < 0){
             return intersects;
@@ -58,7 +61,7 @@ public class Triangle {
         
         // compute the intersection point using equation 1
         Vector3 P = origin.add(direction.scale(t));
-        System.out.println( normal.dot(origin)+" " + d+ " " + NdotRayDirection + " " + t);
+        
     // Step 2: inside-outside test----------------------------------------------
         Vector3 C; // vector perpendicular to triangle's plane 
         
@@ -145,4 +148,5 @@ public class Triangle {
         ret.v = v;
         return ret; 
     }
+    
 }
