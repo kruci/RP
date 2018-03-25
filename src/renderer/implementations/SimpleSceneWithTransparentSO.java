@@ -24,9 +24,9 @@ import renderer.Triangle;
  */
 public class SimpleSceneWithTransparentSO implements Scene {
 
-    private List<Camera> cam_list;
-    private List<LightSource> ls_list;
-    private List<SceneObject> so_list;
+    public List<Camera> cam_list;
+    public List<LightSource> ls_list;
+    public List<SceneObject> so_list;
     public int hits = 0;
 
     public SimpleSceneWithTransparentSO() {

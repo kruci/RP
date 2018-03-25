@@ -163,8 +163,16 @@ public class SimpleCamera implements Camera{
         return new Vector3(camToWorld[3]);
     }
     
+    public void clear(){
+        hits = 0;
+        for(int a = 0;a < spds.size();++a){
+            for(int b = 0;b < spds.get(a).size();++b){
+               spds.get(a).get(b).clear();
+            }
+        }
+    }
     
-    class SPDHolder implements SpectralPowerDistribution{
+    /*class SPDHolder implements SpectralPowerDistribution{
         double wavelenghts[];
         double Ys = 1;
         public double spdshits = 0;
@@ -208,7 +216,7 @@ public class SimpleCamera implements Camera{
         public double getY(){
             return Ys;
         }
-    }
+    }*/
     
     //mabe replace with just 5element array ? 1 such array would cost arount 5*64*(8^-1)*(1/1000^3) GB of ram
     class XYZHolder{// implements SpectralPowerDistribution{
@@ -218,6 +226,14 @@ public class SimpleCamera implements Camera{
         
         public XYZHolder(){
             XYZ = new double[3];
+        }
+        
+        public void clear(){
+            XYZ[0] = 0;
+            XYZ[1] = 0;
+            XYZ[2] = 0;
+            Ys = 1;
+            spdshits = 0;
         }
         
         public double getNextLamnbda(){

@@ -12,16 +12,24 @@ import java.util.Random;
  *
  * @author rasto
  */
-public class SPD400to800 implements SpectralPowerDistribution{
+public class SPDrange implements SpectralPowerDistribution{
     private double Ys = 1;
     private Random ran = new Random();
+    int f,l;
     
-    public SPD400to800(){
+    /**
+     * 
+     * @param first first generable lambda
+     * @param last last generable lambda
+     */
+    public SPDrange(int first, int last){
+        f = first;
+        l = last; 
     }
     
     
     public double getNextLamnbda(){
-        return 400 + ran.nextDouble()*400;
+        return f + ran.nextDouble()*(l-f);
     }
     
     public double getValue(double l){
@@ -29,7 +37,7 @@ public class SPD400to800 implements SpectralPowerDistribution{
     }
     
     public double[] getFirstLastZero(){
-        return new double[]{400,800};
+        return new double[]{f-1,l+1};
     }
     
     public void setY(double y){

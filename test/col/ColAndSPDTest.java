@@ -9,7 +9,7 @@ import color.implementations.CIE1931StandardObserver;
 import color.Color;
 import color.implementations.SPD1;
 import color.SpectralPowerDistribution;
-import color.implementations.SPD400to800;
+import color.implementations.SPDrange;
 import color.implementations.SPDsingle;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -52,8 +52,8 @@ public class ColAndSPDTest extends Application {
         ImageSave("test/col/spectrum360-830.png", image);
         
         
-        SpectralPowerDistribution spd = new SPD400to800();//new SPDsingle(555);
-        spd.setY(1.5);
+        SpectralPowerDistribution spd = new SPDrange(360,830);//SPD400to800();//new SPDsingle(555);
+        spd.setY(5);
         int ret[] = c.SPDtoRGB(spd);
         String cs = "rgb(" + ret[0]+", " + ret[1]+
                     ", " + ret[2] +")";
