@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.beans.value.ObservableValue;
@@ -99,7 +100,7 @@ public class RefractionTest extends Application{
             new Math3dUtil.Vector3(0,0,0),//from
             new Math3dUtil.Vector3(0.1,-0.04,-1),//to
             500,500,//resolution
-            10,10,//angles
+            3,3,//angles
             new CIE1931StandardObserver()//color
         );
         /*
@@ -109,7 +110,7 @@ public class RefractionTest extends Application{
         // https://refractiveindex.info/?shelf=glass&book=HIKARI-SF&page=SF1
         Transparency tspr = (double l) -> {
                 l*=0.001; 
-                return 
+                double ret =  
                 Math.sqrt(  2.839803 - 
                             0.004469128*l*l +
                             0.03464028* 1/(l*l) +
@@ -117,6 +118,13 @@ public class RefractionTest extends Application{
                             0.00005451762* 1/(l*l * l*l * l*l)+
                             0.00001214724* 1/(l*l * l*l * l*l * l*l)
                             );
+                /*
+__________________________________________________________________________________________________
+                HAAAAAAAAAAAAAAAAAAAAACK WAAAAAARNIIIIIIIIIIING!!!!
+__________________________________________________________________________________________________
+                */
+                if(ret >2){ret = 2;}
+                return ret;
                 };
         Transparency air = (double l) ->{return 1;};
         
@@ -129,7 +137,7 @@ public class RefractionTest extends Application{
         sso.back = air;
         sso.front = tspr;
         sso.triang.get(0).id = "1";
-        printVector3(sso.triang.get(0).normal);
+        //printVector3(sso.triang.get(0).normal);
         
         //transparent t
         SimpleSceneObject sso2 = new SimpleSceneObject(
@@ -140,7 +148,7 @@ public class RefractionTest extends Application{
         sso2.front = air;
         sso2.back = tspr;
         sso2.triang.get(0).id = "2";
-        printVector3(sso2.triang.get(0).normal);
+        //printVector3(sso2.triang.get(0).normal);
         
         
         //nontransparent t
@@ -157,7 +165,7 @@ public class RefractionTest extends Application{
                 */
         );
         sso3.triang.get(0).id="3";
-        printVector3(sso3.triang.get(0).normal);
+        //printVector3(sso3.triang.get(0).normal);
         
         cl.setPower(power);
         ss.addCamera(cam);
@@ -194,6 +202,7 @@ public class RefractionTest extends Application{
             imageView.setImage(new Image("file:test/renderer/"+filename+".png"));
             System.out.println("# added " + (cam.getNumberOfHits() - lasth) + " hits, resulting in " + cam.getNumberOfHits() +
                     " total hits. This iteration took " + (endTime*0.000000001) + " seconds");
+            //printSSWTSO_lmap(ss);
         });
         cb.getSelectionModel().selectFirst();
         ScrollPane sp = new ScrollPane();
@@ -201,6 +210,13 @@ public class RefractionTest extends Application{
         VBox bbox = new VBox(bGen, cb,textField,lab,sp);
         primaryStage.setScene(new javafx.scene.Scene(bbox, 600, 600));
         primaryStage.show();
+    }
+    
+    public void printSSWTSO_lmap(SimpleSceneWithTransparentSO in){
+        System.out.println();
+        for(Map.Entry<Double, Double> entry : in.ltrans.entrySet() ){
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
     }
     
     public static void save(Camera cam, String location){

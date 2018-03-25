@@ -7,6 +7,8 @@ package renderer.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
 import static math_and_utils.Math3dUtil.refract;
@@ -28,6 +30,8 @@ public class SimpleSceneWithTransparentSO implements Scene {
     public List<LightSource> ls_list;
     public List<SceneObject> so_list;
     public int hits = 0;
+    
+    public Map<Double, Double> ltrans = new TreeMap<Double,Double>();
 
     public SimpleSceneWithTransparentSO() {
         cam_list = new ArrayList<Camera>();
@@ -57,6 +61,7 @@ public class SimpleSceneWithTransparentSO implements Scene {
         Triangle ignoredT = null;
         double iter = 0;
         
+        double sl = b.lambda;
         //System.out.print(b.lambda + " ");
         
         while(true){
@@ -105,6 +110,7 @@ public class SimpleSceneWithTransparentSO implements Scene {
                 }
                 //System.out.println(b.lambda);
                 //System.out.println(++iter);
+                ltrans.put(sl, (double)((int)b.lambda));
                 return;
             }
             else//idk lol
