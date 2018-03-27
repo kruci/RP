@@ -28,11 +28,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import light.LightSource;
+import light.implementations.CircleLight;
 import light.implementations.Laser;
 import light.implementations.SimpleSpotLight;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
-import static math_and_utils.Math3dUtil.printVector3;
 import renderer.implementations.SimpleCamera;
 import renderer.implementations.SimpleSceneObject;
 import renderer.implementations.SimpleSceneWithTransparentSO;
@@ -47,7 +47,7 @@ public class RefractionTest extends Application{
         launch(args);
     }
     
-    private static double power = 1000;
+    private double power = 10000;
     LightSource cl;
     SimpleCamera cam;
     Label lab;
@@ -70,7 +70,7 @@ public class RefractionTest extends Application{
                     );
                     filename = "LaserRefraction";
                 }
-                else
+                else if (((Number)new_value).intValue() == 1)
                 {
                     //System.out.println(((Number)new_value).intValue());
                     cl = new SimpleSpotLight(
@@ -81,6 +81,30 @@ public class RefractionTest extends Application{
                     );
                     filename = "SpotLightRefraction";
                 }
+                else
+                {
+                    cl = new CircleLight(
+                        spd,//new SPDrange(360,830),//new SPDsingle(singlelambda),
+                        new double[]{0,0,0},//poz
+                        new double[]{0.1,0,-1}, //dir
+                        0.02
+                    );
+                    filename = "CircleLightRefraction";
+                    
+                    cam = new SimpleCamera(
+                        new Math3dUtil.Vector3(0,0,0),//from
+                        new Math3dUtil.Vector3(0.1,-0.04,-1),//to
+                        500,500,//resolution
+                        90,90,//angles
+                        new CIE1931StandardObserver()//color
+                    );
+                    
+                    //power = 10000;
+                    ss.cam_list.clear();
+                    ss.addCamera(cam);
+                }
+                
+                
                 cl.setPower(power);
                 ss.addLightSource(cl);
             }
@@ -183,7 +207,7 @@ ________________________________________________________________________________
         lab = new Label("0");
         
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
-            "Laser", "SpotLight")
+            "Laser", "SpotLight", "CircleLight")
         );
         cb.getSelectionModel().selectedIndexProperty().addListener(new cbListener() );
         
