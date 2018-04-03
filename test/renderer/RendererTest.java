@@ -72,29 +72,47 @@ public class RendererTest extends Application{
         SimpleScene ss= new SimpleScene();
 
         SimpleCamera cam = new SimpleCamera(
-            new Vector3(0,0,0),//from
-            new Vector3(0,0,-1),//to
+            new Vector3(0,5,5),//from
+            new Vector3(0,-0.5,-1),//to
             500,500,//resolution
             90,90,//angles
             new CIE1931StandardObserver()//color
         );
         //triangle pointing down
         SimpleSceneObject sso = new SimpleSceneObject(
+                //cw
                 new Vector3(-1, 1, -1),
                 new Vector3(1, 1, -1),
                 new Vector3(0, -1, -1)
+                
+                //ccw
+                /*        
+                new Vector3(-1, 1, -1),
+                new Vector3(0, -1, -1),
+                new Vector3(1, 1, -1)*/
         );
         //triangle pointing to right
         SimpleSceneObject sso2 = new SimpleSceneObject(
+                //cw
                 new Math3dUtil.Vector3(6, 1, -10),
                 new Math3dUtil.Vector3(6, -1, -10),
                 new Math3dUtil.Vector3(9, 0, -10)
+                
+                //ccw
+                /*
+                new Math3dUtil.Vector3(6, 1, -10),
+                new Math3dUtil.Vector3(9, 0, -10),
+                new Math3dUtil.Vector3(6, -1, -10)*/
         );
+        
+        SimpleSceneObject thickring = new SimpleSceneObject("test/renderer/torus.obj", false);
+        
         cl.setPower(power);
         ss.addCamera(cam);
         ss.addLightSource(cl);
-        ss.addSceneObject(sso);
-        ss.addSceneObject(sso2);
+        //ss.addSceneObject(sso);
+        //ss.addSceneObject(sso2);
+        ss.addSceneObject(thickring);
         
     //JAVAFX*********************************************
         primaryStage.setTitle("Renderer");

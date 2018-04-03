@@ -65,7 +65,7 @@ public class RefractionTest extends Application{
                 if(((Number)new_value).intValue() == 0){
                     cl = new Laser(
                     spd,//new SPDrange(360,830),//new SPD400to800(),
-                    new Vector3(10,0,10),//poz
+                    new Vector3(10,0,0),//poz
                     new Vector3(0,0,-1)//dir
                     );
                     filename = "LaserRefraction";
@@ -147,16 +147,29 @@ ________________________________________________________________________________
                 HAAAAAAAAAAAAAAAAAAAAACK WAAAAAARNIIIIIIIIIIING!!!!
 __________________________________________________________________________________________________
                 */
-                if(ret >2){ret = 2;}
+                if(ret >2){ret = 2;}//ret = 3 - (l*1);}
                 return ret;
                 };
         Transparency air = (double l) ->{return 1;};
         
+        tspr = (double l) -> {
+            l*=0.001;
+            return 3 - (l*1) - 0.7;
+        };
+        
         //transparent t
         SimpleSceneObject sso = new SimpleSceneObject(
+                //cw
+                
                 new Math3dUtil.Vector3(-100, 100, -45),
                 new Math3dUtil.Vector3(100, 100, 0),
                 new Math3dUtil.Vector3(0, -100, -22.5)
+                
+                //ccw
+                /*
+                new Math3dUtil.Vector3(-100, 100, -45),
+                new Math3dUtil.Vector3(0, -100, -22.5),
+                new Math3dUtil.Vector3(100, 100, 0)*/
         );
         sso.back = air;
         sso.front = tspr;
@@ -165,9 +178,17 @@ ________________________________________________________________________________
         
         //transparent t
         SimpleSceneObject sso2 = new SimpleSceneObject(
+                //cw
+                
                 new Math3dUtil.Vector3(-100, 100, -45),
                 new Math3dUtil.Vector3(100, 100, -90),
                 new Math3dUtil.Vector3(0, -100, -67.5)
+                
+                //ccw
+                /*
+                new Math3dUtil.Vector3(-100, 100, -45),
+                new Math3dUtil.Vector3(0, -100, -67.5),
+                new Math3dUtil.Vector3(100, 100, -90)*/
         );
         sso2.front = air;
         sso2.back = tspr;
@@ -177,16 +198,19 @@ ________________________________________________________________________________
         
         //nontransparent t
         SimpleSceneObject sso3 = new SimpleSceneObject(
+                //cw
                 
-                new Math3dUtil.Vector3(-100, 100, -100),
-                new Math3dUtil.Vector3(100, 100, -100),
-                new Math3dUtil.Vector3(0, -100, -100)
+                new Math3dUtil.Vector3(-1000, 1000, -100),
+                new Math3dUtil.Vector3(1000, 1000, -100),
+                new Math3dUtil.Vector3(0, -1000, -100)
                 
+                //ccw
                 /*
-                new Math3dUtil.Vector3(-1000, -20.5, -100),
-                new Math3dUtil.Vector3(0, 0.1, -1600),
-                new Math3dUtil.Vector3(1000, -20.5, -100)
-                */
+                new Math3dUtil.Vector3(-1000, 1000, -100),
+                new Math3dUtil.Vector3(0, -1000, -100),
+                new Math3dUtil.Vector3(1000, 1000, -100)
+*/
+
         );
         sso3.triang.get(0).id="3";
         //printVector3(sso3.triang.get(0).normal);

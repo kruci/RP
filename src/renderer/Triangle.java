@@ -49,10 +49,10 @@ public class Triangle {
         double d = normal.dot(p1);
         
         // compute t (equation 3) - t is the distance
-        /**
-         * was (normal.dot(origin) + d) / NdotRayDirection; 
-         * this need more investigation (becouse "was" is from scratchpixel, ...)
-         */
+    /**
+    * was (normal.dot(origin) + d) / NdotRayDirection; 
+    * this need more investigation (becouse "was" is from scratchpixel, ...)
+    */
         double t = (-normal.dot(origin) + d) / NdotRayDirection; 
         // check if the triangle is in behind the ray
         if (t < 0){
@@ -151,4 +151,15 @@ public class Triangle {
     
     //check https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
     
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Triangle " + id + "\n");
+        sb.append("   A = (" + p1.x + ", " + p1.y + ", " + p1.z + ")\n");
+        sb.append("   B = (" + p2.x + ", " + p2.y + ", " + p2.z + ")\n");
+        sb.append("   C = (" + p3.x + ", " + p3.y + ", " + p3.z + ")\n");
+        sb.append("   N = (" + normal.x + ", " + normal.y + ", " + normal.z + ")\n");
+        
+        return sb.toString();
+    }
 }
