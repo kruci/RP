@@ -77,7 +77,7 @@ public class RefractionTest extends Application{
                     cl = new SimpleSpotLight(
                         spd,//new SPDrange(360,830),//new SPDsingle(singlelambda),
                         new double[]{0,0,0},//poz
-                        new double[]{0.185,0,-1}, //dir
+                        new double[]{0.05,0,-1}, //dir
                         1.0
                     );
                     filename = "SpotLightRefraction";
@@ -122,7 +122,6 @@ public class RefractionTest extends Application{
                         90,90,//angles
                         new CIE1931StandardObserver()//color
                     );
-                    
                     //power = 10000;
                     ss.cam_list.clear();
                     ss.addCamera(cam);
@@ -146,9 +145,9 @@ public class RefractionTest extends Application{
         
         cam = new SimpleCamera(
             new Math3dUtil.Vector3(0,0,0),//from
-            new Math3dUtil.Vector3(0.16,0,-1),//to
+            new Math3dUtil.Vector3(0.03,0,-1),//to
             500,500,//resolution
-            3,3,//angles
+            5,5,//angles
             new CIE1931StandardObserver()//color
         );
         /*
@@ -245,7 +244,7 @@ ________________________________________________________________________________
         ss.addSceneObject(sso);
         ss.addSceneObject(sso2);
         ss.addSceneObject(sso3);
-        
+        ss.forcesendtocamera = true;        
     //JAVAFX*********************************************
         primaryStage.setTitle("Renderer");
         //StackPane root = new StackPane();
@@ -284,12 +283,12 @@ ________________________________________________________________________________
         primaryStage.show();
     }
     
-    public void printSSWTSO_lmap(DefaultScene in){
+    /*public void printSSWTSO_lmap(DefaultScene in){
         System.out.println();
         for(Map.Entry<Double, Double> entry : in.ltrans.entrySet() ){
             System.out.println(entry.getKey() + " " + entry.getValue());
         }
-    }
+    }*/
     
     public static void save(Camera cam, String location){
         //iamge creation

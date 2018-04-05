@@ -118,15 +118,16 @@ public class RendererTest extends Application{
         double[][] matix = createRotXMatix(Math.toRadians(20));
         
         SimpleSceneObject torus = new SimpleSceneObject("test/renderer/torus.obj", false, null/*matix*/);
-        torus.front = new TotalReflection();
+        //torus.front = new TotalReflection();
         
         cl.setPower(power);
         ss.addCamera(cam);
         ss.addLightSource(cl);
         //ss.addSceneObject(sso);
         //ss.addSceneObject(sso2);
-        ss.addSceneObject(sso_podlozka);
+        //ss.addSceneObject(sso_podlozka);
         ss.addSceneObject(torus);
+        ss.forcesendtocamera = true;
         
     //JAVAFX*********************************************
         primaryStage.setTitle("Renderer");
