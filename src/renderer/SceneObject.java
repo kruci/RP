@@ -23,4 +23,5 @@ public interface SceneObject {
     public List<Pair<Triangle, Double>> intersects(LightSource.Beam b);
     public SceneObjectProperty getSideProperty(Triangle t,Math3dUtil.Vector3 direction);
     public SceneObjectProperty getOtherSideProperty(Triangle t,Math3dUtil.Vector3 direction);
+    //public void setMatrix(double [][] m);
 }

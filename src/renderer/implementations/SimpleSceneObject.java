@@ -30,6 +30,7 @@ public class SimpleSceneObject implements SceneObject{
     public List<Triangle> triang = new ArrayList<>();
     public SceneObjectProperty front = null;
     public SceneObjectProperty back = null;
+    public double [][] matrix = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
     
     
     public SimpleSceneObject(Vector3 A,Vector3 B,Vector3 C){
@@ -41,7 +42,10 @@ public class SimpleSceneObject implements SceneObject{
      * http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
      * @param objFile *.obj file
      */
-    public SimpleSceneObject(String objFile, boolean use_provided_normals) {
+    public SimpleSceneObject(String objFile, boolean use_provided_normals, double[][] m) {
+        if(m != null){
+            matrix = m;
+        }
         
         try {        
             BufferedReader reader = new BufferedReader(new FileReader(objFile));
@@ -64,7 +68,7 @@ public class SimpleSceneObject implements SceneObject{
                     B = Double.parseDouble(sc.next());
                     C = Double.parseDouble(sc.next());
                     
-                    v3l.add(new Vector3(A,B,C));
+                    v3l.add((new Vector3(A,B,C)).multiplyByM4(matrix) );
                     sc.close();
                 }
                 
@@ -166,4 +170,8 @@ public class SimpleSceneObject implements SceneObject{
         
         return sb.toString();
     }
+    
+    /*public void setMatrix(double [][] m){
+        matrix = m;
+    }*/
 }

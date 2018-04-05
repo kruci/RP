@@ -26,11 +26,10 @@ import javax.imageio.ImageIO;
 import light.implementations.SimpleSpotLight;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.createRotXMatix;
 import renderer.implementations.DefaultScene;
 import renderer.implementations.SimpleCamera;
-import renderer.implementations.SimpleScene;
 import renderer.implementations.SimpleSceneObject;
-import renderer.implementations.TotalReflection;
 
 /**
  *
@@ -56,7 +55,7 @@ public class RendererTest extends Application{
         SimpleSpotLight cl = new SimpleSpotLight(
                 new SPDsingle(singlelambda),
                 new double[]{0,5,5},//poz
-                new double[]{0,-0.5,-1}, //dir
+                new double[]{0,-0.7,-1}, //dir
                 30.0
         );
         /*CircleLight cl = new CircleLight(
@@ -110,12 +109,14 @@ public class RendererTest extends Application{
         );
         
         SimpleSceneObject sso_podlozka = new SimpleSceneObject(
-               new Math3dUtil.Vector3(10, -0.250000, -10),
-               new Math3dUtil.Vector3(-10, -0.250000, -10),
-               new Math3dUtil.Vector3(0, -0.250000, 10) 
+               new Math3dUtil.Vector3(10, -0.251000, -10),
+               new Math3dUtil.Vector3(-10, -0.210000, -10),
+               new Math3dUtil.Vector3(0, -0.251000, 10) 
         );
         
-        SimpleSceneObject torus = new SimpleSceneObject("test/renderer/torus.obj", false);
+        double[][] matix = createRotXMatix(Math.toRadians(20));
+        
+        SimpleSceneObject torus = new SimpleSceneObject("test/renderer/torus.obj", false, matix);
         //torus.front = new TotalReflection();
         
         cl.setPower(power);
