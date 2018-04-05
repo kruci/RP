@@ -24,7 +24,7 @@ import renderer.Triangle;
  *
  * @author rasto
  */
-public class SimpleSceneWithTransparentSO implements Scene {
+public class DefaultScene implements Scene {
 
     public List<Camera> cam_list;
     public List<LightSource> ls_list;
@@ -33,7 +33,7 @@ public class SimpleSceneWithTransparentSO implements Scene {
     
     public Map<Double, Double> ltrans = new TreeMap<Double,Double>();
 
-    public SimpleSceneWithTransparentSO() {
+    public DefaultScene() {
         cam_list = new ArrayList<Camera>();
         ls_list = new ArrayList<LightSource>();
         so_list = new ArrayList<SceneObject>();
@@ -93,10 +93,16 @@ public class SimpleSceneWithTransparentSO implements Scene {
                 Pair<Double,Double> ref = refract(((Transparency)side).getN(b.lambda), ((Transparency)oside).getN(b.lambda), 
                         A1,b.lambda);
                 
-                Math3dUtil.Vector3 newdir = rotateVectorCC(b.direction.normalize(), closestT.first().normal, 
-                        -(A1 - ref.first()));
-
-                b = new LightSource.Beam(intersectionPoint, newdir.normalize(), ref.second(), ls_list.get(0));
+                //System.out.println(Math.toDegrees(A1) + "  " + Math.toDegrees(ref.first()));
+            /**
+             * Works only if triang normal points from -Z to Z
+             */
+                Math3dUtil.Vector3 newdir = rotateVectorCC(b.direction.normalize(), closestT.first().normal.cross(b.direction.normalize()), 
+                        ref.first());
+                
+                
+                b = new LightSource.Beam(intersectionPoint, newdir.normalize(), 
+                        ref.second() /*(ref.second() <=0 ? 1.0 : ref.second())*//*b.lambda*/, ls_list.get(0));
                 
                 //System.out.println(Math.toDegrees(A1) + " " + Math.toDegrees(ref.first()) + " " + intersectionPoint.z);
                 
@@ -110,12 +116,37 @@ public class SimpleSceneWithTransparentSO implements Scene {
                 }
                 //System.out.println(b.lambda);
                 //System.out.println(++iter);
-                ltrans.put(sl, (double)((int)b.lambda));
+                //ltrans.put(sl, (double)((int)b.lambda));
                 return;
+            }
+            else if(side instanceof TotalReflection || oside instanceof TotalReflection){
+                double A = b.direction.normalize().angle(closestT.first().normal);
+                double DNdot = b.direction.normalize().dot( closestT.first().normal );
+                /**
+                 * TODO
+                 */
+                /*
+                if(DNdot <=0){
+                    A = Math.toRadians(180) - A;
+                }
+                else{
+                    A = Math.toRadians(90) - A;
+                }
+                A = Math.toRadians(360) - A;
+                
+                System.out.println(Math.toDegrees(A) + " " + b.direction.normalize().dot( closestT.first().normal ) );*/
+                
+                Math3dUtil.Vector3 newdir = rotateVectorCC(
+                        b.direction.normalize(), //rotate this 
+                        closestT.first().normal.cross(b.direction.normalize()), //around this
+                        A);//with this angle ccw
+                
+                b = new LightSource.Beam(intersectionPoint, newdir.normalize(), b.lambda, ls_list.get(0));
+                ignoredT = closestT.first();
             }
             else//idk lol
             {
-                System.out.println("SSWTSO undefined behavior");
+                System.out.println("DefaultScene undefined behavior");
                 return;
             }
             iter++;

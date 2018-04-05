@@ -31,11 +31,12 @@ import light.LightSource;
 import light.implementations.CircleLight;
 import light.implementations.Laser;
 import light.implementations.SimpleSpotLight;
+import light.implementations.Sky;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
 import renderer.implementations.SimpleCamera;
 import renderer.implementations.SimpleSceneObject;
-import renderer.implementations.SimpleSceneWithTransparentSO;
+import renderer.implementations.DefaultScene;
 import renderer.implementations.Transparency;
 
 /**
@@ -51,7 +52,7 @@ public class RefractionTest extends Application{
     LightSource cl;
     SimpleCamera cam;
     Label lab;
-    SimpleSceneWithTransparentSO ss;
+    DefaultScene ss;
     String filename = "LaserRefraction";
     SpectralPowerDistribution spd = new SPDrange(360,830);
     
@@ -76,24 +77,47 @@ public class RefractionTest extends Application{
                     cl = new SimpleSpotLight(
                         spd,//new SPDrange(360,830),//new SPDsingle(singlelambda),
                         new double[]{0,0,0},//poz
-                        new double[]{0.1,0,-1}, //dir
+                        new double[]{0.185,0,-1}, //dir
                         1.0
                     );
                     filename = "SpotLightRefraction";
                 }
-                else
+                else if (((Number)new_value).intValue() == 2)
                 {
                     cl = new CircleLight(
                         spd,//new SPDrange(360,830),//new SPDsingle(singlelambda),
                         new double[]{0,0,0},//poz
-                        new double[]{0.1,0,-1}, //dir
-                        0.02
+                        new double[]{0,0,-1}, //dir
+                        10
                     );
                     filename = "CircleLightRefraction";
                     
                     cam = new SimpleCamera(
-                        new Math3dUtil.Vector3(0,0,0),//from
-                        new Math3dUtil.Vector3(0.1,-0.04,-1),//to
+                        new Math3dUtil.Vector3(0,0,1000),//from
+                        new Math3dUtil.Vector3(0,0,-1),//to
+                        500,500,//resolution
+                        90,90,//angles
+                        new CIE1931StandardObserver()//color
+                    );
+                    
+                    //power = 10000;
+                    ss.cam_list.clear();
+                    ss.addCamera(cam);
+                }
+                else if (((Number)new_value).intValue() == 3)
+                {
+                    cl = new Sky(
+                        spd,//new SPDrange(360,830),//new SPDsingle(singlelambda),
+                        new Vector3(-200,200,0),
+                        new Vector3(200,200,0), 
+                        new Vector3(200,-200,0),
+                        new Vector3(0,0,-1)
+                    );
+                    filename = "SkyRefraction";
+                    
+                    cam = new SimpleCamera(
+                        new Math3dUtil.Vector3(0,0,100),//from
+                        new Math3dUtil.Vector3(0,0,-1),//to
                         500,500,//resolution
                         90,90,//angles
                         new CIE1931StandardObserver()//color
@@ -112,7 +136,7 @@ public class RefractionTest extends Application{
     
     @Override
     public void start(Stage primaryStage) {
-        ss= new SimpleSceneWithTransparentSO();
+        ss= new DefaultScene();
 
         cl = new Laser(
                     spd,//new SPDrange(360,830),//new SPD400to800(),
@@ -122,7 +146,7 @@ public class RefractionTest extends Application{
         
         cam = new SimpleCamera(
             new Math3dUtil.Vector3(0,0,0),//from
-            new Math3dUtil.Vector3(0.1,-0.04,-1),//to
+            new Math3dUtil.Vector3(0.16,0,-1),//to
             500,500,//resolution
             3,3,//angles
             new CIE1931StandardObserver()//color
@@ -160,16 +184,16 @@ ________________________________________________________________________________
         //transparent t
         SimpleSceneObject sso = new SimpleSceneObject(
                 //cw
-                
+                /*
                 new Math3dUtil.Vector3(-100, 100, -45),
                 new Math3dUtil.Vector3(100, 100, 0),
                 new Math3dUtil.Vector3(0, -100, -22.5)
-                
+                */
                 //ccw
-                /*
+                
                 new Math3dUtil.Vector3(-100, 100, -45),
                 new Math3dUtil.Vector3(0, -100, -22.5),
-                new Math3dUtil.Vector3(100, 100, 0)*/
+                new Math3dUtil.Vector3(100, 100, 0)
         );
         sso.back = air;
         sso.front = tspr;
@@ -179,16 +203,16 @@ ________________________________________________________________________________
         //transparent t
         SimpleSceneObject sso2 = new SimpleSceneObject(
                 //cw
-                
+                /*
                 new Math3dUtil.Vector3(-100, 100, -45),
                 new Math3dUtil.Vector3(100, 100, -90),
                 new Math3dUtil.Vector3(0, -100, -67.5)
-                
+                */
                 //ccw
-                /*
+                
                 new Math3dUtil.Vector3(-100, 100, -45),
                 new Math3dUtil.Vector3(0, -100, -67.5),
-                new Math3dUtil.Vector3(100, 100, -90)*/
+                new Math3dUtil.Vector3(100, 100, -90)
         );
         sso2.front = air;
         sso2.back = tspr;
@@ -199,17 +223,17 @@ ________________________________________________________________________________
         //nontransparent t
         SimpleSceneObject sso3 = new SimpleSceneObject(
                 //cw
-                
+                /*
                 new Math3dUtil.Vector3(-1000, 1000, -100),
                 new Math3dUtil.Vector3(1000, 1000, -100),
                 new Math3dUtil.Vector3(0, -1000, -100)
-                
+                */
                 //ccw
-                /*
+                
                 new Math3dUtil.Vector3(-1000, 1000, -100),
                 new Math3dUtil.Vector3(0, -1000, -100),
                 new Math3dUtil.Vector3(1000, 1000, -100)
-*/
+
 
         );
         sso3.triang.get(0).id="3";
@@ -231,7 +255,7 @@ ________________________________________________________________________________
         lab = new Label("0");
         
         ChoiceBox cb = new ChoiceBox(FXCollections.observableArrayList(
-            "Laser", "SpotLight", "CircleLight")
+            "Laser", "SpotLight", "CircleLight", "Sky")
         );
         cb.getSelectionModel().selectedIndexProperty().addListener(new cbListener() );
         
@@ -260,7 +284,7 @@ ________________________________________________________________________________
         primaryStage.show();
     }
     
-    public void printSSWTSO_lmap(SimpleSceneWithTransparentSO in){
+    public void printSSWTSO_lmap(DefaultScene in){
         System.out.println();
         for(Map.Entry<Double, Double> entry : in.ltrans.entrySet() ){
             System.out.println(entry.getKey() + " " + entry.getValue());

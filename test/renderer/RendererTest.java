@@ -23,12 +23,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import light.implementations.UniformPointLightSource;
+import light.implementations.SimpleSpotLight;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
+import renderer.implementations.DefaultScene;
 import renderer.implementations.SimpleCamera;
 import renderer.implementations.SimpleScene;
 import renderer.implementations.SimpleSceneObject;
+import renderer.implementations.TotalReflection;
 
 /**
  *
@@ -44,17 +46,19 @@ public class RendererTest extends Application{
     
     @Override
     public void start(Stage primaryStage) {
+        /*
         UniformPointLightSource cl = new UniformPointLightSource(
                 new SPDsingle(singlelambda),
-                new double[]{0,0,0}//poz
+                new double[]{0,5,5}//poz
         );
-        /*
+        */
+        
         SimpleSpotLight cl = new SimpleSpotLight(
                 new SPDsingle(singlelambda),
-                new double[]{0,0,0},//poz
-                new double[]{0,0,-1}, //dir
+                new double[]{0,5,5},//poz
+                new double[]{0,-0.5,-1}, //dir
                 30.0
-        );*/
+        );
         /*CircleLight cl = new CircleLight(
             new SPDsingle(singlelambda),
             new double[]{0,0,0},//poz
@@ -69,13 +73,13 @@ public class RendererTest extends Application{
                 0.07
         );*/
         
-        SimpleScene ss= new SimpleScene();
+        DefaultScene ss= new DefaultScene();//SimpleScene();
 
         SimpleCamera cam = new SimpleCamera(
             new Vector3(0,5,5),//from
             new Vector3(0,-0.5,-1),//to
             500,500,//resolution
-            90,90,//angles
+            40,40,//angles
             new CIE1931StandardObserver()//color
         );
         //triangle pointing down
@@ -105,14 +109,22 @@ public class RendererTest extends Application{
                 new Math3dUtil.Vector3(6, -1, -10)*/
         );
         
-        SimpleSceneObject thickring = new SimpleSceneObject("test/renderer/torus.obj", false);
+        SimpleSceneObject sso_podlozka = new SimpleSceneObject(
+               new Math3dUtil.Vector3(10, -0.250000, -10),
+               new Math3dUtil.Vector3(-10, -0.250000, -10),
+               new Math3dUtil.Vector3(0, -0.250000, 10) 
+        );
+        
+        SimpleSceneObject torus = new SimpleSceneObject("test/renderer/torus.obj", false);
+        //torus.front = new TotalReflection();
         
         cl.setPower(power);
         ss.addCamera(cam);
         ss.addLightSource(cl);
         //ss.addSceneObject(sso);
         //ss.addSceneObject(sso2);
-        ss.addSceneObject(thickring);
+        //ss.addSceneObject(sso_podlozka);
+        ss.addSceneObject(torus);
         
     //JAVAFX*********************************************
         primaryStage.setTitle("Renderer");

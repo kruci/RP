@@ -53,7 +53,8 @@ public class Triangle {
     * was (normal.dot(origin) + d) / NdotRayDirection; 
     * this need more investigation (becouse "was" is from scratchpixel, ...)
     */
-        double t = (-normal.dot(origin) + d) / NdotRayDirection; 
+        //double t = (-normal.dot(origin) + d) / NdotRayDirection; 
+        double t = -((normal.dot(origin) - d) / NdotRayDirection);
         // check if the triangle is in behind the ray
         if (t < 0){
             return intersects;
