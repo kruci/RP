@@ -13,6 +13,7 @@ import light.LightSource;
 import math_and_utils.Math3dUtil;
 import static math_and_utils.Math3dUtil.refract;
 import static math_and_utils.Math3dUtil.rotateVectorCC;
+import static math_and_utils.Math3dUtil.vithinError;
 import math_and_utils.Pair;
 import renderer.Camera;
 import renderer.Scene;
@@ -122,19 +123,37 @@ public class DefaultScene implements Scene {
             else if(side instanceof TotalReflection || oside instanceof TotalReflection){
                 double A = b.direction.normalize().angle(closestT.first().normal);
                 double DNdot = b.direction.normalize().dot( closestT.first().normal );
-                /**
-                 * TODO
-                 */
-                /*
+                
                 if(DNdot <=0){
                     A = Math.toRadians(180) - A;
+                    if( vithinError( rotateVectorCC(
+                            b.direction.normalize(), //rotate this 
+                            closestT.first().normal.cross(b.direction.normalize()), //around this
+                            A
+                            ).normalize().dot(closestT.first().normal) , -1, 0.0001) 
+                       ){
+                        A = 2*A;
+                    }
+                    else{
+                        A = -2*A;
+                    }
                 }
                 else{
-                    A = Math.toRadians(90) - A;
+                    if( vithinError( rotateVectorCC(
+                            b.direction.normalize(), //rotate this 
+                            closestT.first().normal.cross(b.direction.normalize()), //around this
+                            A
+                            ).normalize().dot(closestT.first().normal) , 1, 0.0001) 
+                       ){
+                        A = 2*A;
+                    }
+                    else{
+                        A = -2*A;
+                    }
                 }
-                A = Math.toRadians(360) - A;
                 
-                System.out.println(Math.toDegrees(A) + " " + b.direction.normalize().dot( closestT.first().normal ) );*/
+                
+                //System.out.println(Math.toDegrees(A) + " " + b.direction.normalize().dot( closestT.first().normal ) );
                 
                 Math3dUtil.Vector3 newdir = rotateVectorCC(
                         b.direction.normalize(), //rotate this 

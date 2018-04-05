@@ -30,6 +30,7 @@ import static math_and_utils.Math3dUtil.createRotXMatix;
 import renderer.implementations.DefaultScene;
 import renderer.implementations.SimpleCamera;
 import renderer.implementations.SimpleSceneObject;
+import renderer.implementations.TotalReflection;
 
 /**
  *
@@ -116,15 +117,15 @@ public class RendererTest extends Application{
         
         double[][] matix = createRotXMatix(Math.toRadians(20));
         
-        SimpleSceneObject torus = new SimpleSceneObject("test/renderer/torus.obj", false, matix);
-        //torus.front = new TotalReflection();
+        SimpleSceneObject torus = new SimpleSceneObject("test/renderer/torus.obj", false, null/*matix*/);
+        torus.front = new TotalReflection();
         
         cl.setPower(power);
         ss.addCamera(cam);
         ss.addLightSource(cl);
         //ss.addSceneObject(sso);
         //ss.addSceneObject(sso2);
-        //ss.addSceneObject(sso_podlozka);
+        ss.addSceneObject(sso_podlozka);
         ss.addSceneObject(torus);
         
     //JAVAFX*********************************************
