@@ -13,6 +13,8 @@ import math_and_utils.Math3dUtil;
 import static math_and_utils.Math3dUtil.Minvert;
 import math_and_utils.Math3dUtil.Vector3;
 import static math_and_utils.Math3dUtil.createNormalTransofrmMatrix;
+import static math_and_utils.Math3dUtil.epsilon;
+import static math_and_utils.Math3dUtil.vithinError;
 import renderer.Camera;
 
 /**
@@ -47,9 +49,20 @@ public class SimpleCamera implements Camera{
     public SimpleCamera(Vector3 from, Vector3 to, int pixelwidth, int pixelheight, 
             double AngleX, double AngleY,Color color)
     {
-        
+        Vector3 tmp = new Vector3(0,1,0).normalize();
         Vector3 forward = from.sub(to).normalize();
-        Vector3 right = ((new Vector3(0,1,0).normalize()).cross(forward)).normalize();
+        
+        //fixes wrong cross in case of looking from (0,0,0) directly up or down
+        if(vithinError(tmp.dot(forward), -1 ,epsilon))
+        {
+            tmp = new Vector3(0,0,1).normalize();
+        }
+        else if(vithinError(tmp.dot(forward),  1,epsilon))
+        {
+            tmp = new Vector3(0,0,-1).normalize();
+        }
+        
+        Vector3 right = ((tmp).cross(forward)).normalize();
         Vector3 up = (forward.cross(right)).normalize();
         
         cdir = forward.scale(-1);

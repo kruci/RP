@@ -50,6 +50,7 @@ public class RendererTest extends Application{
         LightSource ls = null;
         //SimpleCamera cam = null; // cam must be finil in this code
         DefaultScene ss = new DefaultScene();
+        ss.maxiter = 10;
         
         //Scene objects
         SimpleSceneObject podlozka = new SimpleSceneObject(
@@ -59,14 +60,15 @@ public class RendererTest extends Application{
         );
         
         SimpleSceneObject torus = new SimpleSceneObject(
-            "test/renderer/40_0.5_circle.obj", 
+            //"test/renderer/40_0.5_circle.obj", 
+            "test/renderer/400_0.5_circle.obj", 
             false, 
             null);
         torus.front = new TotalReflection();
         
         //Camera
         SimpleCamera cam = new SimpleCamera(
-            new Vector3(0.01,2,0),//from
+            new Vector3(0,2,0),//from
             new Vector3(0,0,0),//to
             //new Vector3(0,3,1),//from
             //new Vector3(0,0,0),//to
@@ -80,9 +82,9 @@ public class RendererTest extends Application{
         double[][] skymatrix_inversT = createNormalTransofrmMatrix(skymatrix);
         ls = new Sky(
             new SPDsingle(555),
-            new Vector3(1.5,-1.5,2).multiplyByM4(skymatrix),
-            new Vector3(1.5,1.5,2).multiplyByM4(skymatrix),
-            new Vector3(-1.5,1.5,2).multiplyByM4(skymatrix),
+            new Vector3(1.7,-1.7,2).multiplyByM4(skymatrix),
+            new Vector3(1.7,1.7,2).multiplyByM4(skymatrix),
+            new Vector3(-1.7,1.7,2).multiplyByM4(skymatrix),
             new Vector3(0,0,-1).multiplyByM4(skymatrix_inversT)        
         );
         ls.setPower(10000);

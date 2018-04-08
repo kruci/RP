@@ -529,6 +529,11 @@ public class Math3dUtil {
          * @return perpendicular vector to "this" and "other"
          */
         public Vector3 cross(Vector3 other) {
+            /*if(vithinError( Math.abs(this.dot(other)), 1 ,epsilon))
+            {
+                System.out.println("Cross product error");
+            }*/
+            
             return new Vector3(y * other.z - z * other.y,
                                z * other.x - x * other.z,
                                x * other.y - y * other.x);
