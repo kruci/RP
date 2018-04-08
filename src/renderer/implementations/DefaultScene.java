@@ -7,8 +7,6 @@ package renderer.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
 import static math_and_utils.Math3dUtil.refract;
@@ -95,14 +93,30 @@ public class DefaultScene implements Scene {
                     }
                 }
             }
-            if (closestT.first() == null) {
-                if (camerabema == true) {
-                    for (Camera cam : cam_list) {
+            
+            //if beam doesnt hit any triangle
+            if (closestT.first() == null) 
+            {
+                //if beam shoudl go to camera
+                if (camerabema == true) 
+                {
+                    //send beam to cameras
+                    for (Camera cam : cam_list) 
+                    {
                         cam.watch(b);
                     }
                 }
                 return;
             }
+            else //if beam hit something
+            {
+                //if beam should have had free view of camera, but it doesnt
+                if(camerabema == true)
+                {
+                    return;
+                }
+            }
+            
             Math3dUtil.Vector3 intersectionPoint = b.origin.add((b.direction).scale(closestT.second()));
 
             SceneObjectProperty side = closestT.first().parent.getSideProperty(closestT.first(), b.direction);
@@ -117,7 +131,8 @@ public class DefaultScene implements Scene {
                 double A2 = 0;
                 Pair<Double, Double> ref;
 
-                if (DNdot <= 0) {
+                if (DNdot <= 0) 
+                {
                     A1 = Math.toRadians(180) - A1;
                     ref = refract(((Transparency) side).getN(b.lambda), ((Transparency) oside).getN(b.lambda),
                             A1, b.lambda);
@@ -126,12 +141,17 @@ public class DefaultScene implements Scene {
                             b.direction.normalize(), //rotate this 
                             closestT.first().normal.cross(b.direction.normalize()), //around this
                             A1
-                    ).normalize().dot(closestT.first().normal), -1, 0.0001)) {
+                    ).normalize().dot(closestT.first().normal), -1, Math3dUtil.epsilon)) 
+                    {
                         A2 = ref.first();
-                    } else {
+                    } 
+                    else 
+                    {
                         A2 = -ref.first();
                     }
-                } else {
+                } 
+                else 
+                {
                     ref = refract(((Transparency) side).getN(b.lambda), ((Transparency) oside).getN(b.lambda),
                             A1, b.lambda);
 
@@ -139,9 +159,12 @@ public class DefaultScene implements Scene {
                             b.direction.normalize(), //rotate this 
                             closestT.first().normal.cross(b.direction.normalize()), //around this
                             A1
-                    ).normalize().dot(closestT.first().normal), 1, 0.0001)) {
+                    ).normalize().dot(closestT.first().normal), 1, Math3dUtil.epsilon)) 
+                    {
                         A2 = ref.first();
-                    } else {
+                    } 
+                    else 
+                    {
                         A2 = -ref.first();
                     }
                 }
@@ -153,10 +176,13 @@ public class DefaultScene implements Scene {
                         ref.second(), ls_list.get(0));
 
                 ignoredT = closestT.first();
-            } else if (side == null && oside == null)//nontransparent triangle
+            } 
+            else if (side == null && oside == null)//nontransparent triangle
             {
-                if (forcesendtocamera) {
-                    for (Camera cam : cam_list) {
+                if (forcesendtocamera) 
+                {
+                    for (Camera cam : cam_list) 
+                    {
                         Math3dUtil.Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();
                         cam.watch(new LightSource.Beam(intersectionPoint, difusedirection, b.lambda, b.source));
                         return;
@@ -164,60 +190,73 @@ public class DefaultScene implements Scene {
                     /*for(Camera cam : cam_list){
                     Math3dUtil.Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();
                     cam.watch(new LightSource.Beam(intersectionPoint,difusedirection, b.lambda, b.source));
-                }*/
-                    Camera cam = cam_list.get(0);
-                    Math3dUtil.Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();
+                    */
+                }
+                
+                Camera cam = cam_list.get(0);
+                Math3dUtil.Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();
 
-                    b = new LightSource.Beam(intersectionPoint, difusedirection, b.lambda, b.source);
-                    camerabema = true;
-                    ignoredT = closestT.first();
-                } else if (side instanceof TotalReflection || oside instanceof TotalReflection) {
-                    double A = b.direction.normalize().angle(closestT.first().normal);
-                    double DNdot = b.direction.normalize().dot(closestT.first().normal);
+                b = new LightSource.Beam(intersectionPoint, difusedirection, b.lambda, b.source);
+                camerabema = true;
+                ignoredT = closestT.first();
+            }
+            else if (side instanceof TotalReflection || oside instanceof TotalReflection) 
+            {
+                double A = b.direction.normalize().angle(closestT.first().normal);
+                double DNdot = b.direction.normalize().dot(closestT.first().normal);
 
-                    if (DNdot <= 0) {
-                        A = Math.toRadians(180) - A;
-                        if (vithinError(rotateVectorCC(
+                if (DNdot <= 0) {
+                    A = Math.toRadians(180) - A;
+                    if (vithinError(rotateVectorCC(
                                 b.direction.normalize(), //rotate this 
                                 closestT.first().normal.cross(b.direction.normalize()), //around this
                                 A
-                        ).normalize().dot(closestT.first().normal), -1, 0.0001)) {
-                            A = 2 * A;
-                        } else {
-                            A = -2 * A;
-                        }
-                    } else {
-                        if (vithinError(rotateVectorCC(
-                                b.direction.normalize(), //rotate this 
-                                closestT.first().normal.cross(b.direction.normalize()), //around this
-                                A
-                        ).normalize().dot(closestT.first().normal), 1, 0.0001)) {
-                            A = 2 * A;
-                        } else {
-                            A = -2 * A;
-                        }
+                        ).normalize().dot(closestT.first().normal), -1, 0.0001)) 
+                    {
+                         A = 2 * A;
+                    } 
+                    else 
+                    {
+                        A = -2 * A;
                     }
+                } 
+                else 
+                {
+                    if (vithinError(rotateVectorCC(
+                                b.direction.normalize(), //rotate this 
+                                closestT.first().normal.cross(b.direction.normalize()), //around this
+                                A
+                        ).normalize().dot(closestT.first().normal), 1, 0.0001)) 
+                    {
+                        A = 2 * A;
+                    } 
+                    else 
+                    {
+                        A = -2 * A;
+                    }
+                }
 
-                    Math3dUtil.Vector3 newdir = rotateVectorCC(
+                Math3dUtil.Vector3 newdir = rotateVectorCC(
                             b.direction.normalize(), //rotate this 
                             closestT.first().normal.cross(b.direction.normalize()), //around this
                             A);//with this angle ccw
-                    newdir = (newdir.normalize()).scale(-1.0);
+                newdir = (newdir.normalize()).scale(-1.0);
 
-                    b = new LightSource.Beam(intersectionPoint, newdir, b.lambda, ls_list.get(0));
+                b = new LightSource.Beam(intersectionPoint, newdir, b.lambda, ls_list.get(0));
 
-                    ignoredT = closestT.first();
-                } else//idk lol
-                {
-                    System.out.println("DefaultScene undefined behavior");
-                    return;
-                }
-                iter++;
+                ignoredT = closestT.first();
+            } 
+            else//idk lol
+            {
+                System.out.println("DefaultScene undefined behavior");
+                return;
+            }
+            iter++;
 
-                if (iter >= maxiter) {
-                    break;
-                }
+            if (iter >= maxiter) {
+                break;
             }
         }
     }
 }
+

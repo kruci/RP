@@ -14,7 +14,6 @@ import static math_and_utils.Math3dUtil.epsilon;
  * @author rasto
  */
 public class Triangle {
-    //public static final double epsilon = 0.00001;
     public Vector3 p1, p2, p3, normal;
     public SceneObject parent = null;
     public String id;
@@ -49,11 +48,6 @@ public class Triangle {
         double d = normal.dot(p1);
         
         // compute t (equation 3) - t is the distance
-    /**
-    * was (normal.dot(origin) + d) / NdotRayDirection; 
-    * this need more investigation (becouse "was" is from scratchpixel, ...)
-    */
-        //double t = (-normal.dot(origin) + d) / NdotRayDirection; 
         double t = -((normal.dot(origin) - d) / NdotRayDirection);
         // check if the triangle is in behind the ray
         if (t < 0){

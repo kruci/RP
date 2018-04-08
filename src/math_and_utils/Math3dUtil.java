@@ -17,7 +17,7 @@ import static java.lang.Math.sqrt;
  * @author rasto
  */
 public class Math3dUtil {
-    public static final double epsilon = 0.00001;
+    public static final double epsilon = 1e-8;
     
     //https://stackoverflow.com/questions/11132681/what-is-a-formula-to-get-a-vector-perpendicular-to-another-vector
     /**
@@ -391,6 +391,17 @@ public class Math3dUtil {
         };
         return ret;
     }
+    
+    /**
+     * It inverts and then tranposes input matrix
+     * @param matrix matrix that is used for points/vectors transform
+     * @return matrix that is used for normal transforms
+     */
+    public static double[][] createNormalTransofrmMatrix(double[][] matrix){
+         double [][] ret = Minvert(matrix);
+         ret = Mtranspose(ret);
+         return ret;
+     }
     
     /**
      * 

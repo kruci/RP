@@ -6,13 +6,13 @@
 package renderer.implementations;
 
 import color.Color;
-import color.SpectralPowerDistribution;
 import color.implementations.SPDsingle;
 import java.util.Vector;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
 import static math_and_utils.Math3dUtil.Minvert;
 import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.createNormalTransofrmMatrix;
 import renderer.Camera;
 
 /**
@@ -20,7 +20,7 @@ import renderer.Camera;
  * @author rasto
  */
 public class SimpleCamera implements Camera{
-    protected double[][] camToWorld, worldToCam;
+    protected double[][] camToWorld, worldToCam, camToWorld_direction;
     protected int w,h;
     protected Color col;
     protected Vector<Vector<XYZHolder>> spds;
@@ -55,6 +55,7 @@ public class SimpleCamera implements Camera{
         cdir = forward.scale(-1);
         
         camToWorld = new double[][]{right.V3toM4(0), up.V3toM4(0), forward.V3toM4(0), from.V3toM4(1)};
+        camToWorld_direction = createNormalTransofrmMatrix(camToWorld);
         worldToCam = Minvert(camToWorld);
         /*for(int a = 0;a < 4;++a){
             for(int b = 0;b < 4;++b){
@@ -85,8 +86,9 @@ public class SimpleCamera implements Camera{
         PixelsCH = h/ (canvasHhalf*2.0);
     }
     
-    public boolean watch(Math3dUtil.Vector3 _origin, Math3dUtil.Vector3 _direction, double lambda){
+    private boolean watch(Math3dUtil.Vector3 _origin, Math3dUtil.Vector3 _direction, double lambda){
         Vector3 b_origin = _origin.multiplyByM4(worldToCam);
+        //Vector3 b_direction = _direction.multiplyByM4(camToWorld_direction);
         
         /*
         Vector3 b_direction = _direction.multiplyByM4(worldToCam);
@@ -120,7 +122,7 @@ public class SimpleCamera implements Camera{
             spdsingle.setLambda((int)lambda);
             spds.get((int)Px).get((int)Py).inc(col.SPDtoXYZ(spdsingle));
         } catch(Exception ex){
-            //System.out.println("Cam error");
+            System.out.println("Camera error");
             return false;
         }
         

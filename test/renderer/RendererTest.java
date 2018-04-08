@@ -23,10 +23,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import light.implementations.SimpleSpotLight;
+import light.LightSource;
+import light.implementations.Sky;
 import math_and_utils.Math3dUtil;
+import static math_and_utils.Math3dUtil.Mmultiply;
 import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.createNormalTransofrmMatrix;
 import static math_and_utils.Math3dUtil.createRotXMatix;
+import static math_and_utils.Math3dUtil.createRotYMatix;
 import renderer.implementations.DefaultScene;
 import renderer.implementations.SimpleCamera;
 import renderer.implementations.SimpleSceneObject;
@@ -41,95 +45,56 @@ public class RendererTest extends Application{
         launch(args);
     }
     
-    private static int singlelambda = 577;
-    private static double power = 10000;
-    
     @Override
-    public void start(Stage primaryStage) {
-        /*
-        UniformPointLightSource cl = new UniformPointLightSource(
-                new SPDsingle(singlelambda),
-                new double[]{0,5,5}//poz
-        );
-        */
+    public void start(Stage primaryStage) {        
+        LightSource ls = null;
+        //SimpleCamera cam = null; // cam must be finil in this code
+        DefaultScene ss = new DefaultScene();
         
-        SimpleSpotLight cl = new SimpleSpotLight(
-                new SPDsingle(singlelambda),
-                new double[]{0,5,5},//poz
-                new double[]{0,-0.7,-1}, //dir
-                30.0
+        //Scene objects
+        SimpleSceneObject podlozka = new SimpleSceneObject(
+            new Math3dUtil.Vector3(10, -0.5, -10),
+            new Math3dUtil.Vector3(-10, -0.5, -10),
+            new Math3dUtil.Vector3(0, -0.5, 10) 
         );
-        /*CircleLight cl = new CircleLight(
-            new SPDsingle(singlelambda),
-            new double[]{0,0,0},//poz
-            new double[]{0,0,-1}, //dir
-            1//radius
-        );*/
-        /*FadingSpotLight cl = new FadingSpotLight(
-                new SPDsingle(singlelambda),
-                new double[]{0,0,0},//poz
-                new double[]{0,0,-1}, //dir
-                30.0,
-                0.07
-        );*/
         
-        DefaultScene ss= new DefaultScene();//SimpleScene();
-
+        SimpleSceneObject torus = new SimpleSceneObject(
+            "test/renderer/40_0.5_circle.obj", 
+            false, 
+            null);
+        torus.front = new TotalReflection();
+        
+        //Camera
         SimpleCamera cam = new SimpleCamera(
-            new Vector3(0,5,5),//from
-            new Vector3(0,-0.5,-1),//to
+            new Vector3(0.01,2,0),//from
+            new Vector3(0,0,0),//to
+            //new Vector3(0,3,1),//from
+            //new Vector3(0,0,0),//to
             500,500,//resolution
-            40,40,//angles
-            new CIE1931StandardObserver()//color
-        );
-        //triangle pointing down
-        SimpleSceneObject sso = new SimpleSceneObject(
-                //cw
-                new Vector3(-1, 1, -1),
-                new Vector3(1, 1, -1),
-                new Vector3(0, -1, -1)
-                
-                //ccw
-                /*        
-                new Vector3(-1, 1, -1),
-                new Vector3(0, -1, -1),
-                new Vector3(1, 1, -1)*/
-        );
-        //triangle pointing to right
-        SimpleSceneObject sso2 = new SimpleSceneObject(
-                //cw
-                new Math3dUtil.Vector3(6, 1, -10),
-                new Math3dUtil.Vector3(6, -1, -10),
-                new Math3dUtil.Vector3(9, 0, -10)
-                
-                //ccw
-                /*
-                new Math3dUtil.Vector3(6, 1, -10),
-                new Math3dUtil.Vector3(9, 0, -10),
-                new Math3dUtil.Vector3(6, -1, -10)*/
+            90,90,//fov        
+            new CIE1931StandardObserver()
         );
         
-        SimpleSceneObject sso_podlozka = new SimpleSceneObject(
-               new Math3dUtil.Vector3(10, -0.251000, -10),
-               new Math3dUtil.Vector3(-10, -0.210000, -10),
-               new Math3dUtil.Vector3(0, -0.251000, 10) 
+        //LightSource
+        double[][] skymatrix = createRotXMatix(-Math.toRadians(50));
+        double[][] skymatrix_inversT = createNormalTransofrmMatrix(skymatrix);
+        ls = new Sky(
+            new SPDsingle(555),
+            new Vector3(1.5,-1.5,2).multiplyByM4(skymatrix),
+            new Vector3(1.5,1.5,2).multiplyByM4(skymatrix),
+            new Vector3(-1.5,1.5,2).multiplyByM4(skymatrix),
+            new Vector3(0,0,-1).multiplyByM4(skymatrix_inversT)        
         );
+        ls.setPower(10000);
         
-        double[][] matix = createRotXMatix(Math.toRadians(20));
-        
-        SimpleSceneObject torus = new SimpleSceneObject("test/renderer/torus.obj", false, null/*matix*/);
-        //torus.front = new TotalReflection();
-        
-        cl.setPower(power);
+        //add all to Scene
         ss.addCamera(cam);
-        ss.addLightSource(cl);
-        //ss.addSceneObject(sso);
-        //ss.addSceneObject(sso2);
-        //ss.addSceneObject(sso_podlozka);
+        ss.addLightSource(ls);
         ss.addSceneObject(torus);
-        ss.forcesendtocamera = true;
+        ss.addSceneObject(podlozka);
+        //ss.forcesendtocamera = true;
         
-    //JAVAFX*********************************************
+//JAVAFX*************************************************************************
         primaryStage.setTitle("Renderer");
         //StackPane root = new StackPane();
         

@@ -16,6 +16,7 @@ import java.util.Scanner;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.createNormalTransofrmMatrix;
 import math_and_utils.Pair;
 import renderer.SceneObject;
 import renderer.SceneObjectProperty;
@@ -31,20 +32,44 @@ public class SimpleSceneObject implements SceneObject{
     public SceneObjectProperty front = null;
     public SceneObjectProperty back = null;
     public double [][] matrix = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
+    public double [][] nmatrix = createNormalTransofrmMatrix(matrix);
     
-    
+    /**
+     * SceneObject made of 1 triangle ABC - triangle
+     * @param A 
+     * @param B
+     * @param C 
+     */
     public SimpleSceneObject(Vector3 A,Vector3 B,Vector3 C){
         triang.add(new Triangle(A,B,C));
         triang.get(triang.size()-1).parent = this;
     }
-     
+    
+    /**
+     * SceneObject made of 2 triangles ABC and ACD - square 
+     * @param A
+     * @param B
+     * @param C
+     * @param D 
+     */
+    public SimpleSceneObject(Vector3 A,Vector3 B,Vector3 C, Vector3 D){
+        triang.add(new Triangle(A,B,C));
+        triang.get(triang.size()-1).parent = this;
+        
+        triang.add(new Triangle(A,C,D));
+        triang.get(triang.size()-1).parent = this;
+    }
+    
     /**
      * http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
-     * @param objFile *.obj file
+     * @param objFile .obj file to load
+     * @param use_provided_normals if true, triangles will have normals loaded and set form file, if false, normals will be computed
+     * @param m transform matrix, normal transform matrix will be computed and used for normal transforming
      */
     public SimpleSceneObject(String objFile, boolean use_provided_normals, double[][] m) {
         if(m != null){
             matrix = m;
+            nmatrix = createNormalTransofrmMatrix(m);
         }
         
         try {        
@@ -105,7 +130,7 @@ public class SimpleSceneObject implements SceneObject{
                     B = Double.parseDouble(sc.next());
                     C = Double.parseDouble(sc.next());
                     
-                    normalv3l.add(new Vector3(A,B,C));
+                    normalv3l.add( (new Vector3(A,B,C)).multiplyByM4(nmatrix) );
                     sc.close();
                 }
             }
