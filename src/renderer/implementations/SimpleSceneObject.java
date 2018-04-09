@@ -23,7 +23,9 @@ import renderer.SceneObjectProperty;
 import renderer.Triangle;
 
 /**
- *
+ * SceneObject that contains List of Triangles, 
+ * 2 SceneObjectProperty - 1 for front and 1 for back, which are used by 
+ * all contained Triangles, and Transformation matrix to be used on all triangles
  * @author rasto
  */
 public class SimpleSceneObject implements SceneObject{
@@ -141,11 +143,22 @@ public class SimpleSceneObject implements SceneObject{
         }
     }
     
+    /**
+     * Add triangle at end of Triangle List
+     * @param A
+     * @param B
+     * @param C 
+     */
     public void addTriangle(Vector3 A,Vector3 B,Vector3 C){
         triang.add(new Triangle(A,B,C));
         triang.get(triang.size()-1).parent = this;
     }
     
+    /**
+     * Iterate thru all triangles and find intersecting
+     * @param b Beam, see {@link light.LightSource.Beam}.
+     * @return List of pairs containing Triangle as first parameter and distance from b.origin as second
+     */
     public List<Pair<Triangle, Double>> intersects(LightSource.Beam b){
         List<Pair<Triangle, Double>> l = new ArrayList();
         
@@ -186,6 +199,10 @@ public class SimpleSceneObject implements SceneObject{
         }
     }
     
+    /**
+     * 
+     * @return String with 5*NumberOfTriangles rows, containing triangle data for all triangles 
+     */
     public String toString(){
         StringBuilder sb = new StringBuilder();
         
@@ -195,8 +212,4 @@ public class SimpleSceneObject implements SceneObject{
         
         return sb.toString();
     }
-    
-    /*public void setMatrix(double [][] m){
-        matrix = m;
-    }*/
 }

@@ -9,10 +9,13 @@ import color.SpectralPowerDistribution;
 import java.util.Random;
 
 /**
- *
+ * SPD that has power = 1 on desired wavelength range, 0 outside of it
  * @author rasto
  */
 public class SPDrange implements SpectralPowerDistribution{
+    /**
+     * Scales Y (POWEEER)
+     */
     private double Ys = 1;
     private Random ran = new Random();
     int f,l;
@@ -26,7 +29,6 @@ public class SPDrange implements SpectralPowerDistribution{
         f = first;
         l = last; 
     }
-    
     
     public double getNextLamnbda(){
         return f + ran.nextDouble()*(l-f);

@@ -1,32 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package renderer;
 
 import light.LightSource;
 import math_and_utils.Math3dUtil.Vector3;
 
 /**
- *
+ * interface for Camera
  * @author rasto
  */
 public interface Camera {
     /** 
-     * @return 3D array of [x] [y] [R,G,B]
+     * @return 3D array of [x] [y] [R,G,B], where x and y are pixel coords and R,G,B is this pixels color
      */
     public int[][][] getPixels();
     
     /**
-     * Will try to look at that shit
-     * @param origin
+     * Will try to look at that beam
+     * @param b Beam, see {@link light.LightSource.Beam}.
      * @return true if cam can see it
      */
     public boolean watch(LightSource.Beam b);
-    
-    //public boolean watch(Vector3 origin, Vector3 direction, double lambda);
-    
-    
+        
+    /**
+     * 
+     * @return camera position
+     */
     public Vector3 GetPosition();
 }

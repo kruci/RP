@@ -6,20 +6,15 @@
 package color;
 
 /**
- * spectral power distribution (SPD) measurement describes the power per unit 
- * area per unit wavelength of an illumination (radiant exitance). More 
- * generally, the term spectral power distribution can refer to the 
- * concentration, as a function of wavelength
  * 
  * https://en.wikipedia.org/wiki/Spectral_power_distribution
  * 
- *  if we imagine this as graph, y would be normalized power (max(y) = 1) and
- *  x are lambdas
+ *  if we imagine this as graph, y power and x are lambdas
  *  if we have 2 spikes with y = 1 on graph, that means that they make up equivalent 
  *  portion of all radiated wavelengths
  * @author rasto
  */
-public interface SpectralPowerDistribution {
+public interface SpectralPowerDistribution extends java.io.Serializable{
     
     /**
      * 
@@ -27,9 +22,28 @@ public interface SpectralPowerDistribution {
      */
     public double getNextLamnbda();
     
+    /**
+     * 
+     * @param lambda wavelength
+     * @return Power on wavelength lambda
+     */
     public double getValue(double lambda);
+    
+    /**
+     * 
+     * @return double[2], where on index 0 is first wavelength with no power and on index 1 is the next wavelength with no power
+     */
     public double[] getFirstLastZero();
     
+    /**
+     * Scales Y (POWEER) by y
+     * @param y POWEEER
+     */
     public void setY(double y);
+    
+    /**
+     * 
+     * @return number that Y is scaled by
+     */
     public double getY();
 }

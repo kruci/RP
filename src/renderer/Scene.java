@@ -8,22 +8,10 @@ package renderer;
 import light.LightSource;
 
 /**
- * Will contain: 
- * - LightSources
- * - Cameras
- * - SceneObjects
- * 
- * Will do:
- *  Choosing which LS will generate Beam next
- *  Finding intersections between Beams and SceneObjects (later with cameras too)
- *  Adding children LS
+ * Holds info about LS, Camera and SceneObjects
  * @author rasto
  */
-public interface Scene {
-    /*public void addLightSource(LightSource ls);
-    public void addCamera(Camera c);
-    public void addSceneObject(SceneObject so);*/
-    
+public interface Scene {    
     /**
      * Will generate and compute another beam
      */

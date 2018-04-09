@@ -10,7 +10,8 @@ import math_and_utils.Math3dUtil;
 import math_and_utils.Pair;
 
 /**
- *something that interacts with light beams 
+ * Something that interacts with light beams 
+ * Its made up of triangles
  * @author rasto
  */
 public interface SceneObject {
@@ -21,7 +22,20 @@ public interface SceneObject {
      * @return List of triangles and their distances form b origin
      */
     public List<Pair<Triangle, Double>> intersects(LightSource.Beam b);
+    
+    /**
+     * 
+     * @param t Triangle
+     * @param direction direction
+     * @return SceneObjectProperty of Triangle T that is on side from which direction enters triangle
+     */
     public SceneObjectProperty getSideProperty(Triangle t,Math3dUtil.Vector3 direction);
+    
+    /**
+     * 
+     * @param t Triangle
+     * @param direction direction
+     * @return SceneObjectProperty of Triangle T that is on side from which direction exits triangle
+     */
     public SceneObjectProperty getOtherSideProperty(Triangle t,Math3dUtil.Vector3 direction);
-    //public void setMatrix(double [][] m);
 }

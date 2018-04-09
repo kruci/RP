@@ -8,7 +8,8 @@ package color.implementations;
 import color.SpectralPowerDistribution;
 
 /**
- *
+ * SPD that has power = 1 on single desired wavelength , 0 on others
+ * Will be removed, because {@link SPDrange} can also do this
  * @author rasto
  */
 public class SPDsingle implements SpectralPowerDistribution{

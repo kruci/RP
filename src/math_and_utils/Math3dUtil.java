@@ -1,19 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package math_and_utils;
-
-/**
- * TODO:    1) make sure rotation direction is same in every function
- *          2) test rotatePointAroundVector
- *          3) fix getPerpendicularVector when v[2] == 0
- */
 import static java.lang.Math.sqrt;
 
 /**
- *
+ * Class containing Mainly Math for 3D graphics
  * @author rasto
  */
 public class Math3dUtil {

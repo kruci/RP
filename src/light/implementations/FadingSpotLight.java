@@ -2,11 +2,16 @@ package light.implementations;
 
 import color.SpectralPowerDistribution;
 import math_and_utils.Math3dUtil;
-import static math_and_utils.Math3dUtil.anglesToVector3;
+import math_and_utils.Math3dUtil.Vector3;
 import static math_and_utils.Math3dUtil.rotateVectorCC;
 
 /**
- *
+ * Spotlight that fades
+ * Fading example: 
+ *      Cone angle is 15, fade_per_angle is 20. That means that it will 
+ *      gradually lose all power over 5 most farthest (from cone direction) angles.
+ *      On angle 15 it will have no power, on 14, it will have 20%, on 13 - 40%,
+ *      12 - 60%, 11 - 80%, 10 - 100%. 100% power is from angle 0 to 10.
  * @author rasto
  */
 public class FadingSpotLight extends SimpleSpotLight{
@@ -19,8 +24,30 @@ public class FadingSpotLight extends SimpleSpotLight{
     //integration step -> less means more precise -> better fading but slower
     private double step = 0.01;
     
+    /**
+     * 
+     * @param spd
+     * @param position
+     * @param cone_direction direction
+     * @param cone_angle angle from cone_direction 
+     * @param fade_per_angle how much % weaker should it shine per angle  
+     */
     public FadingSpotLight(SpectralPowerDistribution spd, double[] position, double cone_direction[], double cone_angle, double fade_per_angle){
         super(spd, position, cone_direction, cone_angle);
+        fade = fade_per_angle;
+        setFade(fade);
+    }
+    
+    /**
+     * Takes Vector3 instead of double[3]
+     * @param spd
+     * @param position
+     * @param cone_direction
+     * @param cone_angle
+     * @param fade_per_angle 
+     */
+    public FadingSpotLight(SpectralPowerDistribution spd, Vector3 position, Vector3 cone_direction, double cone_angle, double fade_per_angle){
+        super(spd, position.V3toM(), cone_direction.V3toM(), cone_angle);
         fade = fade_per_angle;
         setFade(fade);
     }

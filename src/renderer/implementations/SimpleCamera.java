@@ -30,7 +30,6 @@ public class SimpleCamera implements Camera{
     protected XYZHolder lasthitspds = null;
     protected double canvasWhalf, canvasHhalf;
     protected double PixelsCW, PixelsCH;
-    //protected double depth = 1;
     protected SPDsingle spdsingle;
     
     protected Vector3 cdir;
@@ -44,7 +43,7 @@ public class SimpleCamera implements Camera{
      * @param pixelheight height of generated image
      * @param AngleX total horizontal camera angle (half of it on both sides from direction)
      * @param AngleY total vertical camera angle (half of it on both sides from direction)
-     * @param color 
+     * @param color see {@link color.Color}.
      */
     public SimpleCamera(Vector3 from, Vector3 to, int pixelwidth, int pixelheight, 
             double AngleX, double AngleY,Color color)
@@ -170,6 +169,10 @@ public class SimpleCamera implements Camera{
         return coloredpixels;
     }
     
+    /**
+     * 
+     * @return how many times was received Beam that was visible to camera 
+     */
     public double getNumberOfHits(){
         return hits;
     }
@@ -178,6 +181,9 @@ public class SimpleCamera implements Camera{
         return new Vector3(camToWorld[3]);
     }
     
+    /**
+     * Clears camera pixels and sets hits to 0
+     */
     public void clear(){
         hits = 0;
         for(int a = 0;a < spds.size();++a){
@@ -187,53 +193,18 @@ public class SimpleCamera implements Camera{
         }
     }
     
-    /*class SPDHolder implements SpectralPowerDistribution{
-        double wavelenghts[];
-        double Ys = 1;
-        public double spdshits = 0;
-        public int first = 300, last = 800;
-        
-        public SPDHolder(){
-            wavelenghts = new double[last-first +1];
-        }
-        
-        public SPDHolder(int first, int last){
-            this.first = first;
-            this.last = last;
-            wavelenghts = new double[last-first +1];
-        }
-        
-        public double getNextLamnbda(){
-            return 0;
-        }
-        
-        public double getValue(double lambda){
-            return wavelenghts[(int)lambda-first];
-        }
-        
-        public void inc(double lambda){
-            wavelenghts[(int)lambda-first]++;
-            spdshits++;
-        }
-        
-        public double[] getFirstLastZero(){
-            double[] r = new double[2];
-            r[0] = first-1;
-            r[1] = last+1;
-            
-            return r;
-        }
-        
-        public void setY(double y){
-            Ys = y;
-        }
-    
-        public double getY(){
-            return Ys;
-        }
-    }*/
+    /**
+     * 
+     * @return double[4][4] camToWorld
+     */
+    public double[][] GetCameraMatrix(){
+        return camToWorld;
+    }
     
     //mabe replace with just 5element array ? 1 such array would cost arount 5*64*(8^-1)*(1/1000^3) GB of ram
+    /**
+     * Stores pixel XYZ, hit and POWEEER data
+     */
     class XYZHolder{// implements SpectralPowerDistribution{
         double XYZ[];
         double Ys = 1;

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package renderer;
 import static java.lang.Math.abs;
 import java.util.Optional;
@@ -10,14 +5,33 @@ import light.LightSource;
 import math_and_utils.Math3dUtil.*;
 import static math_and_utils.Math3dUtil.epsilon;
 /**
- *
+ * Class for Triangle
  * @author rasto
  */
 public class Triangle {
-    public Vector3 p1, p2, p3, normal;
+    /**
+     * Vertices
+     */
+    public Vector3 p1, p2, p3;
+    /**
+     * Normal
+     */
+    public Vector3 normal;
+    /**
+     * SceneObject which contains this triangle
+     */
     public SceneObject parent = null;
+    /**
+     * extra identifier for debugging
+     */
     public String id;
     
+    /**
+     * Creates triangle with normal = Cross(_p2 - _p1, _p3 - _p1)
+     * @param _p1
+     * @param _p2
+     * @param _p3 
+     */
     public Triangle(Vector3 _p1, Vector3 _p2, Vector3 _p3){
         p1 = _p1;
         p2 = _p2;
@@ -30,8 +44,8 @@ public class Triangle {
     //https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
     /**
      * Check if this Triangle and ray intersects
-     * @param origin
-     * @param direction
+     * @param origin starting point of ray
+     * @param direction direction of ray
      * @return nonempty optional containing distance between origin and this triangle if they intersect. Empty optional otherwise
      */
     public Optional<Double> isIntersecting(Vector3 origin, Vector3 direction){
@@ -88,19 +102,36 @@ public class Triangle {
         return intersects.of(t);
     }
     
+    /**
+     * Check if Beam and Triangle intersects
+     * @param b Beam, see {@link light.LightSource.Beam}.
+     * @return nonempty optional containing distance between b.origin and this triangle if they intersect. Empty optional otherwise
+     */
     public Optional<Double> isIntersecting(LightSource.Beam b){        
         //IntersectInfo ii = MollerTrumbore(b.origin, b.direction);
         return isIntersecting(b.origin, b.direction);
     }
     
+    /**
+     * 
+     * @return p1 
+     */
     public Vector3 getA(){
         return p1;
     }
     
+    /**
+     * 
+     * @return p2 
+     */
     public Vector3 getB(){
         return p2;
     }
     
+    /**
+     * 
+     * @return p3 
+     */
     public Vector3 getC(){
         return p3;
     }
@@ -146,6 +177,10 @@ public class Triangle {
     
     //check https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
     
+    /**
+     * 
+     * @return String with 5 rows with info about this triangle
+     */
     public String toString(){
         StringBuilder sb = new StringBuilder();
         

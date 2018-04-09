@@ -12,7 +12,7 @@ import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
 
 /**
- *
+ *Like laser, but from different starting points
  * @author rasto
  */
 public class Sky extends LightSource{

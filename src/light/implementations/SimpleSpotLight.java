@@ -7,7 +7,8 @@ import math_and_utils.Math3dUtil.Vector3;
 import static math_and_utils.Math3dUtil.rotateVectorCC;
 
 /**
- *
+ *Shines in cone, form position, in cone_direction, with cone_angle as beam 
+ * direction deviation from cone_direction
  * @author rasto
  */
 public class SimpleSpotLight extends LightSource{
@@ -35,12 +36,35 @@ public class SimpleSpotLight extends LightSource{
                 (double)(180/Math.PI);
     }
     
+    /**
+     * 
+     * @param spd
+     * @param position
+     * @param cone_direction direction
+     * @param cone_angle angle from cone_direction
+     */
     public SimpleSpotLight(SpectralPowerDistribution spd, double[] position, double cone_direction[], double cone_angle){
         super(spd);
         rndrAX = new Random();
         rndrAY = new Random();
         this.position = position;
         this.direction = cone_direction;
+        this.angle = cone_angle;
+    }
+    
+    /**
+     * Takes Vector3 instead of double[3]
+     * @param spd
+     * @param position
+     * @param cone_direction
+     * @param cone_angle 
+     */
+    public SimpleSpotLight(SpectralPowerDistribution spd, Vector3 position, Vector3 cone_direction, double cone_angle){
+        super(spd);
+        rndrAX = new Random();
+        rndrAY = new Random();
+        this.position = position.V3toM();
+        this.direction = cone_direction.V3toM();
         this.angle = cone_angle;
     }
     
