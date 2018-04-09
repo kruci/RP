@@ -145,9 +145,9 @@ public class RefractionTest extends Application{
         
         cam = new SimpleCamera(
             new Math3dUtil.Vector3(0,0,0),//from
-            new Math3dUtil.Vector3(0.03,0,-1),//to
+            new Math3dUtil.Vector3(0.24,0,-1),//to
             500,500,//resolution
-            5,5,//angles
+            15,15,//angles
             new CIE1931StandardObserver()//color
         );
         /*

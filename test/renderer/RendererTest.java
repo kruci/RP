@@ -60,7 +60,7 @@ public class RendererTest extends Application{
         );
         
         SimpleSceneObject torus = new SimpleSceneObject(
-            //"test/renderer/40_0.5_circle.obj", 
+            //"test/renderer/prism.obj",     
             "test/renderer/400_0.5_circle.obj", 
             false, 
             null);
@@ -82,9 +82,9 @@ public class RendererTest extends Application{
         double[][] skymatrix_inversT = createNormalTransofrmMatrix(skymatrix);
         ls = new Sky(
             new SPDsingle(555),
-            new Vector3(1.7,-1.7,2).multiplyByM4(skymatrix),
-            new Vector3(1.7,1.7,2).multiplyByM4(skymatrix),
-            new Vector3(-1.7,1.7,2).multiplyByM4(skymatrix),
+            new Vector3(1.7,-1.7,5).multiplyByM4(skymatrix),
+            new Vector3(1.7,1.7,5).multiplyByM4(skymatrix),
+            new Vector3(-1.7,1.7,5).multiplyByM4(skymatrix),
             new Vector3(0,0,-1).multiplyByM4(skymatrix_inversT)        
         );
         ls.setPower(10000);
@@ -111,6 +111,7 @@ public class RendererTest extends Application{
             double lasth = cam.getNumberOfHits();
             for(int a = 0;a < togen;++a){
                 ss.next();
+                if((a % 10000) == 0){System.out.println(a);}
             }
             long endTime = System.nanoTime() - startTime;
             save(cam, "test/renderer/RendererTest.png");

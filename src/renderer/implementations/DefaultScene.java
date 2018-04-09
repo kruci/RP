@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import light.LightSource;
 import math_and_utils.Math3dUtil;
+import math_and_utils.Math3dUtil.Vector3;
+import static math_and_utils.Math3dUtil.reflect;
 import static math_and_utils.Math3dUtil.refract;
 import static math_and_utils.Math3dUtil.rotateVectorCC;
 import static math_and_utils.Math3dUtil.vithinError;
@@ -126,7 +128,7 @@ public class DefaultScene implements Scene {
             if (side != null && side instanceof Transparency
                     && oside != null && oside instanceof Transparency)//transparent triangle
             {
-                double A1 = b.direction.normalize().angle(closestT.first().normal);
+                /*double A1 = b.direction.normalize().angle(closestT.first().normal);
                 double DNdot = b.direction.normalize().dot(closestT.first().normal);
                 double A2 = 0;
                 Pair<Double, Double> ref;
@@ -173,8 +175,20 @@ public class DefaultScene implements Scene {
                         A2);
 
                 b = new LightSource.Beam(intersectionPoint, newdir.normalize(),
+                        ref.second(), ls_list.get(0));*/
+                
+                Pair<Vector3, Double> ref = refract(b.direction, closestT.first().normal, 
+                        ((Transparency) side).getN(b.lambda), 
+                        ((Transparency) oside).getN(b.lambda), 
+                        b.lambda);
+                
+                if(ref.first().x ==0 && ref.first().y == 0 && ref.first().z == 0){
+                    System.out.println("x");
+                    return;
+                }
+                
+                b = new LightSource.Beam(intersectionPoint, ref.first().normalize(),
                         ref.second(), ls_list.get(0));
-
                 ignoredT = closestT.first();
             } 
             else if (side == null && oside == null)//nontransparent triangle
@@ -202,7 +216,7 @@ public class DefaultScene implements Scene {
             }
             else if (side instanceof TotalReflection || oside instanceof TotalReflection) 
             {
-                double A = b.direction.normalize().angle(closestT.first().normal);
+                /*double A = b.direction.normalize().angle(closestT.first().normal);
                 double DNdot = b.direction.normalize().dot(closestT.first().normal);
 
                 if (DNdot <= 0) {
@@ -241,8 +255,10 @@ public class DefaultScene implements Scene {
                             closestT.first().normal.cross(b.direction.normalize()), //around this
                             A);//with this angle ccw
                 newdir = (newdir.normalize()).scale(-1.0);
-
                 b = new LightSource.Beam(intersectionPoint, newdir, b.lambda, ls_list.get(0));
+                */
+                Vector3 ref = reflect(b.direction, closestT.first().normal);
+                b = new LightSource.Beam(intersectionPoint, ref.normalize(), b.lambda, ls_list.get(0));
 
                 ignoredT = closestT.first();
             } 

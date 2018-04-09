@@ -459,6 +459,12 @@ public class Math3dUtil {
             this.z = v[2];
         }
         
+        public Vector3(Vector3 v){
+            this.x = v.x;
+            this.y = v.y;
+            this.z = v.z;
+        }
+        
         
         public Vector3 toWorldVector3(){
             return sphericalV3ToWorldV3(this);
@@ -651,5 +657,47 @@ public class Math3dUtil {
         double toAngle = Math.asin((fromN/toN)*Math.sin(fromAngle));
         
         return new Pair<Double,Double>(toAngle,toLambda);
+    }
+    
+    /**
+     * https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
+     * @param I Incident - entering
+     * @param N Normal
+     * @return I - 2 * dotProduct(I, N) * N
+     */
+    public static Vector3 reflect(Vector3 I, Vector3 N){
+        return I.sub( N.scale(2*I.dot(N)) );
+    }
+    
+    /**
+     * https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/reflection-refraction-fresnel
+     * @param I Incident - entering direction
+     * @param N Normal
+     * @param fromN refraction index of medium we are exiting
+     * @param toN refraction index of medium we are entering
+     * @param fromLambda wavelength in medium we are exiting
+     * @return new direction as first(), new wavelength as second(), if first() == (0,0,0) total internal reflection occured
+     */
+    public static Pair<Vector3,Double> refract(Vector3 I, Vector3 N, double fromN, double toN, double fromLambda){
+        double toLambda = (fromN/toN)*fromLambda;
+        
+        double etai = fromLambda, etat = toLambda;
+        double cosi = clamp(-1,1, I.dot(N));
+        Vector3 n = new Vector3(N);
+        if(cosi < 0){
+            cosi = -cosi;
+        }
+        else{ 
+            //std::swap(etai, etat);
+            double tmp = etai;
+            etai = etat;
+            etat = tmp;
+            n = N.scale(-1);
+        }
+        double eta = etai / etat;
+        double k = 1 - eta * eta * (1 - cosi * cosi);
+        Vector3 ref = (I.scale(eta)).add( n.scale( eta * cosi - Math.sqrt(k) ) );
+        //return k < 0 ? 0 : eta * I + (eta * cosi - sqrtf(k)) * n;
+        return new Pair<Vector3, Double>(k < 0 ? new Vector3(0,0,0) : ref, toLambda);
     }
 }
