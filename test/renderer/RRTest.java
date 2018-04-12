@@ -41,9 +41,11 @@ public class RRTest extends Application{
     public void start(Stage primaryStage){
         caustics();
         refraction();
+        caustics_only();
     }
     
-    
+//REFLECTION    
+
     public void caustics(){
         int number_of_beams = 1000000;
         int starting_angle = 0;
@@ -103,6 +105,9 @@ public class RRTest extends Application{
             
         }
     }
+  
+    
+//REFRACTION
     
     public void refraction(){
         int number_of_beams = 1000000;
@@ -173,6 +178,93 @@ public class RRTest extends Application{
             cam.clear();
             ss.ls_list.clear();
             ss.so_list.remove(ss.so_list.size()-1);
+            
+        }
+    }
+    
+    
+//REFLECTION CAUSTICS ONLY
+    
+    class CustomSC extends SimpleCamera{
+        public CustomSC(Math3dUtil.Vector3 from, Math3dUtil.Vector3 to, int pixelwidth, int pixelheight, 
+            double AngleX, double AngleY,color.Color color)
+        {
+            super(from,to,pixelwidth,pixelheight,AngleX,AngleY, color);
+        }
+        
+        @Override
+        public boolean watch(LightSource.Beam b)
+        {
+            if(b.data == "c")
+            {
+                return super.watch(b);
+            }
+            return false;
+        }
+    }
+    
+    public void caustics_only(){
+        int number_of_beams = 500000;
+        int starting_angle = 1;
+        int last_angle = 180;
+        int angle_step = 1;
+        String dirpath = "test/renderer/RRTest/refle_causticonly/";
+        
+        DefaultScene ss = new DefaultScene();
+        ss.maxiter = 6;
+        ss.forcesendtocamera = true;
+        //ss.refl_fading = true;
+        
+        
+        //Scene objects
+        SimpleSceneObject podlozka = new SimpleSceneObject(
+            new Math3dUtil.Vector3(10, -0.5, -10),
+            new Math3dUtil.Vector3(-10, -0.5, -10),
+            new Math3dUtil.Vector3(0, -0.5, 10) 
+        );
+        
+        SimpleSceneObject torus = new SimpleSceneObject(
+            "test/renderer/400_0.5_circle.obj", 
+            false, 
+            null);
+        torus.front = new TotalReflection();
+        
+        //Camera
+        CustomSC cam = new CustomSC(
+            new Math3dUtil.Vector3(0,2,0),//from
+            new Math3dUtil.Vector3(0,0,0),//to
+            500,500,//resolution
+            90,90,//fov        
+            new CIE1931StandardObserver()
+        );
+        
+        //add all to Scene
+        ss.addCamera(cam);
+        ss.addSceneObject(torus);
+        ss.addSceneObject(podlozka);
+        
+        
+        for(int a = starting_angle;a <= last_angle; a += angle_step){
+            System.out.println("Angle = " + Integer.toString(a));
+            double[][] skymatrix = createRotXMatix(-Math.toRadians(a));
+            double[][] skymatrix_inversT = createNormalTransofrmMatrix(skymatrix);
+            LightSource ls = new Sky(
+                new SPDsingle(555),
+                new Math3dUtil.Vector3(1.7,-1.7,5).multiplyByM4(skymatrix),
+                new Math3dUtil.Vector3(1.7,1.7,5).multiplyByM4(skymatrix),
+                new Math3dUtil.Vector3(-1.7,1.7,5).multiplyByM4(skymatrix),
+                new Math3dUtil.Vector3(0,0,-1).multiplyByM4(skymatrix_inversT)        
+            );
+            ls.setPower(10000);
+            ss.addLightSource(ls);
+            
+            for(int b = 0;b < number_of_beams;++b){
+                ss.next();
+                if((b % 10000) == 0){System.out.println("   b = " + Integer.toString(b));}
+            }
+            save(cam, dirpath+ "Reflection"+Integer.toString(a)+".png");
+            cam.clear();
+            ss.ls_list.clear();
             
         }
     }

@@ -47,7 +47,11 @@ public class DefaultScene implements Scene {
      * If enabled, will send beam directly to camera as soon, as beam hits object with (both) null side properties
      */
     public boolean forcesendtocamera = false;
-
+    
+    /**
+     * If enabled, reflected beams will lose some power
+     */
+    public boolean refl_fading = true;
     
     //public Map<Double, Double> ltrans = new TreeMap<Double, Double>();
 
@@ -79,7 +83,7 @@ public class DefaultScene implements Scene {
         Triangle ignoredT = null;
         double iter = 0;
 
-        double sl = b.lambda;
+        //double sl = b.lambda;
         boolean camerabema = false;
         //System.out.print(b.lambda + " ");
 
@@ -128,54 +132,6 @@ public class DefaultScene implements Scene {
             if (side != null && side instanceof Transparency
                     && oside != null && oside instanceof Transparency)//transparent triangle
             {
-                /*double A1 = b.direction.normalize().angle(closestT.first().normal);
-                double DNdot = b.direction.normalize().dot(closestT.first().normal);
-                double A2 = 0;
-                Pair<Double, Double> ref;
-
-                if (DNdot <= 0) 
-                {
-                    A1 = Math.toRadians(180) - A1;
-                    ref = refract(((Transparency) side).getN(b.lambda), ((Transparency) oside).getN(b.lambda),
-                            A1, b.lambda);
-
-                    if (vithinError(rotateVectorCC(
-                            b.direction.normalize(), //rotate this 
-                            closestT.first().normal.cross(b.direction.normalize()), //around this
-                            A1
-                    ).normalize().dot(closestT.first().normal), -1, Math3dUtil.epsilon)) 
-                    {
-                        A2 = ref.first();
-                    } 
-                    else 
-                    {
-                        A2 = -ref.first();
-                    }
-                } 
-                else 
-                {
-                    ref = refract(((Transparency) side).getN(b.lambda), ((Transparency) oside).getN(b.lambda),
-                            A1, b.lambda);
-
-                    if (vithinError(rotateVectorCC(
-                            b.direction.normalize(), //rotate this 
-                            closestT.first().normal.cross(b.direction.normalize()), //around this
-                            A1
-                    ).normalize().dot(closestT.first().normal), 1, Math3dUtil.epsilon)) 
-                    {
-                        A2 = ref.first();
-                    } 
-                    else 
-                    {
-                        A2 = -ref.first();
-                    }
-                }
-
-                Math3dUtil.Vector3 newdir = rotateVectorCC(b.direction.normalize(), closestT.first().normal.cross(b.direction.normalize()),
-                        A2);
-
-                b = new LightSource.Beam(intersectionPoint, newdir.normalize(),
-                        ref.second(), ls_list.get(0));*/
                 
                 Pair<Vector3, Double> ref = refract(b.direction, closestT.first().normal, 
                         ((Transparency) side).getN(b.lambda), 
@@ -187,8 +143,13 @@ public class DefaultScene implements Scene {
                     return;
                 }
                 
-                b = new LightSource.Beam(intersectionPoint, ref.first().normalize(),
-                        ref.second(), ls_list.get(0));
+                /*b = new LightSource.Beam(intersectionPoint, ref.first().normalize(),
+                        ref.second(), ls_list.get(0));*/
+                
+                b.origin = intersectionPoint;
+                b.direction = ref.first().normalize();
+                b.lambda = ref.second();
+                
                 ignoredT = closestT.first();
             } 
             else if (side == null && oside == null)//nontransparent triangle
@@ -198,7 +159,15 @@ public class DefaultScene implements Scene {
                     for (Camera cam : cam_list) 
                     {
                         Math3dUtil.Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();
-                        cam.watch(new LightSource.Beam(intersectionPoint, difusedirection, b.lambda, b.source));
+                        
+                        //LightSource.Beam bb = new LightSource.Beam(intersectionPoint, difusedirection, b.lambda, b.source);
+                        //if(b.data == "c"){bb.data = "c";}
+                        
+                        //cam.watch(bb);
+                        
+                        b.origin = intersectionPoint;
+                        b.direction = difusedirection;
+                        cam.watch(b);
                         return;
                     }
                     /*for(Camera cam : cam_list){
@@ -210,56 +179,36 @@ public class DefaultScene implements Scene {
                 Camera cam = cam_list.get(0);
                 Math3dUtil.Vector3 difusedirection = (cam.GetPosition().sub(intersectionPoint)).normalize();
 
-                b = new LightSource.Beam(intersectionPoint, difusedirection, b.lambda, b.source);
+                //b = new LightSource.Beam(intersectionPoint, difusedirection, b.lambda, b.source);
+                b.origin = intersectionPoint;
+                b.direction = difusedirection;
+                
                 camerabema = true;
                 ignoredT = closestT.first();
             }
             else if (side instanceof TotalReflection || oside instanceof TotalReflection) 
             {
-                /*double A = b.direction.normalize().angle(closestT.first().normal);
-                double DNdot = b.direction.normalize().dot(closestT.first().normal);
-
-                if (DNdot <= 0) {
-                    A = Math.toRadians(180) - A;
-                    if (vithinError(rotateVectorCC(
-                                b.direction.normalize(), //rotate this 
-                                closestT.first().normal.cross(b.direction.normalize()), //around this
-                                A
-                        ).normalize().dot(closestT.first().normal), -1, 0.0001)) 
-                    {
-                         A = 2 * A;
-                    } 
-                    else 
-                    {
-                        A = -2 * A;
-                    }
-                } 
-                else 
-                {
-                    if (vithinError(rotateVectorCC(
-                                b.direction.normalize(), //rotate this 
-                                closestT.first().normal.cross(b.direction.normalize()), //around this
-                                A
-                        ).normalize().dot(closestT.first().normal), 1, 0.0001)) 
-                    {
-                        A = 2 * A;
-                    } 
-                    else 
-                    {
-                        A = -2 * A;
-                    }
-                }
-
-                Math3dUtil.Vector3 newdir = rotateVectorCC(
-                            b.direction.normalize(), //rotate this 
-                            closestT.first().normal.cross(b.direction.normalize()), //around this
-                            A);//with this angle ccw
-                newdir = (newdir.normalize()).scale(-1.0);
-                b = new LightSource.Beam(intersectionPoint, newdir, b.lambda, ls_list.get(0));
-                */
                 Vector3 ref = reflect(b.direction, closestT.first().normal);
-                b = new LightSource.Beam(intersectionPoint, ref.normalize(), b.lambda, ls_list.get(0));
-
+                
+                //double bp = b.power;
+                
+                //b = new LightSource.Beam(intersectionPoint, ref.normalize(), b.lambda, ls_list.get(0));
+                
+                
+                
+                //b.data = "c";
+                /*b.power = bp-0.2;
+                if(b.power <= 0){return;}*/
+                
+                b.origin = intersectionPoint;
+                b.direction = ref.normalize();
+                
+                /*if(refl_fading == true){
+                    b.power -= 0.2;
+                    if(b.power <= 0){return;}
+                }*/
+                b.data = "c";
+                
                 ignoredT = closestT.first();
             } 
             else//idk lol

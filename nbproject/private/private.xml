@@ -5,9 +5,7 @@
         <group>
             <file>file:/home/rasto/Documents/programing/Mtfyz/RP/test/renderer/RRTest.java</file>
             <file>file:/home/rasto/Documents/programing/Mtfyz/RP/src/renderer/implementations/DefaultScene.java</file>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/src/math_and_utils/Math3dUtil.java</file>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/test/renderer/RefractionTest.java</file>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/test/renderer/RendererTest.java</file>
+            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/src/renderer/implementations/SimpleCamera.java</file>
         </group>
     </open-files>
 </project-private>

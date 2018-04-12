@@ -104,6 +104,17 @@ public abstract class LightSource implements java.io.Serializable{
         public LightSource source;
         
         /**
+         * 1 beam has power of (LS.power/LS.beams)*power , so it should not be more than 1
+         * NOT IMPLEMENTED YET
+         */
+        public double power = 1;
+        
+        /**
+         * Additional data bout this Beam
+         */
+        public String data = "";
+        
+        /**
          * Constructor that takes variables of type Vector3 as vector parameters for origin and direction
          * @param o beam origin (starting point)
          * @param d beam direction, should be normalized

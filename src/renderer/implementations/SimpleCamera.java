@@ -131,8 +131,8 @@ public class SimpleCamera implements Camera{
         try{
             lasthitspds = spds.get((int)Px).get((int)Py);
             //spds.get((int)Px).get((int)Py).inc(lambda);
-            spdsingle.setLambda((int)lambda);
-            spds.get((int)Px).get((int)Py).inc(col.SPDtoXYZ(spdsingle));
+            //spdsingle.setLambda((int)lambda);
+            //lasthitspds/*spds.get((int)Px).get((int)Py)*/.inc(col.SPDtoXYZ(spdsingle));
         } catch(Exception ex){
             System.out.println("Camera error");
             return false;
@@ -147,8 +147,18 @@ public class SimpleCamera implements Camera{
     {
         boolean r = watch(b.origin, b.direction, b.lambda);
         if(r == true && lasthitspds != null){//works only if all beams are from 1 LS
-            double newY = ((XYZHolder)lasthitspds).spdshits * (b.source.getPower()/ b.source.getNumberOfBeams());
+            //tempomary SPD holder, holds only beam lambda
+            spdsingle.setLambda((int)b.lambda);
+            //beam power
+            //spdsingle.setY(b.power); //needed only of it != 1 
+            //add beam lambda to pixel SPD
+            lasthitspds.inc(col.SPDtoXYZ(spdsingle));
+            
+            //This sould be done in getPixels(), but that would require LSsource 
+            //to be stored in pixels, but we use only one LS, so this untroduces only small error
+            double newY = (lasthitspds).spdshits * (b.source.getPower()/ b.source.getNumberOfBeams());
             lasthitspds.setY( newY);
+            
         }
         return r;
     }
@@ -159,11 +169,14 @@ public class SimpleCamera implements Camera{
         
         for(int a = 0;a < spds.size();++a){
             for(int b = 0;b < spds.get(a).size();++b){
-                //coloredpixels[a][b] = col.SPDtoRGB(spds.get(a).get(b));
+                XYZHolder ab = spds.get(a).get(b);
+                //this si where power for this pixel shoudl be set
+                //ab.setY(ab.spdshits * (b.source.getPower()/ b.source.getNumberOfBeams()));
+                
                 coloredpixels[a][b] = col.XYZtoRGB(
-                        spds.get(a).get(b).XYZ[0], 
-                        spds.get(a).get(b).XYZ[1],
-                        spds.get(a).get(b).XYZ[2], spds.get(a).get(b).Ys);
+                        ab.XYZ[0], 
+                        ab.XYZ[1],
+                        ab.XYZ[2], ab.Ys);
             }
         }
         return coloredpixels;
@@ -205,7 +218,7 @@ public class SimpleCamera implements Camera{
     /**
      * Stores pixel XYZ, hit and POWEEER data
      */
-    class XYZHolder{// implements SpectralPowerDistribution{
+    class XYZHolder{
         double XYZ[];
         double Ys = 1;
         public double spdshits = 0;
@@ -220,26 +233,6 @@ public class SimpleCamera implements Camera{
             XYZ[2] = 0;
             Ys = 1;
             spdshits = 0;
-        }
-        
-        public double getNextLamnbda(){
-            return 0;
-        }
-        
-        public double getValue(double lambda){
-            return 0;
-        }
-        
-        public void inc(double lambda){
-            return ;
-        }
-        
-        public double[] getFirstLastZero(){
-            double[] r = new double[2];
-            r[0] = 360;
-            r[1] = 830;
-            
-            return r;
         }
         
         public void setY(double y){
