@@ -10,21 +10,11 @@ import static org.junit.Assert.*;
  * 
  * Test pre CIE1931StandardObserver z môjho RP
  * https://github.com/kruci/RP
- * 
+ * 	konkretne tento subor je 
+ *	https://github.com/kruci/RP/blob/2.semester/test/color/implementations/CIE1931StandardObserverTest.java
+ *
  * v NetBeans toto je v Test Packages->color.implementations->CIE1931StandardObserverTest.java
  * vsetky dodatocne informacie o teste (neuspesnom) vypise NetBeams a teda nemusim ja :D 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
  * 
  */
 public class CIE1931StandardObserverTest {
