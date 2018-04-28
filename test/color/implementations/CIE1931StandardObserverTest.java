@@ -109,4 +109,20 @@ public class CIE1931StandardObserverTest {
         assertArrayEquals(expResult, result);
     }
     
+    
+    /**
+     * Test of SPDtoRGB method in invisible part of spectrum(0nm - 300nm), of 
+     * class CIE1931StandardObserver.
+     */
+    @Test
+    public void test0to300RGB(){
+        int[] expResult = new int[]{0,0,0};
+        
+        for(int a = 0;a < 300;++a){
+            SpectralPowerDistribution spda = new SPDsingleTestDouble(a);
+            int[] result = instance.SPDtoRGB(spda);
+        
+            assertArrayEquals(expResult, result);
+        }
+    }
 }
