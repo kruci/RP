@@ -35,7 +35,7 @@ public class SPDrange implements SpectralPowerDistribution{
     }
     
     public double getValue(double l){
-        return 1.0*Ys;
+        return (1.0/(1+l-f))*Ys;
     }
     
     public double[] getFirstLastZero(){

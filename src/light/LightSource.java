@@ -23,6 +23,8 @@ public abstract class LightSource implements java.io.Serializable{
         this.spd = spd;
     }
     
+    public LightSource(){}
+    
     /**
      * 
      * @return SPD that is currently used 
