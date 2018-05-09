@@ -25,4 +25,10 @@ public interface Camera {
      * @return camera position
      */
     public Vector3 GetPosition();
+    
+    /**
+     * 
+     * @param ls LightSource with correct number of beams
+     */
+    public void setLS(LightSource ls);
 }

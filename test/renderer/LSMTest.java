@@ -22,7 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import light.LightSourceManager;
+import light.implementations.LightSourceManager;
 import light.implementations.Sky;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
@@ -61,8 +61,7 @@ public class LSMTest  extends Application{
             //new Vector3(0,0,0),//to
             500,500,//resolution
             90,90,//fov        
-            new CIE1931StandardObserver(),
-            lsm
+            new CIE1931StandardObserver()        
         );
         
         //LightSource
@@ -112,8 +111,8 @@ public class LSMTest  extends Application{
         
  
         //add all to Scene
-        ss.addCamera(cam);
         ss.lsm = lsm;
+        ss.addCamera(cam);
         ss.addSceneObject(podlozka);
         //ss.forcesendtocamera = true;
         

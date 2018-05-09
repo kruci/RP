@@ -1,5 +1,6 @@
 package math_and_utils;
 import static java.lang.Math.sqrt;
+import java.text.DecimalFormat;
 
 /**
  * Class containing Mainly Math for 3D graphics
@@ -700,4 +701,5 @@ public class Math3dUtil {
         //return k < 0 ? 0 : eta * I + (eta * cosi - sqrtf(k)) * n;
         return new Pair<Vector3, Double>(k < 0 ? new Vector3(0,0,0) : ref, toLambda);
     }
+    
 }

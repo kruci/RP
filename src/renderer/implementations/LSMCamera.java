@@ -9,7 +9,7 @@ import color.Color;
 import color.implementations.SPDsingle;
 import java.util.Vector;
 import light.LightSource;
-import light.LightSourceManager;
+import light.implementations.LightSourceManager;
 import math_and_utils.Math3dUtil;
 import static math_and_utils.Math3dUtil.Minvert;
 import static math_and_utils.Math3dUtil.createNormalTransofrmMatrix;
@@ -34,7 +34,7 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
     
     protected Math3dUtil.Vector3 cdir;
     
-    protected LightSourceManager lsm;
+    protected LightSource lsm;
     /**
      * Place camera to "from" and look to "to" point. 
      * The smaller "(lastlambda - firstlambda)", the less memory does this camera need
@@ -47,7 +47,7 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
      * @param color see {@link color.Color}.
      */
     public LSMCamera(Math3dUtil.Vector3 from, Math3dUtil.Vector3 to, int pixelwidth, int pixelheight, 
-            double AngleX, double AngleY,Color color, LightSourceManager lsm)
+            double AngleX, double AngleY,Color color)
     {
         Math3dUtil.Vector3 tmp = new Math3dUtil.Vector3(0,1,0).normalize();
         Math3dUtil.Vector3 forward = from.sub(to).normalize();
@@ -98,6 +98,19 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
         PixelsCW = w/ (canvasWhalf*2.0);
         PixelsCH = h/ (canvasHhalf*2.0);
         
+    }
+    
+    public LSMCamera(Math3dUtil.Vector3 from, Math3dUtil.Vector3 to, int pixelwidth, int pixelheight, 
+            double AngleX, double AngleY,Color color, LightSourceManager lsm){
+        this(from,to,pixelwidth,pixelheight,AngleX,AngleY,color);
+        this.lsm = lsm;
+    }
+    
+    /**
+     * 
+     * @param lsm 
+     */
+    public void setLS(LightSource lsm){
         this.lsm = lsm;
     }
     
@@ -105,13 +118,6 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
         Math3dUtil.Vector3 b_origin = _origin.multiplyByM4(worldToCam);
         //Vector3 b_direction = _direction.multiplyByM4(camToWorld_direction);
         
-        /*
-        Vector3 b_direction = _direction.multiplyByM4(worldToCam);
-        //remove translation form direction vector   
-            b_direction.x -= _direction.x*camToWorld[3][0];
-            b_direction.y -= _direction.x*camToWorld[3][1];
-            b_direction.z -= _direction.x*camToWorld[3][2];
-        b_direction = b_direction.normalize();*/
         
         //check if direction is correct
         if(cdir.dot(_direction) >0 )
@@ -153,17 +159,10 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
             //tempomary SPD holder, holds only beam lambda
             spdsingle.setLambda((int)b.lambda);
             spdsingle.setY(b.power);
-            //beam power
-            //spdsingle.setY(b.power); //needed only of it != 1 
+
             //add beam lambda to pixel SPD
             lasthitspds.inc(col.SPDtoXYZ(spdsingle));
             lasthitspds.Ys += b.power;
-            
-            //This sould be done in getPixels(), but that would require LSsource 
-            //to be stored in pixels, but we use only one LS, so this untroduces only small error
-            /*double newY = (lasthitspds).spdshits * (b.source.getPower()/ b.source.getNumberOfBeams());
-            lasthitspds.setY( newY);*/
-            
         }
         return r;
     }
@@ -175,14 +174,8 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
         for(int a = 0;a < spds.size();++a){
             for(int b = 0;b < spds.get(a).size();++b){
                 XYZHolder ab = spds.get(a).get(b);
-                //this si where power for this pixel shoudl be set
-                //ab.setY(ab.spdshits * (b.source.getPower()/ b.source.getNumberOfBeams()));
-                
-                //ab.Ys = (ab.spdshits/lsm.beams)*lsm.defaultlspower;
-                double newYs = (ab.spdshits/lsm.beams)*ab.Ys;
-                /*if(newYs >0){
-                System.out.println( "["+a+"]["+b+"]"+ "Ys = "+newYs);}*/
-                //ab.Ys = (ab.spdshits/lsm.beams);
+               
+                double newYs = (ab.spdshits/lsm.getNumberOfBeams())*ab.Ys;
                 
                 coloredpixels[a][b] = col.XYZtoRGB(
                         ab.XYZ[0], 

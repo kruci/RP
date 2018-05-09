@@ -14,7 +14,7 @@ public abstract class LightSource implements java.io.Serializable{
     protected SpectralPowerDistribution spd;
     protected double beams = 0;
     protected Optional<LightSource> parent;
-    protected double power = 1;
+    protected double power = 0;
     /**
      * All Light sources need SPD
      * @param spd spd to use 
@@ -51,6 +51,14 @@ public abstract class LightSource implements java.io.Serializable{
     
     /**
      * 
+     * @param p Parent of this LS
+     */
+    public void setParentLightSource(LightSource p){
+        parent.of(p);
+    }
+    
+    /**
+     * 
      * @return Parent LS if it has one, otherwise empty optional 
      */
     public Optional<LightSource> getParentLightSource(){
@@ -73,13 +81,7 @@ public abstract class LightSource implements java.io.Serializable{
         return power;
     }
     
-    /**
-     * 
-     * @param p Parent of this LS
-     */
-    public void setParentLightSource(LightSource p){
-        parent.of(p);
-    }
+
     
     /**
      * Class containing Beam data

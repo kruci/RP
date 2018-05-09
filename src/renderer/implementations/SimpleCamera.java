@@ -98,6 +98,8 @@ public class SimpleCamera implements Camera{
         PixelsCH = h/ (canvasHhalf*2.0);
     }
     
+    public void setLS(LightSource lsm){}
+    
     private boolean watch(Math3dUtil.Vector3 _origin, Math3dUtil.Vector3 _direction, double lambda){
         Vector3 b_origin = _origin.multiplyByM4(worldToCam);
         //Vector3 b_direction = _direction.multiplyByM4(camToWorld_direction);

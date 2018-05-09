@@ -8,7 +8,7 @@ package renderer.implementations;
 import java.util.ArrayList;
 import java.util.List;
 import light.LightSource;
-import light.LightSourceManager;
+import light.implementations.LightSourceManager;
 import math_and_utils.Math3dUtil;
 import static math_and_utils.Math3dUtil.reflect;
 import static math_and_utils.Math3dUtil.refract;
@@ -58,9 +58,14 @@ public class LSMScene implements Scene {
         lsm = new LightSourceManager();
         so_list = new ArrayList<SceneObject>();
     }
-
+    
+    /**
+     * Call after proper lsm is set!!!!!!
+     * @param c 
+     */
     public void addCamera(Camera c) {
         cam_list.add(c);
+        c.setLS(lsm);
     }
 
     public void addSceneObject(SceneObject so) {
