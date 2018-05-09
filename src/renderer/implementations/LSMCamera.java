@@ -157,6 +157,7 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
             //spdsingle.setY(b.power); //needed only of it != 1 
             //add beam lambda to pixel SPD
             lasthitspds.inc(col.SPDtoXYZ(spdsingle));
+            lasthitspds.Ys += b.power;
             
             //This sould be done in getPixels(), but that would require LSsource 
             //to be stored in pixels, but we use only one LS, so this untroduces only small error
@@ -177,12 +178,16 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
                 //this si where power for this pixel shoudl be set
                 //ab.setY(ab.spdshits * (b.source.getPower()/ b.source.getNumberOfBeams()));
                 
-                ab.Ys = (ab.spdshits/lsm.beams)*lsm.defaultlspower;
+                //ab.Ys = (ab.spdshits/lsm.beams)*lsm.defaultlspower;
+                double newYs = (ab.spdshits/lsm.beams)*ab.Ys;
+                /*if(newYs >0){
+                System.out.println( "["+a+"]["+b+"]"+ "Ys = "+newYs);}*/
+                //ab.Ys = (ab.spdshits/lsm.beams);
                 
                 coloredpixels[a][b] = col.XYZtoRGB(
                         ab.XYZ[0], 
                         ab.XYZ[1],
-                        ab.XYZ[2], ab.Ys);
+                        ab.XYZ[2], newYs);
             }
         }
         return coloredpixels;
@@ -226,7 +231,7 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
      */
     class XYZHolder{
         double XYZ[];
-        double Ys = 1;
+        public double Ys = 0;
         public double spdshits = 0;
         
         public XYZHolder(){
@@ -237,17 +242,17 @@ protected double[][] camToWorld, worldToCam, camToWorld_direction;
             XYZ[0] = 0;
             XYZ[1] = 0;
             XYZ[2] = 0;
-            Ys = 1;
+            Ys = 0;
             spdshits = 0;
         }
         
-        public void setY(double y){
+        /*public void setY(double y){
             Ys = y;
         }
     
         public double getY(){
             return Ys;
-        }
+        }*/
         
         public void inc(double xyz[]){
             spdshits++;

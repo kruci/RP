@@ -16,7 +16,7 @@ import java.util.Random;
 public class LightSourceManager{
     public List<LightSource> ls_list;
     public double powersum = 0;
-    public double defaultlspower = 10000;
+    //public double defaultlspower =1;//= 10000;
     public double beams = 0;
     
     //nextBeam
@@ -36,14 +36,18 @@ public class LightSourceManager{
         //choose 1 ls from from ls_list based on power
         double random_p = ls_power_random.nextDouble()*powersum;
         double p = 0;
-        for(int a = 0;a < random_p;++a)
+        for(int a = 0;a < ls_list.size();++a)
         {
             p += ls_list.get(a).getPower();
             if(random_p < p)
             {
                 LightSource.Beam r = ls_list.get(a).getNextBeam();
-                r.power = (ls_list.get(a).getPower()/defaultlspower)*
+                /*r.power = (ls_list.get(a).getPower()/defaultlspower)*
+                        ls_list.get(a).getSpectralPowerDistribution().getValue(r.lambda);*/
+               
+                r.power = (ls_list.get(a).getPower())*
                         ls_list.get(a).getSpectralPowerDistribution().getValue(r.lambda);
+                //System.out.println( "Power = "+r.power);
                 beams++;
                 return r;
             }

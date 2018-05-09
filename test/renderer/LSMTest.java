@@ -23,7 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import light.LightSourceManager;
-import light.implementations.SimpleSpotLight;
+import light.implementations.Sky;
 import math_and_utils.Math3dUtil;
 import math_and_utils.Math3dUtil.Vector3;
 import renderer.implementations.LSMCamera;
@@ -66,31 +66,51 @@ public class LSMTest  extends Application{
         );
         
         //LightSource
-        SimpleSpotLight ssl1 = new SimpleSpotLight(
-                new SPDsingle(400), 
+        /*SimpleSpotLight ssl1 = new SimpleSpotLight(
+                new SPDsingle(750), 
                 new Vector3(-1,0,0),
                 new Vector3(0,0,-1), 
                 5
         );
         SimpleSpotLight ssl2 = new SimpleSpotLight(
-                new SPDsingle(500), 
+                new SPDsingle(540), 
                 new Vector3(0,0,0),
                 new Vector3(0,0,-1), 
                 5
         );
         SimpleSpotLight ssl3 = new SimpleSpotLight(
-                new SPDsingle(600), 
-                new Vector3(1,0,0),
+                new SPDsingle(440), 
+                new Vector3(-0.5,0.5,0),
                 new Vector3(0,0,-1), 
                 5
+        );*/
+        Sky ssl1 = new Sky(
+                new SPDsingle(540), //green 540
+                new Vector3(-1,1,0),
+                new Vector3(-1,-1,0),
+                new Vector3(1,-1,0),
+                new Vector3(0,0,-1)
         );
-        ssl1.setPower(10);
-        ssl2.setPower(1);
-        ssl3.setPower(10);
-        lsm.addLS(ssl1);
-        lsm.addLS(ssl2);
-        lsm.addLS(ssl3);
+        Sky ssl2 = new Sky(
+                new SPDsingle(465), //blue 465
+                new Vector3(0,1,0),
+                new Vector3(0,-1,0),
+                new Vector3(2,-1,0),
+                new Vector3(0,0,-1)
+        );
+        Sky ssl3 = new Sky(
+                new SPDsingle(640), //red 640
+                new Vector3(-0.5,2,0),
+                new Vector3(-0.5,0,0),
+                new Vector3(1.5,0,0),
+                new Vector3(0,0,-1)
+        );
         
+        ssl1.setPower(1000); lsm.addLS(ssl1); //green
+        ssl2.setPower(1000);  lsm.addLS(ssl2);//blue
+        ssl3.setPower(2000); lsm.addLS(ssl3); //red
+        
+ 
         //add all to Scene
         ss.addCamera(cam);
         ss.lsm = lsm;
