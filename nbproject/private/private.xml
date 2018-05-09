@@ -3,13 +3,6 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/src/color/implementations/SPDsingle.java</file>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/src/renderer/implementations/LSMCamera.java</file>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/test/color/implementations/CIE1931StandardObserverTest.java</file>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/src/renderer/implementations/LSMScene.java</file>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/src/light/LightSource.java</file>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/src/color/SpectralPowerDistribution.java</file>
-            <file>file:/home/rasto/Documents/programing/Mtfyz/RP/src/light/LightSourceManager.java</file>
             <file>file:/home/rasto/Documents/programing/Mtfyz/RP/test/renderer/LSMTest.java</file>
         </group>
     </open-files>
