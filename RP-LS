@@ -1,0 +1,25 @@
+¿Vysledok RP? - Vseobecna reprezentacia svetelnych zdrojov v 3D
+
+Ak si povieme ze reozumna reprezentacia luca je jeho zaciatok a smer...
+Coz viac menej potvrdi i rendorvacia rovnica https://en.wikipedia.org/wiki/Rendering_equation
+
+public class Beam{
+	Vector3 origin;
+	Vector3 direction;
+	LightSource parent; //ak je treba zavola LS.numberOfBeams() na vyrobenie farby
+
+	Color c;
+}
+
+Color  nejako reprezentuje farbu (u SPD je to c.lambda a c.power, u RGB je to iba ¿RGB zdroja?)
+
+interface LightSource java.io.Serializable{
+
+	Beam next();
+	double numberOfBeams();
+}
+
+next() vyraba luce, numberOfBeams() nam povie kolky och uz vyrobil - potrebne aby fungovala Color 
+pre rozne reprezentacie (RGB to asi nebude potrebovat, ale RGB podla mna neni dobri ak chceme VSEOBECNU repprezentaciu svetla)
+
+Ak teda mame nejkay (uz plne implementovany) LS v subore, stacia aby mal tie 2 funkcie a sme schopny ho pouzivat.  
