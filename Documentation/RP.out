@@ -1,0 +1,19 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Light Source}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Beam color representation}{section.2}% 3
+\BOOKMARK [3][-]{subsubsection.2.1.1}{Spectral power distribution}{subsection.2.1}% 4
+\BOOKMARK [2][-]{subsection.2.2}{Sampling}{section.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Linear function as gap filler}{subsection.2.2}% 6
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Same amount of wavelengths, but different scales}{subsection.2.2}% 7
+\BOOKMARK [2][-]{subsection.2.3}{Conventions}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.4}{Examples}{section.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.4.1}{Laser}{subsection.2.4}% 10
+\BOOKMARK [3][-]{subsubsection.2.4.2}{Sky}{subsection.2.4}% 11
+\BOOKMARK [3][-]{subsubsection.2.4.3}{Fading Spot Light}{subsection.2.4}% 12
+\BOOKMARK [3][-]{subsubsection.2.4.4}{Simple "from-LightSource" rendering}{subsection.2.4}% 13
+\BOOKMARK [1][-]{section.3}{Renderer}{}% 14
+\BOOKMARK [2][-]{subsection.3.1}{Scene}{section.3}% 15
+\BOOKMARK [2][-]{subsection.3.2}{Scene Objects}{section.3}% 16
+\BOOKMARK [2][-]{subsection.3.3}{Camera}{section.3}% 17
+\BOOKMARK [2][-]{subsection.3.4}{Light Sources}{section.3}% 18
+\BOOKMARK [2][-]{subsection.3.5}{Materials}{section.3}% 19
